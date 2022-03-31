@@ -24,7 +24,7 @@ public:
 	virtual int GetCurSel() const = 0;
 	virtual bool SelectItem(int iIndex, bool bTakeFocus = false, bool bTrigger = true) = 0;
 	virtual void HandleMessageTemplate(EventArgs& event) = 0;
-	virtual void EnsureVisible(const UiRect& rcItem) = 0;
+	virtual void EnsureVisible(const CUiRect& rcItem) = 0;
 	virtual void StopScroll() {}
 };
 
@@ -41,12 +41,12 @@ public:
 	ListBox& operator=(const ListBox& r) = delete;
 
 	/// 重写父类方法，提供个性化功能，请参考父类声明
-	virtual void SetAttribute(const std::wstring& strName, const std::wstring& strValue) override;
+	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
 	virtual void HandleMessage(EventArgs& event) override;	
 	virtual void HandleMessageTemplate(EventArgs& event) override;
 	virtual int GetCurSel() const override;
 	virtual bool SelectItem(int iIndex, bool bTakeFocus = false, bool bTrigger = true) override;
-	virtual void EnsureVisible(const UiRect& rcItem) override;
+	virtual void EnsureVisible(const CUiRect& rcItem) override;
 	virtual void StopScroll() override;
 	virtual bool ButtonDown(EventArgs& msg) override;
 

@@ -15,7 +15,7 @@ public:
 		
 	/// 重写父类方法，提供个性化功能，请参考父类声明
 	virtual void SetWindow(Window* pManager, Box* pParent, bool bInit = true) override;
-	virtual void SetAttribute(const std::wstring& strName, const std::wstring& strValue) override;
+	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
 	virtual void Selected(bool bSelected, bool bTriggerEvent = false) override;
 	virtual void Activate() override;
 
@@ -23,17 +23,17 @@ public:
 	 * @brief 获取所属组名称
 	 * @return 返回组名称
 	 */
-	virtual  std::wstring GetGroup() const;
+	virtual  CUiString GetGroup() const;
 
 	/**
 	 * @brief 设置所属组
 	 * @param[in] strGroupName 组名称
 	 * @return 无
 	 */
-	virtual void SetGroup(const std::wstring& strGroupName);
+	virtual void SetGroup(const CUiString& strGroupName);
 
 protected:
-	std::wstring	m_sGroupName;
+	CUiString	m_sGroupName;
 };
 
 template<typename InheritType>
@@ -46,20 +46,20 @@ OptionTemplate<InheritType>::OptionTemplate() :
 template<typename InheritType>
 OptionTemplate<InheritType>::~OptionTemplate()
 {
-	if (!m_sGroupName.empty() && this->m_pWindow) this->m_pWindow->RemoveOptionGroup(m_sGroupName, this);
+	if (!m_sGroupName.IsEmpty() && this->m_pWindow) this->m_pWindow->RemoveOptionGroup(m_sGroupName, this);
 }
 
 template<typename InheritType>
 void OptionTemplate<InheritType>::SetWindow(Window* pManager, Box* pParent, bool bInit)
 {
 	__super::SetWindow(pManager, pParent, bInit);
-	if (bInit && !m_sGroupName.empty()) {
+	if (bInit && !m_sGroupName.IsEmpty()) {
 		if (this->m_pWindow) this->m_pWindow->AddOptionGroup(m_sGroupName, this);
 	}
 }
 
 template<typename InheritType>
-void OptionTemplate<InheritType>::SetAttribute(const std::wstring& strName, const std::wstring& strValue)
+void OptionTemplate<InheritType>::SetAttribute(const CUiString& strName, const CUiString& strValue)
 {
 	if (strName == _T("group")) SetGroup(strValue);
 	else __super::SetAttribute(strName, strValue);
@@ -73,7 +73,7 @@ void OptionTemplate<InheritType>::Selected(bool bSelected, bool bTriggerEvent)
 
 	if (this->m_pWindow != NULL) {
 		if (this->m_bSelected) {
-			if (!m_sGroupName.empty()) {
+			if (!m_sGroupName.IsEmpty()) {
 				std::vector<Control*>* aOptionGroup = this->m_pWindow->GetOptionGroup(m_sGroupName);
 				ASSERT(aOptionGroup);
 				if (aOptionGroup) {
@@ -107,25 +107,25 @@ void OptionTemplate<InheritType>::Activate()
 }
 
 template<typename InheritType>
-std::wstring OptionTemplate<InheritType>::GetGroup() const
+CUiString OptionTemplate<InheritType>::GetGroup() const
 {
 	return m_sGroupName;
 }
 
 template<typename InheritType>
-void OptionTemplate<InheritType>::SetGroup(const std::wstring& strGroupName)
+void OptionTemplate<InheritType>::SetGroup(const CUiString& strGroupName)
 {
-	if (strGroupName.empty()) {
-		if (m_sGroupName.empty()) return;
-		m_sGroupName.clear();
+	if (strGroupName.IsEmpty()) {
+		if (m_sGroupName.IsEmpty()) return;
+		m_sGroupName.Empty();
 	}
 	else {
 		if (m_sGroupName == strGroupName) return;
-		if (!m_sGroupName.empty() && this->m_pWindow) this->m_pWindow->RemoveOptionGroup(m_sGroupName, this);
+		if (!m_sGroupName.IsEmpty() && this->m_pWindow) this->m_pWindow->RemoveOptionGroup(m_sGroupName, this);
 		m_sGroupName = strGroupName;
 	}
 
-	if (!m_sGroupName.empty()) {
+	if (!m_sGroupName.IsEmpty()) {
 		if (this->m_pWindow) this->m_pWindow->AddOptionGroup(m_sGroupName, this);
 	}
 	else {

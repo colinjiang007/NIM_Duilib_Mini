@@ -19,16 +19,16 @@ Box* WindowBuilder::Create(STRINGorID xml, CreateControlCallback pCallback,
 			if (!m_xml.Load(xml.m_lpstr)) return NULL;
 		}
 		else if (GlobalManager::IsUseZip()) {
-			std::wstring sFile = GlobalManager::GetResourcePath();
+			CUiString sFile = GlobalManager::GetResourcePath();
 			sFile += xml.m_lpstr;
 			HGLOBAL hGlobal = GlobalManager::GetData(sFile);
 			if (hGlobal)
 			{
 				std::string src((LPSTR)GlobalLock(hGlobal), GlobalSize(hGlobal));
-				std::wstring string_resourse;
-				StringHelper::MBCSToUnicode(src.c_str(), string_resourse, CP_UTF8);
+				CUiString string_resourse;
+				StringHelper::Utf8ToCUiString(src, string_resourse);
 				GlobalFree(hGlobal);
-				if (!m_xml.Load(string_resourse.c_str())) return NULL;
+				if (!m_xml.Load(string_resourse)) return NULL;
 			}
 			else
 			{
@@ -53,10 +53,10 @@ Box* WindowBuilder::Create(CreateControlCallback pCallback, Window* pManager, Bo
 	if( !root.IsValid() ) return NULL;
 
 	if( pManager ) {
-		std::wstring strClass;
+		CUiString strClass;
 		int nAttributes = 0;
-		std::wstring strName;
-		std::wstring strValue;
+		CUiString strName;
+		CUiString strValue;
 		LPTSTR pstr = NULL;
 		strClass = root.GetName();
 
@@ -94,12 +94,12 @@ Box* WindowBuilder::Create(CreateControlCallback pCallback, Window* pManager, Bo
 					strValue = root.GetAttributeValue(i);
 					if( strName == _T("size") ) {
 						LPTSTR pstr = NULL;
-						int cx = _tcstol(strValue.c_str(), &pstr, 10);	ASSERT(pstr);    
+						int cx = _tcstol(strValue, &pstr, 10);	ASSERT(pstr);    
 						int cy = _tcstol(pstr + 1, &pstr, 10);	ASSERT(pstr); 
 						pManager->SetInitSize(cx, cy);
 					} 
 					else if( strName == _T("heightpercent") ) {
-						double lfHeightPercent = _ttof(strValue.c_str());
+						double lfHeightPercent = _ttof(strValue);
 						pManager->SetHeightPercent(lfHeightPercent);
 
 						MONITORINFO oMonitor = {}; 
@@ -115,22 +115,22 @@ Box* WindowBuilder::Create(CreateControlCallback pCallback, Window* pManager, Bo
 							nWindowHeight = nMaxHeight;
 						}
 
-						CSize xy = pManager->GetInitSize();
+						CUiSize xy = pManager->GetInitSize();
 						pManager->SetInitSize(xy.cx, nWindowHeight, false, false);
 					}
 					else if( strName == _T("sizebox") ) {
-						UiRect rcSizeBox;
+						CUiRect rcSizeBox;
 						LPTSTR pstr = NULL;
-						rcSizeBox.left = _tcstol(strValue.c_str(), &pstr, 10);  ASSERT(pstr);    
+						rcSizeBox.left = _tcstol(strValue, &pstr, 10);  ASSERT(pstr);    
 						rcSizeBox.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
 						rcSizeBox.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
 						rcSizeBox.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);    
 						pManager->SetSizeBox(rcSizeBox);
 					}
 					else if( strName == _T("caption") ) {
-						UiRect rcCaption;
+						CUiRect rcCaption;
 						LPTSTR pstr = NULL;
-						rcCaption.left = _tcstol(strValue.c_str(), &pstr, 10);  ASSERT(pstr);    
+						rcCaption.left = _tcstol(strValue, &pstr, 10);  ASSERT(pstr);    
 						rcCaption.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
 						rcCaption.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
 						rcCaption.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
@@ -141,19 +141,19 @@ Box* WindowBuilder::Create(CreateControlCallback pCallback, Window* pManager, Bo
 					}
 					else if( strName == _T("roundcorner") ) {
 						LPTSTR pstr = NULL;
-						int cx = _tcstol(strValue.c_str(), &pstr, 10);  ASSERT(pstr);    
+						int cx = _tcstol(strValue, &pstr, 10);  ASSERT(pstr);    
 						int cy = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr); 
 						pManager->SetRoundCorner(cx, cy);
 					} 
 					else if( strName == _T("mininfo") ) {
 						LPTSTR pstr = NULL;
-						int cx = _tcstol(strValue.c_str(), &pstr, 10);  ASSERT(pstr);    
+						int cx = _tcstol(strValue, &pstr, 10);  ASSERT(pstr);    
 						int cy = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr); 
 						pManager->SetMinInfo(cx, cy);
 					}
 					else if( strName == _T("maxinfo") ) {
 						LPTSTR pstr = NULL;
-						int cx = _tcstol(strValue.c_str(), &pstr, 10);  ASSERT(pstr);    
+						int cx = _tcstol(strValue, &pstr, 10);  ASSERT(pstr);    
 						int cy = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr); 
 						pManager->SetMaxInfo(cx, cy);
 					}
@@ -164,18 +164,18 @@ Box* WindowBuilder::Create(CreateControlCallback pCallback, Window* pManager, Bo
 						pManager->SetShadowImage(strValue);
 					}
 					else if (strName == _T("shadowcorner")) {
-						UiRect rc;
+						CUiRect rc;
 						LPTSTR pstr = NULL;
-						rc.left = _tcstol(strValue.c_str(), &pstr, 10);  ASSERT(pstr);
+						rc.left = _tcstol(strValue, &pstr, 10);  ASSERT(pstr);
 						rc.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);
 						rc.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);
 						rc.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
 						pManager->SetShadowCorner(rc);
 					}
 					else if (strName == _T("alphafixcorner") || strName == _T("custom_shadow")) {
-						UiRect rc;
+						CUiRect rc;
 						LPTSTR pstr = NULL;
-						rc.left = _tcstol(strValue.c_str(), &pstr, 10);  ASSERT(pstr);
+						rc.left = _tcstol(strValue, &pstr, 10);  ASSERT(pstr);
 						rc.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);
 						rc.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);
 						rc.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
@@ -193,8 +193,8 @@ Box* WindowBuilder::Create(CreateControlCallback pCallback, Window* pManager, Bo
 				}
 				else if( strClass == _T("Font") ) {
 					nAttributes = node.GetAttributeCount();
-					std::wstring strFontId;
-					std::wstring strFontName;
+					CUiString strFontId;
+					CUiString strFontName;
 					int size = 12;
 					bool bold = false;
 					bool underline = false;
@@ -211,7 +211,7 @@ Box* WindowBuilder::Create(CreateControlCallback pCallback, Window* pManager, Bo
 							strFontName = strValue;
 						}
 						else if( strName == _T("size") ) {
-							size = _tcstol(strValue.c_str(), &pstr, 10);
+							size = _tcstol(strValue, &pstr, 10);
 						}
 						else if( strName == _T("bold") ) {
 							bold = (strValue == _T("true"));
@@ -226,14 +226,14 @@ Box* WindowBuilder::Create(CreateControlCallback pCallback, Window* pManager, Bo
 							isDefault = (strValue == _T("true"));
 						}
 					}
-					if( !strFontName.empty() ) {
+					if( !strFontName.IsEmpty() ) {
 						GlobalManager::AddFont(strFontId, strFontName, size, bold, underline, italic, isDefault);
 					}
 				}
 				else if( strClass == _T("Class") ) {
 					nAttributes = node.GetAttributeCount();
-					std::wstring strClassName;
-					std::wstring strAttribute;
+					CUiString strClassName;
+					CUiString strAttribute;
 					for( int i = 0; i < nAttributes; i++ ) {
 						strName = node.GetAttributeName(i);
 						strValue = node.GetAttributeValue(i);
@@ -241,25 +241,29 @@ Box* WindowBuilder::Create(CreateControlCallback pCallback, Window* pManager, Bo
 							strClassName = strValue;
 						}
 						else if( strName == _T("value") ) {
-							strAttribute.append(strValue);
+							strAttribute.Append(strValue);
 						}
 						else if (strName == _T("_value")) {
-							strAttribute.append(StringHelper::Printf(L" value=\"%s\"",strValue.c_str()));
+							CUiString fmtValue;
+							fmtValue.Format(_T(" value=\"%s\""), strValue.GetData());
+							strAttribute.Append(fmtValue);
 						}
 						else {
-							strAttribute.append(StringHelper::Printf(L" %s=\"%s\"",
-								strName.c_str(), strValue.c_str()));
+							CUiString fmtValue;
+							fmtValue.Format(_T(" %s=\"%s\""), strName.GetData(), strValue.GetData());
+							strAttribute.Append(fmtValue);
+
 						}
 					}
-					if( !strClassName.empty() ) {
+					if( !strClassName.IsEmpty() ) {
 						StringHelper::TrimLeft(strAttribute);
 						GlobalManager::AddClass(strClassName, strAttribute);
 					}
 				}
 				else if( strClass == _T("TextColor") ) {
 					nAttributes = node.GetAttributeCount();
-					std::wstring strColorName;
-					std::wstring strColor;
+					CUiString strColorName;
+					CUiString strColor;
 					for( int i = 0; i < nAttributes; i++ ) {
 						strName = node.GetAttributeName(i);
 						strValue = node.GetAttributeValue(i);
@@ -270,7 +274,7 @@ Box* WindowBuilder::Create(CreateControlCallback pCallback, Window* pManager, Bo
 							strColor = strValue;
 						}
 					}
-					if( !strColorName.empty()) {
+					if( !strColorName.IsEmpty()) {
 						GlobalManager::AddTextColor(strColorName, strColor);
 					}
 				}
@@ -282,8 +286,8 @@ Box* WindowBuilder::Create(CreateControlCallback pCallback, Window* pManager, Bo
 				strClass = node.GetName();
 				if( strClass == _T("Class") ) {
 					nAttributes = node.GetAttributeCount();
-					std::wstring strClassName;
-					std::wstring strAttribute;
+					CUiString strClassName;
+					CUiString strAttribute;
 					for( int i = 0; i < nAttributes; i++ ) {
 						strName = node.GetAttributeName(i);
 						strValue = node.GetAttributeValue(i);
@@ -291,18 +295,21 @@ Box* WindowBuilder::Create(CreateControlCallback pCallback, Window* pManager, Bo
 							strClassName = strValue;
 						}
 						else if( strName == _T("value") ) {
-							strAttribute.append(strValue);
+							strAttribute.Append(strValue);
 						}
 						else if (strName == _T("_value")) {
-							strAttribute.append(StringHelper::Printf(L" value=\"%s\"", strValue.c_str()));
+							CUiString fmtValue;
+							fmtValue.Format(_T(" value=\"%s\""), strValue.GetData());
+							strAttribute.Append(fmtValue);
 						}
 						else {
-							strAttribute.append(StringHelper::Printf(L" %s=\"%s\"",
-								strName.c_str(), strValue.c_str()));
+							CUiString fmtValue;
+							fmtValue.Format(_T(" %s=\"%s\""), strName.GetData(), strValue.GetData());
+							strAttribute.Append(fmtValue);
 						}
 					}
-					if( !strClassName.empty() ) {
-						ASSERT( GlobalManager::GetClassAttributes(strClassName).empty() );	//窗口中的Class不能与全局的重名
+					if( !strClassName.IsEmpty() ) {
+						ASSERT( GlobalManager::GetClassAttributes(strClassName).IsEmpty() );	//窗口中的Class不能与全局的重名
 						StringHelper::TrimLeft(strAttribute);
 						pManager->AddClass(strClassName, strAttribute);
 					}
@@ -312,7 +319,7 @@ Box* WindowBuilder::Create(CreateControlCallback pCallback, Window* pManager, Bo
 	}
 
 	for( CMarkupNode node = root.GetChild() ; node.IsValid(); node = node.GetSibling() ) {
-		std::wstring strClass = node.GetName();
+		CUiString strClass = node.GetName();
 		if( strClass == _T("Image") || strClass == _T("Font")
 			|| strClass == _T("Class") || strClass == _T("TextColor") ) {
 
@@ -356,7 +363,7 @@ Control* WindowBuilder::_Parse(CMarkupNode* pRoot, Control* pParent, Window* pMa
 {
     Control* pReturn = NULL;
     for( CMarkupNode node = pRoot->GetChild() ; node.IsValid(); node = node.GetSibling() ) {
-        std::wstring strClass = node.GetName();
+        CUiString strClass = node.GetName();
 		if( strClass == _T("Image") || strClass == _T("Font")
 			|| strClass == _T("Class") || strClass == _T("TextColor") ) {
 				continue;
@@ -439,10 +446,10 @@ Control* WindowBuilder::_Parse(CMarkupNode* pRoot, Control* pParent, Window* pMa
     return pReturn;
 }
 
-Control* WindowBuilder::CreateControlByClass(const std::wstring& strControlClass)
+Control* WindowBuilder::CreateControlByClass(const CUiString& strControlClass)
 {
 	Control* pControl = nullptr;
-	SIZE_T cchLen = strControlClass.length();
+	SIZE_T cchLen = strControlClass.GetLength();
 	switch( cchLen ) {
 	case 3:
 		if( strControlClass == DUI_CTR_BOX )					pControl = new Box;
@@ -510,11 +517,11 @@ Control* WindowBuilder::CreateControlByClass(const std::wstring& strControlClass
 void WindowBuilder::AttachXmlEvent(bool bBubbled, CMarkupNode& node, Control* pParent)
 {
 	auto nAttributes = node.GetAttributeCount();
-	std::wstring strType;
-	std::wstring strReceiver;
-	std::wstring strApplyAttribute;
-	std::wstring strName;
-	std::wstring strValue;
+	CUiString strType;
+	CUiString strReceiver;
+	CUiString strApplyAttribute;
+	CUiString strName;
+	CUiString strValue;
 	for( int i = 0; i < nAttributes; i++ ) {
 		strName = node.GetAttributeName(i);
 		strValue = node.GetAttributeValue(i);
@@ -531,9 +538,9 @@ void WindowBuilder::AttachXmlEvent(bool bBubbled, CMarkupNode& node, Control* pP
 			strApplyAttribute = strValue;
 		}
 	}
-
-	auto typeList = StringHelper::Split(strType, L" ");
-	auto receiverList = StringHelper::Split(strReceiver, L" ");
+	std::vector<CUiString> typeList, receiverList;
+	StringHelper::SplitCUiString(strType, _T(" "), typeList);
+	StringHelper::SplitCUiString(strReceiver, _T(" "), receiverList);
 	for (auto itType = typeList.begin(); itType != typeList.end(); itType++) {
 		for (auto itReceiver = receiverList.begin(); itReceiver != receiverList.end(); itReceiver++) {
 			EventType eventType = StringToEnum(*itType);

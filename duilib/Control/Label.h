@@ -13,15 +13,12 @@ public:
 	LabelTemplate();
 
 	/// 重写父类方法，提供个性化功能，请参考父类声明
-	virtual std::wstring GetText() const;
-	virtual std::string GetUTF8Text() const;
-	virtual void SetText(const std::wstring& strText);
-	virtual void SetUTF8Text(const std::string& strText);
-	virtual void SetTextId(const std::wstring& strTextId);
-	virtual void SetUTF8TextId(const std::string& strTextId);
+	virtual CUiString GetText() const;
+	virtual void SetText(const CUiString& strText);
+	virtual void SetTextId(const CUiString& strTextId);
 	virtual bool HasHotState();
-	virtual CSize EstimateText(CSize szAvailable, bool& bReEstimateSize) override;
-	virtual void SetAttribute(const std::wstring& strName, const std::wstring& strValue) override;
+	virtual CUiSize EstimateText(CUiSize szAvailable, bool& bReEstimateSize) override;
+	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
 	virtual void PaintText(IRenderContext* pRender) override;
 
 	/**
@@ -42,7 +39,7 @@ public:
 	 * @param[in] stateType 要获取的状态标志
 	 * @return 返回指定状态下的文本颜色
 	 */
-	std::wstring GetStateTextColor(ControlStateType stateType);
+	CUiString GetStateTextColor(ControlStateType stateType);
 
 	/**
 	 * @brief 设置指定状态下的文本颜色
@@ -50,33 +47,33 @@ public:
 	 * @param[in] dwTextColor 要设置的状态颜色字符串，该值必须在 global.xml 中存在
 	 * @return 无
 	 */
-	void SetStateTextColor(ControlStateType stateType, const std::wstring& dwTextColor);
+	void SetStateTextColor(ControlStateType stateType, const CUiString& dwTextColor);
 
 	/**
 	 * @brief 获取当前字体编号
 	 * @return 返回字体编号，该编号在 global.xml 中标识
 	 */
-	std::wstring GetFont() const;
+	CUiString GetFont() const;
 
 	/**
 	 * @brief 设置当前字体
 	 * @param[in] index 要设置的字体编号，该编号必须在 global.xml 中存在
 	 * @return 无
 	 */
-	void SetFont(const std::wstring& strFontId);
+	void SetFont(const CUiString& strFontId);
 
 	/**
 	 * @brief 获取文字边距
 	 * @return 返回文字的边距信息
 	 */
-	UiRect GetTextPadding() const;
+	CUiRect GetTextPadding() const;
 
 	/**
 	 * @brief 设置文字边距信息
 	 * @param[in] rc 边距信息
 	 * @return 无
 	 */
-	void SetTextPadding(UiRect rc);
+	void SetTextPadding(CUiRect rc);
 
 	/**
 	 * @brief 判断是否是单行模式
@@ -103,17 +100,21 @@ public:
 	 * @return 无
 	 */
 	void SetLineLimit(bool bLineLimit);
+protected:
+	virtual std::string GetUTF8Text() const;
+	virtual void SetUTF8Text(const std::string& strText);
+	virtual void SetUTF8TextId(const std::string& strTextId);
 
 protected:
-	std::wstring m_sFontId;
+	CUiString m_sFontId;
 	UINT	m_uTextStyle;
 	bool    m_bSingleLine;
 	bool    m_bLineLimit;
 	int		m_hAlign;
 	int		m_vAlign;
-	UiRect	m_rcTextPadding;
-	std::wstring	m_sText;
-	std::wstring	m_sTextId;
+	CUiRect	m_rcTextPadding;
+	CUiString	m_sText;
+	CUiString	m_sTextId;
 	StateColorMap	m_textColorMap;
 };
 
@@ -143,10 +144,10 @@ LabelTemplate<InheritType>::LabelTemplate() :
 }
 
 template<typename InheritType>
-std::wstring LabelTemplate<InheritType>::GetText() const
+CUiString LabelTemplate<InheritType>::GetText() const
 {
-	std::wstring strText = m_sText;
-	if (strText.empty() && !m_sTextId.empty()) {
+	CUiString strText = m_sText;
+	if (strText.IsEmpty() && !m_sTextId.IsEmpty()) {
 		strText = MutiLanSupport::GetInstance()->GetStringViaID(m_sTextId);
 	}
 
@@ -157,12 +158,12 @@ template<typename InheritType>
 std::string LabelTemplate<InheritType>::GetUTF8Text() const
 {
 	std::string strOut;
-	StringHelper::UnicodeToMBCS(GetText(), strOut, CP_UTF8);
+	StringHelper::CUiStringToUtf8(GetText(), strOut);
 	return strOut;
 }
 
 template<typename InheritType>
-void LabelTemplate<InheritType>::SetText(const std::wstring& strText)
+void LabelTemplate<InheritType>::SetText(const CUiString& strText)
 {
 	if (m_sText == strText) return;
 	m_sText = strText;
@@ -178,13 +179,13 @@ void LabelTemplate<InheritType>::SetText(const std::wstring& strText)
 template<typename InheritType>
 void LabelTemplate<InheritType>::SetUTF8Text(const std::string& strText)
 {
-	std::wstring strOut;
-	StringHelper::MBCSToUnicode(strText, strOut, CP_UTF8);
+	CUiString strOut;
+	StringHelper::Utf8ToCUiString(strText, strOut);
 	SetText(strOut);
 }
 
 template<typename InheritType>
-void LabelTemplate<InheritType>::SetTextId(const std::wstring& strTextId)
+void LabelTemplate<InheritType>::SetTextId(const CUiString& strTextId)
 {
 	if (m_sTextId == strTextId) return;
 	m_sTextId = strTextId;
@@ -200,8 +201,8 @@ void LabelTemplate<InheritType>::SetTextId(const std::wstring& strTextId)
 template<typename InheritType>
 void LabelTemplate<InheritType>::SetUTF8TextId(const std::string& strTextId)
 {
-	std::wstring strOut;
-	StringHelper::MBCSToUnicode(strTextId, strOut, CP_UTF8);
+	CUiString strOut;
+	StringHelper::Utf8ToCUiString(strTextId, strOut);
 	SetTextId(strOut);
 }
 
@@ -212,7 +213,7 @@ bool LabelTemplate<InheritType>::HasHotState()
 }
 
 template<typename InheritType>
-CSize LabelTemplate<InheritType>::EstimateText(CSize szAvailable, bool& bReEstimateSize)
+CUiSize LabelTemplate<InheritType>::EstimateText(CUiSize szAvailable, bool& bReEstimateSize)
 {
 	if (m_bSingleLine)
 		m_uTextStyle |= DT_SINGLELINE;
@@ -223,10 +224,10 @@ CSize LabelTemplate<InheritType>::EstimateText(CSize szAvailable, bool& bReEstim
 	if (width < 0) {
 		width = 0;
 	}
-	CSize fixedSize;
-	if (!GetText().empty()) {
+	CUiSize fixedSize;
+	if (!GetText().IsEmpty()) {
 		auto pRender = this->m_pWindow->GetRenderContext();
-		UiRect rect = pRender->MeasureText(GetText(), m_sFontId, m_uTextStyle, width);
+		CUiRect rect = pRender->MeasureText(GetText(), m_sFontId, m_uTextStyle, width);
 		if (this->GetFixedWidth() == DUI_LENGTH_AUTO) {
 			fixedSize.cx = rect.right - rect.left + m_rcTextPadding.left + m_rcTextPadding.right;
 		}
@@ -239,7 +240,7 @@ CSize LabelTemplate<InheritType>::EstimateText(CSize szAvailable, bool& bReEstim
 				int maxWidth = szAvailable.cx - m_rcTextPadding.left - m_rcTextPadding.right;
 				if (estimateWidth > maxWidth) {
 					estimateWidth = maxWidth;
-					UiRect newRect = pRender->MeasureText(GetText(), m_sFontId, m_uTextStyle, estimateWidth);
+					CUiRect newRect = pRender->MeasureText(GetText(), m_sFontId, m_uTextStyle, estimateWidth);
 					estimateHeight = newRect.bottom - newRect.top;
 				}
 			}
@@ -252,30 +253,30 @@ CSize LabelTemplate<InheritType>::EstimateText(CSize szAvailable, bool& bReEstim
 }
 
 template<typename InheritType>
-void LabelTemplate<InheritType>::SetAttribute(const std::wstring& strName, const std::wstring& strValue)
+void LabelTemplate<InheritType>::SetAttribute(const CUiString& strName, const CUiString& strValue)
 {
 	if (strName == _T("align")) {
-		if (strValue.find(_T("left")) != std::wstring::npos) {
+		if (strValue.Find(_T("left")) != -1) {
 			m_uTextStyle &= ~(DT_CENTER | DT_RIGHT | DT_VCENTER | DT_SINGLELINE);
 			m_uTextStyle |= DT_LEFT;
 		}
-		if (strValue.find(_T("center")) != std::wstring::npos) {
+		if (strValue.Find(_T("center")) != -1) {
 			m_uTextStyle &= ~(DT_LEFT | DT_RIGHT);
 			m_uTextStyle |= DT_CENTER;
 		}
-		if (strValue.find(_T("right")) != std::wstring::npos) {
+		if (strValue.Find(_T("right")) != -1) {
 			m_uTextStyle &= ~(DT_LEFT | DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 			m_uTextStyle |= DT_RIGHT;
 		}
-		if (strValue.find(_T("top")) != std::wstring::npos) {
+		if (strValue.Find(_T("top")) != -1) {
 			m_uTextStyle &= ~(DT_BOTTOM | DT_VCENTER);
 			m_uTextStyle |= (DT_TOP | DT_SINGLELINE);
 		}
-		if (strValue.find(_T("vcenter")) != std::wstring::npos) {
+		if (strValue.Find(_T("vcenter")) != -1) {
 			m_uTextStyle &= ~(DT_TOP | DT_BOTTOM);
 			m_uTextStyle |= (DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 		}
-		if (strValue.find(_T("bottom")) != std::wstring::npos) {
+		if (strValue.Find(_T("bottom")) != -1) {
 			m_uTextStyle &= ~(DT_TOP | DT_VCENTER | DT_VCENTER);
 			m_uTextStyle |= (DT_BOTTOM | DT_SINGLELINE);
 		}
@@ -294,9 +295,9 @@ void LabelTemplate<InheritType>::SetAttribute(const std::wstring& strName, const
 	else if (strName == _T("pushedtextcolor"))	SetStateTextColor(kControlStatePushed, strValue);
 	else if (strName == _T("disabledtextcolor"))	SetStateTextColor(kControlStateDisabled, strValue);
 	else if (strName == _T("textpadding")) {
-		UiRect rcTextPadding;
+		CUiRect rcTextPadding;
 		LPTSTR pstr = NULL;
-		rcTextPadding.left = _tcstol(strValue.c_str(), &pstr, 10);  ASSERT(pstr);
+		rcTextPadding.left = _tcstol(strValue, &pstr, 10);  ASSERT(pstr);
 		rcTextPadding.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);
 		rcTextPadding.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);
 		rcTextPadding.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
@@ -308,24 +309,24 @@ void LabelTemplate<InheritType>::SetAttribute(const std::wstring& strName, const
 template<typename InheritType>
 void LabelTemplate<InheritType>::PaintText(IRenderContext* pRender)
 {
-	if (GetText().empty()) return;
-	UiRect rc = this->m_rcItem;
+	if (GetText().IsEmpty()) return;
+	CUiRect rc = this->m_rcItem;
 	rc.left += m_rcTextPadding.left;
 	rc.right -= m_rcTextPadding.right;
 	rc.top += m_rcTextPadding.top;
 	rc.bottom -= m_rcTextPadding.bottom;
 
 	ControlStateType stateType = this->m_uButtonState;
-	if (stateType == kControlStatePushed && GetStateTextColor(kControlStatePushed).empty()) {
+	if (stateType == kControlStatePushed && GetStateTextColor(kControlStatePushed).IsEmpty()) {
 		stateType = kControlStateHot;
 	}
-	if (stateType == kControlStateHot && GetStateTextColor(kControlStateHot).empty()) {
+	if (stateType == kControlStateHot && GetStateTextColor(kControlStateHot).IsEmpty()) {
 		stateType = kControlStateNormal;
 	}
-	if (stateType == kControlStateDisabled && GetStateTextColor(kControlStateDisabled).empty()) {
+	if (stateType == kControlStateDisabled && GetStateTextColor(kControlStateDisabled).IsEmpty()) {
 		stateType = kControlStateNormal;
 	}
-	std::wstring clrColor = GetStateTextColor(stateType);
+	CUiString clrColor = GetStateTextColor(stateType);
 	DWORD dwClrColor = GlobalManager::GetTextColor(clrColor);
 
 	if (m_bSingleLine)
@@ -335,16 +336,16 @@ void LabelTemplate<InheritType>::PaintText(IRenderContext* pRender)
 
 	if (this->m_animationManager.GetAnimationPlayer(kAnimationHot)) {
 		if ((stateType == kControlStateNormal || stateType == kControlStateHot)
-			&& !GetStateTextColor(kControlStateHot).empty()) {
-			std::wstring clrColor = GetStateTextColor(kControlStateNormal);
-			if (!clrColor.empty()) {
+			&& !GetStateTextColor(kControlStateHot).IsEmpty()) {
+			CUiString clrColor = GetStateTextColor(kControlStateNormal);
+			if (!clrColor.IsEmpty()) {
 				DWORD dwClrColor = GlobalManager::GetTextColor(clrColor);
 				pRender->DrawText(rc, GetText(), dwClrColor, m_sFontId, m_uTextStyle, 255, m_bLineLimit);
 			}
 
 			if (this->m_nHotAlpha > 0) {
-				std::wstring clrColor = GetStateTextColor(kControlStateHot);
-				if (!clrColor.empty()) {
+				CUiString clrColor = GetStateTextColor(kControlStateHot);
+				if (!clrColor.IsEmpty()) {
 					DWORD dwClrColor = GlobalManager::GetTextColor(clrColor);
 					pRender->DrawText(rc, GetText(), dwClrColor, m_sFontId, m_uTextStyle, (BYTE)this->m_nHotAlpha, m_bLineLimit);
 				}
@@ -371,13 +372,13 @@ UINT LabelTemplate<InheritType>::GetTextStyle() const
 }
 
 template<typename InheritType>
-std::wstring LabelTemplate<InheritType>::GetStateTextColor(ControlStateType stateType)
+CUiString LabelTemplate<InheritType>::GetStateTextColor(ControlStateType stateType)
 {
 	return m_textColorMap[stateType];
 }
 
 template<typename InheritType>
-void LabelTemplate<InheritType>::SetStateTextColor(ControlStateType stateType, const std::wstring& dwTextColor)
+void LabelTemplate<InheritType>::SetStateTextColor(ControlStateType stateType, const CUiString& dwTextColor)
 {
 	if (stateType == kControlStateHot) {
 		this->m_animationManager.SetFadeHot(true);
@@ -387,26 +388,26 @@ void LabelTemplate<InheritType>::SetStateTextColor(ControlStateType stateType, c
 }
 
 template<typename InheritType>
-std::wstring LabelTemplate<InheritType>::GetFont() const
+CUiString LabelTemplate<InheritType>::GetFont() const
 {
 	return m_sFontId;
 }
 
 template<typename InheritType>
-void LabelTemplate<InheritType>::SetFont(const std::wstring& strFontId)
+void LabelTemplate<InheritType>::SetFont(const CUiString& strFontId)
 {
 	m_sFontId = strFontId;
 	this->Invalidate();
 }
 
 template<typename InheritType>
-UiRect LabelTemplate<InheritType>::GetTextPadding() const
+CUiRect LabelTemplate<InheritType>::GetTextPadding() const
 {
 	return m_rcTextPadding;
 }
 
 template<typename InheritType>
-void LabelTemplate<InheritType>::SetTextPadding(UiRect rc)
+void LabelTemplate<InheritType>::SetTextPadding(CUiRect rc)
 {
 	DpiManager::GetInstance()->ScaleRect(rc);
 	m_rcTextPadding = rc;

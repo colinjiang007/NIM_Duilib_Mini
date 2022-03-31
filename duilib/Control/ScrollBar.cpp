@@ -92,7 +92,7 @@ bool ScrollBar::ButtonUp(EventArgs& msg)
 	if( IsMouseFocused() ) {
 		SetMouseFocused(false);
 		Invalidate();
-		UiRect pos = GetPos();
+		CUiRect pos = GetPos();
 		if (::PtInRect(&pos, msg.ptMouse)) {
 			m_uButtonState = kControlStateHot;
 			m_nHotAlpha = 255;
@@ -105,7 +105,7 @@ bool ScrollBar::ButtonUp(EventArgs& msg)
 		}
 	}
 
-	UiRect ownerPos = m_pOwner->GetPos();
+	CUiRect ownerPos = m_pOwner->GetPos();
 	if (m_bAutoHide && !::PtInRect(&ownerPos, msg.ptMouse)) {
 		SetVisible(false);
 	}
@@ -142,7 +142,7 @@ bool ScrollBar::MouseLeave(EventArgs& msg)
 	return ret;
 }
 
-void ScrollBar::SetPos(UiRect rc)
+void ScrollBar::SetPos(CUiRect rc)
 {
 	Control::SetPos(rc);
 	rc = m_rcItem;
@@ -490,7 +490,7 @@ void ScrollBar::SetAttribute(const std::wstring& strName, const std::wstring& st
 	else Control::SetAttribute(strName, strValue);
 }
 
-void ScrollBar::Paint(IRenderContext* pRender, const UiRect& rcPaint)
+void ScrollBar::Paint(IRenderContext* pRender, const CUiRect& rcPaint)
 {
 	if (!::IntersectRect(&m_rcPaint, &rcPaint, &m_rcItem)) return;
 	PaintBk(pRender);
@@ -687,12 +687,12 @@ void ScrollBar::ScrollTimeHandle()
 	++m_nScrollRepeatDelay;
 	if(m_uThumbState == kControlStatePushed) {
 		if( !m_bHorizontal ) {
-			if( m_pOwner != NULL ) m_pOwner->SetScrollPos(CSize(m_pOwner->GetScrollPos().cx, \
+			if( m_pOwner != NULL ) m_pOwner->SetScrollPos(CUiSize(m_pOwner->GetScrollPos().cx, \
 				m_nLastScrollPos + m_nLastScrollOffset)); 
 			else SetScrollPos(m_nLastScrollPos + m_nLastScrollOffset);
 		}
 		else {
-			if( m_pOwner != NULL ) m_pOwner->SetScrollPos(CSize(m_nLastScrollPos + m_nLastScrollOffset, \
+			if( m_pOwner != NULL ) m_pOwner->SetScrollPos(CUiSize(m_nLastScrollPos + m_nLastScrollOffset, \
 				m_pOwner->GetScrollPos().cy)); 
 			else SetScrollPos(m_nLastScrollPos + m_nLastScrollOffset);
 		}

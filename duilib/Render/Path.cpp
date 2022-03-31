@@ -49,7 +49,7 @@ void Path_Gdiplus::AddLine(int x1, int y1, int x2, int y2)
 	path_->AddLine(x1, y1, x2, y2);
 }
 
-void Path_Gdiplus::AddLines(const CPoint* points, int count)
+void Path_Gdiplus::AddLines(const CUiPoint* points, int count)
 {
 	std::vector<Point> p;
 	for (int i = 0; i < count; i++)
@@ -64,7 +64,7 @@ void Path_Gdiplus::AddBezier(int x1, int y1, int x2, int y2, int x3, int y3, int
 	path_->AddBezier(x1, y1, x2, y2, x3, y3, x4, y4);
 }
 
-void Path_Gdiplus::AddCurve(const CPoint* points, int count)
+void Path_Gdiplus::AddCurve(const CUiPoint* points, int count)
 {
 	std::vector<Point> p;
 	for (int i = 0; i < count; i++)
@@ -79,7 +79,7 @@ void Path_Gdiplus::AddRect(int left, int top, int right, int bottom)
 	path_->AddRectangle(Rect(left, top, right -left, bottom - top));
 }
 
-void Path_Gdiplus::AddRect(const UiRect& rect)
+void Path_Gdiplus::AddRect(const CUiRect& rect)
 {
 	path_->AddRectangle(Rect(rect.left, rect.top, rect.GetWidth(), rect.GetHeight()));
 }
@@ -89,7 +89,7 @@ void Path_Gdiplus::AddEllipse(int left, int top, int right, int bottom)
 	path_->AddEllipse(Rect(left, top, right - left, bottom - top));
 }
 
-void Path_Gdiplus::AddEllipse(const UiRect& rect)
+void Path_Gdiplus::AddEllipse(const CUiRect& rect)
 {
 	path_->AddEllipse(Rect(rect.left, rect.top, rect.GetWidth(), rect.GetHeight()));
 }
@@ -104,7 +104,7 @@ void Path_Gdiplus::AddPie(int x, int y, int width, int height, float startAngle,
 	path_->AddPie(x, y, width, height, startAngle, sweepAngle);
 }
 
-void Path_Gdiplus::AddPolygon(const CPoint* points, int count)
+void Path_Gdiplus::AddPolygon(const CUiPoint* points, int count)
 {
 	std::vector<Point> p;
 	for (int i = 0; i < count; i++)
@@ -114,12 +114,12 @@ void Path_Gdiplus::AddPolygon(const CPoint* points, int count)
 	path_->AddPolygon(&p[0], p.size());
 }
 
-ui::UiRect Path_Gdiplus::GetBound(const IPen* pen)
+ui::CUiRect Path_Gdiplus::GetBound(const IPen* pen)
 {
 	auto p = (Pen_GdiPlus*)(pen);
 	Rect rc;
 	path_->GetBounds(&rc, NULL, p ? p->GetPen() : NULL);
-	return UiRect(rc.X, rc.Y, rc.GetRight(), rc.GetBottom());
+	return CUiRect(rc.X, rc.Y, rc.GetRight(), rc.GetBottom());
 }
 
 bool Path_Gdiplus::IsContainsPoint(int x, int y)

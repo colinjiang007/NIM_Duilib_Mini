@@ -202,7 +202,7 @@ struct EventArgs
 	FLOAT pressure;
 };
 
-EventType StringToEnum(const std::wstring& messageType);
+EventType StringToEnum(const CUiString& messageType);
 
 
 //定义所有控件类型

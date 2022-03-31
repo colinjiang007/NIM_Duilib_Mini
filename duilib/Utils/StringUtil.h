@@ -8,6 +8,7 @@ class UILIB_API StringHelper
 {
 public:
 	static std::wstring ReparsePath(const std::wstring& strFilePath);
+	static CUiString ReparsePath(const CUiString& strFilePath);
 
 	// format a string
 	static std::wstring Printf(const wchar_t *format, ...);
@@ -23,6 +24,19 @@ public:
 	static bool UnicodeToMBCS(const wchar_t *input, std::string &output, int code_page = CP_ACP);
 	static bool UnicodeToMBCS(const std::wstring& input, std::string &output, int code_page = CP_ACP);
 
+	static void CUiStringToGB2312(const CUiString& src, std::string& ret);
+	static void GB2312ToCUiString(const std::string& src, CUiString& ret);
+	static void Utf8ToCUiString(const std::string& src, CUiString& ret);
+	static void CUiStringToUtf8(const CUiString& src, std::string& ret);
+	static void UnicodeToCUiString(const std::wstring& src, CUiString& ret);
+	static void CUiStringToUnicode(const CUiString& src, std::wstring& ret);
+	static int Utf8ToUnicode(const std::string& utf, std::wstring& unicode);
+	static int UnicodeToUtf8(const std::wstring& unicode, std::string& utf8);
+	static int UnicodeToGB2312(const std::wstring& unicode, std::string& gb);
+	static int Gb2312ToUnicode(const std::string& gb, std::wstring& unicode);
+	static void SplitCUiString(const CUiString& strSource, const CUiString& token, std::vector<CUiString>& ret);
+	static bool SplitCUiStringKeyValue(const CUiString& strSource, const CUiString& token, CUiString& key, CUiString& value);
+	
 	// trimming, removing extra spaces
 	static std::string TrimLeft(const char *input);
 	static std::string TrimRight(const char *input);

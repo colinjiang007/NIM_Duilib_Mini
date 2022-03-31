@@ -25,33 +25,20 @@ public:
 	 * @param[in] strName 要获取的祖先容器名称
 	 * @return 返回祖先容器指针
 	 */
-	Box* GetAncestor(const std::wstring& strName);
+	Box* GetAncestor(const CUiString& strName);
 
 	/**
 	 * @brief 获取控件名称，对应 xml 中 name 属性
 	 * @return 返回控件名称
 	 */
-	std::wstring GetName() const;
-
-	/**
-	 * @brief 获取控件名称，对应 xml 中 name 属性
-	 * @return 返回控件名称（UTF8 编码）
-	 */
-	std::string GetUTF8Name() const;
+	CUiString GetName() const;
 
 	/**
 	 * @brief 设置控件名称，内存中设置不会写入 xml 中
 	 * @param[in] strName 要设置的名称
 	 * @return 无
 	 */
-	void SetName(const std::wstring& strName);
-
-	/**
-	 * @brief 设置控件名称，内存中设置不会写入 xml 中（UTF8 编码）
-	 * @param[in] strName 要设置的名称
-	 * @return 无
-	 */
-	void SetUTF8Name(const std::string& strName);
+	void SetName(const CUiString& strName);
 
 	/**
 	 * @brief 获取关联的窗口指针
@@ -251,21 +238,21 @@ public:
 	 * @param[in] 待补充
 	 * @return 待补充
 	 */
-	virtual CSize EstimateSize(CSize szAvailable);
+	virtual CUiSize EstimateSize(CUiSize szAvailable);
 
 	/**
 	 * @brief 获取控件位置
 	 * @param[in] bContainShadow 是否包含阴影位置，默认为 true
 	 * @return 返回控件位置
 	 */
-	virtual	UiRect GetPos(bool bContainShadow = true) const;
+	virtual	CUiRect GetPos(bool bContainShadow = true) const;
 
 	/**
 	 * @brief 设置控件位置
 	 * @param[in] rc 要设置的位置信息
 	 * @return 无
 	 */
-	virtual void SetPos(UiRect rc);
+	virtual void SetPos(CUiRect rc);
 
 	/**
 	 * @brief 进行布局
@@ -301,17 +288,30 @@ public:
 	 * @param[in] 待补充
 	 * @return 待补充
 	 */
-	UiRect GetPosWithScrollOffset() const;
+	CUiRect GetPosWithScrollOffset() const;
 
 	/**
 	 * @brief 待补充
 	 * @param[in] 待补充
 	 * @return 待补充
 	 */
-	CPoint GetScrollOffset() const;
+	CUiPoint GetScrollOffset() const;
 
 	static bool IsChild(PlaceHolder* pAncestor, PlaceHolder* pChild);
 protected:
+	/**
+	* @brief 获取控件名称，对应 xml 中 name 属性
+	* @return 返回控件名称（UTF8 编码）
+	*/
+	std::string GetUTF8Name() const;
+
+	/**
+	* @brief 设置控件名称，内存中设置不会写入 xml 中（UTF8 编码）
+	* @param[in] strName 要设置的名称
+	* @return 无
+	*/
+	void SetUTF8Name(const std::string& strName);
+
 	/**
 	 * @brief 待补充
 	 * @param[in] 待补充
@@ -320,13 +320,13 @@ protected:
 	virtual void ArrangeSelf();
 
 protected:
-	std::wstring m_sName;
+	CUiString m_sName;
 	Window *m_pWindow;
 	Box* m_pParent;
-	CSize m_cxyFixed;
-	CSize m_cxyMin;
-	CSize m_cxyMax;
-	UiRect m_rcItem;
+	CUiSize m_cxyFixed;
+	CUiSize m_cxyMin;
+	CUiSize m_cxyMax;
+	CUiRect m_rcItem;
 	HorAlignType m_horAlignType;
 	VerAlignType m_verAlignType;
 	bool m_bFloat;

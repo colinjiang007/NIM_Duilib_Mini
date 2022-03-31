@@ -22,10 +22,10 @@ public:
 	virtual bool HasHotState() override;
 	virtual bool MouseEnter(EventArgs& msg) override;
 	virtual bool MouseLeave(EventArgs& msg) override;
-	virtual void SetPos(UiRect rc) override;
+	virtual void SetPos(CUiRect rc) override;
 	virtual void HandleMessage(EventArgs& event) override;
-	virtual void SetAttribute(const std::wstring& strName, const std::wstring& strValue) override;
-	virtual void Paint(IRenderContext* pRender, const UiRect& rcPaint) override;
+	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
+	virtual void Paint(IRenderContext* pRender, const CUiRect& rcPaint) override;
 	virtual void ClearImageCache() override;
 
 	/**
@@ -248,9 +248,9 @@ protected:
 	int m_nScrollRepeatDelay;
 	ScrollableBox* m_pOwner;
 	POINT m_ptLastMouse;
-	UiRect m_rcButton1;
-	UiRect m_rcButton2;
-	UiRect m_rcThumb;
+	CUiRect m_rcButton1;
+	CUiRect m_rcButton2;
+	CUiRect m_rcThumb;
 	ControlStateType m_uButton1State;
 	ControlStateType m_uButton2State;
 	ControlStateType m_uThumbState;

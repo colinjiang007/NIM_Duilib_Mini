@@ -73,8 +73,8 @@ Window::Window() :
 	LOGFONT lf = { 0 };
 	::GetObject(::GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
 	lf.lfCharSet = DEFAULT_CHARSET;
-	if (GlobalManager::GetDefaultFontName().length() > 0)
-		_tcscpy_s(lf.lfFaceName, LF_FACESIZE, GlobalManager::GetDefaultFontName().c_str());
+	if (GlobalManager::GetDefaultFontName().GetLength() > 0)
+		_tcscpy_s(lf.lfFaceName, LF_FACESIZE, GlobalManager::GetDefaultFontName());
 
 	HFONT hDefaultFont = ::CreateFontIndirect(&lf);
 	m_defaultFontInfo.hFont = hDefaultFont;
@@ -118,8 +118,8 @@ bool Window::RegisterWindowClass()
 	wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = NULL;
 	wc.lpszMenuName = NULL;
-	std::wstring className = GetWindowClassName();
-	wc.lpszClassName = className.c_str();
+	CUiString className = GetWindowClassName();
+	wc.lpszClassName = className;
 	ATOM ret = ::RegisterClass(&wc);
 	ASSERT(ret != NULL || ::GetLastError() == ERROR_CLASS_ALREADY_EXISTS);
 	return ret != NULL || ::GetLastError() == ERROR_CLASS_ALREADY_EXISTS;
@@ -131,9 +131,9 @@ bool Window::RegisterSuperClass()
 	// window so we can subclass it later on...
 	WNDCLASSEX wc = { 0 };
 	wc.cbSize = sizeof(WNDCLASSEX);
-	std::wstring superClassName = GetSuperClassName();
-	if (!::GetClassInfoEx(NULL, superClassName.c_str(), &wc)) {
-		if (!::GetClassInfoEx(::GetModuleHandle(NULL), superClassName.c_str(), &wc)) {
+	CUiString superClassName = GetSuperClassName();
+	if (!::GetClassInfoEx(NULL, superClassName, &wc)) {
+		if (!::GetClassInfoEx(::GetModuleHandle(NULL), superClassName, &wc)) {
 			ASSERT(!"Unable to locate window class");
 			return false;
 		}
@@ -141,22 +141,22 @@ bool Window::RegisterSuperClass()
 	m_OldWndProc = wc.lpfnWndProc;
 	wc.lpfnWndProc = Window::__ControlProc;
 	wc.hInstance = ::GetModuleHandle(NULL);
-	std::wstring className = GetWindowClassName();
-	wc.lpszClassName = className.c_str();
+	CUiString className = GetWindowClassName();
+	wc.lpszClassName = className;
 	ATOM ret = ::RegisterClassEx(&wc);
 	ASSERT(ret != NULL || ::GetLastError() == ERROR_CLASS_ALREADY_EXISTS);
 	return ret != NULL || ::GetLastError() == ERROR_CLASS_ALREADY_EXISTS;
 }
 
-std::wstring Window::GetWindowClassName() const
+CUiString Window::GetWindowClassName() const
 {
 	ASSERT(FALSE);
-	return L"";
+	return _T("");
 }
 
-std::wstring Window::GetSuperClassName() const
+CUiString Window::GetSuperClassName() const
 {
-    return std::wstring();
+    return CUiString();
 }
 
 UINT Window::GetClassStyle() const
@@ -186,17 +186,17 @@ void Window::Unsubclass()
 	m_bSubclassed = false;
 }
 
-HWND Window::Create(HWND hwndParent, LPCTSTR pstrName, DWORD dwStyle, DWORD dwExStyle, bool isLayeredWindow, const UiRect& rc)
+HWND Window::Create(HWND hwndParent, LPCTSTR pstrName, DWORD dwStyle, DWORD dwExStyle, bool isLayeredWindow, const CUiRect& rc)
 {
-    if( !GetSuperClassName().empty() && !RegisterSuperClass() ) return NULL;
-    if( GetSuperClassName().empty() && !RegisterWindowClass() ) return NULL;
-	std::wstring className = GetWindowClassName();
+    if( !GetSuperClassName().IsEmpty() && !RegisterSuperClass() ) return NULL;
+    if( GetSuperClassName().IsEmpty() && !RegisterWindowClass() ) return NULL;
+	CUiString className = GetWindowClassName();
 	m_bIsLayeredWindow = isLayeredWindow;
 	if (m_bIsLayeredWindow) {
 		dwExStyle |= WS_EX_LAYERED;
 	}
 
-	m_hWnd = ::CreateWindowEx(dwExStyle, className.c_str(), pstrName, dwStyle, 
+	m_hWnd = ::CreateWindowEx(dwExStyle, className, pstrName, dwStyle, 
 		rc.left, rc.top, rc.GetWidth(), rc.GetHeight(), hwndParent, NULL, ::GetModuleHandle(NULL), this);
 	LONG nWindowLong = GetWindowLong( m_hWnd, GWL_STYLE );
 	if( nWindowLong & WS_CAPTION ) {
@@ -255,10 +255,10 @@ void Window::CenterWindow()
 {
     ASSERT(::IsWindow(m_hWnd));
     ASSERT((GetWindowStyle(m_hWnd)&WS_CHILD)==0);
-    UiRect rcDlg;
+    CUiRect rcDlg;
     ::GetWindowRect(m_hWnd, &rcDlg);
-    UiRect rcArea;
-    UiRect rcCenter;
+    CUiRect rcArea;
+    CUiRect rcCenter;
 	HWND hWnd = GetHWND();
     HWND hWndCenter = ::GetWindowOwner(m_hWnd);
 	if (hWndCenter!=NULL)
@@ -444,8 +444,8 @@ void Window::ReapObjects(Control* pControl)
 	if (pControl == m_pEventTouch) m_pEventTouch = NULL;
 	if (pControl == m_pEventPointer) m_pEventPointer = NULL;
 	if (pControl == m_pFocus) m_pFocus = NULL;
-	std::wstring sName = pControl->GetName();
-	if (!sName.empty()) {
+	CUiString sName = pControl->GetName();
+	if (!sName.IsEmpty()) {
 		auto it = m_mNameHash.find(sName);
 		if (it != m_mNameHash.end())
 		{
@@ -454,16 +454,16 @@ void Window::ReapObjects(Control* pControl)
 	}
 }
 
-std::wstring Window::GetWindowResourcePath()
+CUiString Window::GetWindowResourcePath()
 {
 	return m_strWindowResourcePath;
 }
 
-void Window::SetWindowResourcePath(const std::wstring& strPath)
+void Window::SetWindowResourcePath(const CUiString& strPath)
 {
 	m_strWindowResourcePath = strPath;
-	if (m_strWindowResourcePath.empty()) return;
-	TCHAR cEnd = m_strWindowResourcePath.at(m_strWindowResourcePath.length() - 1);
+	if (m_strWindowResourcePath.IsEmpty()) return;
+	TCHAR cEnd = m_strWindowResourcePath.GetAt(m_strWindowResourcePath.GetLength() - 1);
 	if (cEnd != _T('\\') && cEnd != _T('/')) m_strWindowResourcePath += _T('\\');
 }
 
@@ -477,19 +477,19 @@ TFontInfo* Window::GetDefaultFontInfo()
 	return &m_defaultFontInfo;
 }
 
-void Window::AddClass(const std::wstring& strClassName, const std::wstring& strControlAttrList)
+void Window::AddClass(const CUiString& strClassName, const CUiString& strControlAttrList)
 {
-	ASSERT(!strClassName.empty());
-	ASSERT(!strControlAttrList.empty());
+	ASSERT(!strClassName.IsEmpty());
+	ASSERT(!strControlAttrList.IsEmpty());
 	m_defaultAttrHash[strClassName] = strControlAttrList;
 }
 
-const std::map<std::wstring, std::wstring>* Window::GetClassMap()
+const std::map<CUiString, CUiString>* Window::GetClassMap()
 {
 	return &m_defaultAttrHash;
 }
 
-std::wstring Window::GetClassAttributes(const std::wstring& strClassName) const
+CUiString Window::GetClassAttributes(const CUiString& strClassName) const
 {
 	auto it = m_defaultAttrHash.find(strClassName);
 	if (it != m_defaultAttrHash.end())
@@ -497,10 +497,10 @@ std::wstring Window::GetClassAttributes(const std::wstring& strClassName) const
 		return it->second;
 	}
 
-	return L"";
+	return _T("");
 }
 
-bool Window::RemoveClass(const std::wstring& strClassName)
+bool Window::RemoveClass(const CUiString& strClassName)
 {
 	auto it = m_defaultAttrHash.find(strClassName);
 	if (it != m_defaultAttrHash.end())
@@ -516,7 +516,7 @@ void Window::RemoveAllClass()
 	m_defaultAttrHash.clear();
 }
 
-bool Window::AddOptionGroup(const std::wstring& strGroupName, Control* pControl)
+bool Window::AddOptionGroup(const CUiString& strGroupName, Control* pControl)
 {
 	auto it = m_mOptionGroup.find(strGroupName);
 	if (it != m_mOptionGroup.end()) {
@@ -533,16 +533,16 @@ bool Window::AddOptionGroup(const std::wstring& strGroupName, Control* pControl)
 	return true;
 }
 
-std::vector<Control*>* Window::GetOptionGroup(const std::wstring& strGroupName)
+std::vector<Control*>* Window::GetOptionGroup(const CUiString& strGroupName)
 {
 	auto it = m_mOptionGroup.find(strGroupName);
 	if (it != m_mOptionGroup.end()) return &(it->second);
 	return NULL;
 }
 
-void Window::RemoveOptionGroup(const std::wstring& strGroupName, Control* pControl)
+void Window::RemoveOptionGroup(const CUiString& strGroupName, Control* pControl)
 {
-	ASSERT(!strGroupName.empty());
+	ASSERT(!strGroupName.IsEmpty());
 	ASSERT(pControl);
 	auto it = m_mOptionGroup.find(strGroupName);
 	if (it != m_mOptionGroup.end()) {
@@ -577,28 +577,28 @@ POINT Window::GetMousePos() const
 	return m_ptLastMousePos;
 }
 
-UiRect Window::GetSizeBox()
+CUiRect Window::GetSizeBox()
 {
 	return m_rcSizeBox;
 }
 
-void Window::SetSizeBox(const UiRect& rcSizeBox)
+void Window::SetSizeBox(const CUiRect& rcSizeBox)
 {
 	m_rcSizeBox = rcSizeBox;
 }
 
-UiRect Window::GetCaptionRect() const
+CUiRect Window::GetCaptionRect() const
 {
 	return m_rcCaption;
 }
 
-void Window::SetCaptionRect(UiRect& rcCaption)
+void Window::SetCaptionRect(CUiRect& rcCaption)
 {
 	DpiManager::GetInstance()->ScaleRect(rcCaption);
 	m_rcCaption = rcCaption;
 }
 
-CSize Window::GetRoundCorner() const
+CUiSize Window::GetRoundCorner() const
 {
 	return m_szRoundCorner;
 }
@@ -611,23 +611,23 @@ void Window::SetRoundCorner(int cx, int cy)
 	m_szRoundCorner.cy = cy;
 }
 
-UiRect Window::GetMaximizeInfo() const
+CUiRect Window::GetMaximizeInfo() const
 {
 	return m_rcMaximizeInfo;
 }
 
-void Window::SetMaximizeInfo(UiRect& rcMaximize)
+void Window::SetMaximizeInfo(CUiRect& rcMaximize)
 {
 	DpiManager::GetInstance()->ScaleRect(rcMaximize);
 	m_rcMaximizeInfo = rcMaximize;
 }
 
-UiRect Window::GetAlphaFixCorner() const
+CUiRect Window::GetAlphaFixCorner() const
 {
 	return m_rcAlphaFix;
 }
 
-void Window::SetAlphaFixCorner(UiRect& rc)
+void Window::SetAlphaFixCorner(CUiRect& rc)
 {
 	DpiManager::GetInstance()->ScaleRect(rc);
 	m_rcAlphaFix = rc;
@@ -643,9 +643,9 @@ void Window::SetHeightPercent(double heightPercent)
 	m_heightPercent = heightPercent;
 }
 
-void Window::SetTextId(const std::wstring& strTextId)
+void Window::SetTextId(const CUiString& strTextId)
 {
-	::SetWindowText(m_hWnd, MutiLanSupport::GetInstance()->GetStringViaID(strTextId).c_str());
+	::SetWindowText(m_hWnd, MutiLanSupport::GetInstance()->GetStringViaID(strTextId));
 }
 
 void Window::SetShadowAttached(bool bShadowAttached)
@@ -653,33 +653,33 @@ void Window::SetShadowAttached(bool bShadowAttached)
 	m_shadow.SetShadowAttached(bShadowAttached);
 }
 
-std::wstring Window::GetShadowImage() const
+CUiString Window::GetShadowImage() const
 {
 	return m_shadow.GetShadowImage();
 }
 
-void Window::SetShadowImage(const std::wstring &strImage)
+void Window::SetShadowImage(const CUiString &strImage)
 {
 	m_shadow.SetShadowImage(strImage);
 }
 
-UiRect Window::GetShadowCorner() const
+CUiRect Window::GetShadowCorner() const
 {
 	return m_shadow.GetShadowCorner();
 }
 
-void Window::SetShadowCorner(const UiRect rect)
+void Window::SetShadowCorner(const CUiRect rect)
 {
 	m_shadow.SetShadowCorner(rect);
 }
 
-UiRect Window::GetPos(bool bContainShadow) const
+CUiRect Window::GetPos(bool bContainShadow) const
 {
-	UiRect rcPos;
+	CUiRect rcPos;
 	::GetWindowRect(m_hWnd, &rcPos);
 
 	if (!bContainShadow) {
-		UiRect padding = m_shadow.GetShadowCorner();
+		CUiRect padding = m_shadow.GetShadowCorner();
 		rcPos.left += padding.left;
 		rcPos.right -= padding.right;
 		rcPos.top += padding.top;
@@ -688,9 +688,9 @@ UiRect Window::GetPos(bool bContainShadow) const
 	return rcPos;
 }
 
-void Window::SetPos(const UiRect& rc, bool bNeedDpiScale, UINT uFlags, HWND hWndInsertAfter, bool bContainShadow)
+void Window::SetPos(const CUiRect& rc, bool bNeedDpiScale, UINT uFlags, HWND hWndInsertAfter, bool bContainShadow)
 {
-	UiRect rcNewPos = rc;
+	CUiRect rcNewPos = rc;
 	if (bNeedDpiScale)
 		DpiManager::GetInstance()->ScaleRect(rcNewPos);
 
@@ -701,11 +701,11 @@ void Window::SetPos(const UiRect& rc, bool bNeedDpiScale, UINT uFlags, HWND hWnd
 	::SetWindowPos(m_hWnd, hWndInsertAfter, rcNewPos.left, rcNewPos.top, rcNewPos.GetWidth(), rcNewPos.GetHeight(), uFlags);
 }
 
-CSize Window::GetMinInfo(bool bContainShadow) const
+CUiSize Window::GetMinInfo(bool bContainShadow) const
 {
-	CSize xy = m_szMinWindow;
+	CUiSize xy = m_szMinWindow;
 	if (!bContainShadow) {
-		UiRect rcShadow = m_shadow.GetShadowCorner();
+		CUiRect rcShadow = m_shadow.GetShadowCorner();
 		if (xy.cx != 0) {
 			xy.cx -= rcShadow.left + rcShadow.right;
 		}
@@ -725,7 +725,7 @@ void Window::SetMinInfo(int cx, int cy, bool bContainShadow)
 	ASSERT(cx >= 0 && cy >= 0);
 
 	if (!bContainShadow) {
-		UiRect rcShadow = m_shadow.GetShadowCorner();
+		CUiRect rcShadow = m_shadow.GetShadowCorner();
 		if (cx != 0) {
 			cx += rcShadow.left + rcShadow.right;
 		}
@@ -737,11 +737,11 @@ void Window::SetMinInfo(int cx, int cy, bool bContainShadow)
 	m_szMinWindow.cy = cy;
 }
 
-CSize Window::GetMaxInfo(bool bContainShadow) const
+CUiSize Window::GetMaxInfo(bool bContainShadow) const
 {
-	CSize xy = m_szMaxWindow;
+	CUiSize xy = m_szMaxWindow;
 	if (!bContainShadow) {
-		UiRect rcShadow = m_shadow.GetShadowCorner();
+		CUiRect rcShadow = m_shadow.GetShadowCorner();
 		if (xy.cx != 0) {
 			xy.cx -= rcShadow.left + rcShadow.right;
 		}
@@ -761,7 +761,7 @@ void Window::SetMaxInfo(int cx, int cy, bool bContainShadow)
 	ASSERT(cx >= 0 && cy >= 0);
 
 	if (!bContainShadow) {
-		UiRect rcShadow = m_shadow.GetShadowCorner();
+		CUiRect rcShadow = m_shadow.GetShadowCorner();
 		if (cx != 0) {
 			cx += rcShadow.left + rcShadow.right;
 		}
@@ -773,11 +773,11 @@ void Window::SetMaxInfo(int cx, int cy, bool bContainShadow)
 	m_szMaxWindow.cy = cy;
 }
 
-CSize Window::GetInitSize(bool bContainShadow) const
+CUiSize Window::GetInitSize(bool bContainShadow) const
 {
-	CSize xy = m_szInitWindowSize;
+	CUiSize xy = m_szInitWindowSize;
 	if (!bContainShadow) {
-		UiRect rcShadow = m_shadow.GetShadowCorner();
+		CUiRect rcShadow = m_shadow.GetShadowCorner();
 		if (xy.cx != 0) {
 			xy.cx -= rcShadow.left + rcShadow.right;
 		}
@@ -798,7 +798,7 @@ void Window::SetInitSize(int cx, int cy, bool bContainShadow, bool bNeedDpiScale
 	}
 
 	if (!bContainShadow) {
-		UiRect rcShadow = m_shadow.GetShadowCorner();
+		CUiRect rcShadow = m_shadow.GetShadowCorner();
 		cx += rcShadow.left + rcShadow.right;
 		cy += rcShadow.top + rcShadow.bottom;
 	}
@@ -973,8 +973,8 @@ LRESULT Window::DoHandlMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, bool& ha
 			m_pEventHover->HandleMessageTemplate(kEventMouseHover, 0, 0, 0, pt);
 		}
 		// Create tooltip information
-		std::wstring sToolTip = pHover->GetToolTipText();
-		//if( sToolTip.empty() ) {
+		CUiString sToolTip = pHover->GetToolTipText();
+		//if( sToolTip.IsEmpty() ) {
 		//	handled = true;
 		//	return 0;
 		//}
@@ -984,7 +984,7 @@ LRESULT Window::DoHandlMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, bool& ha
 		m_ToolTip.hwnd = m_hWnd;
 		m_ToolTip.uId = (UINT_PTR)m_hWnd;
 		m_ToolTip.hinst = ::GetModuleHandle(NULL);
-		m_ToolTip.lpszText = const_cast<LPTSTR>((LPCTSTR)sToolTip.c_str());
+		m_ToolTip.lpszText = const_cast<LPTSTR>((LPCTSTR)sToolTip);
 		m_ToolTip.rect = pHover->GetPos();
 		if (m_hwndTooltip == NULL) {
 			m_hwndTooltip = ::CreateWindowEx(0, TOOLTIPS_CLASS, NULL, WS_POPUP | TTS_NOPREFIX | TTS_ALWAYSTIP, CW_USEDEFAULT,
@@ -1619,7 +1619,7 @@ Control* Window::FindControl(POINT pt) const
 	return m_pRoot->FindControl(__FindControlFromPoint, &pt, UIFIND_VISIBLE | UIFIND_HITTEST | UIFIND_TOP_FIRST);
 }
 
-Control* Window::FindControl(const std::wstring& strName) const
+Control* Window::FindControl(const CUiString& strName) const
 {
 	ASSERT(m_pRoot);
 	Control* pFindedControl = NULL;
@@ -1638,11 +1638,11 @@ Control* Window::FindSubControlByPoint(Control* pParent, POINT pt) const
 	return pParent->FindControl(__FindControlFromPoint, &pt, UIFIND_VISIBLE | UIFIND_HITTEST | UIFIND_TOP_FIRST);
 }
 
-Control* Window::FindSubControlByName(Control* pParent, const std::wstring& strName) const
+Control* Window::FindSubControlByName(Control* pParent, const CUiString& strName) const
 {
 	if (pParent == NULL) pParent = GetRoot();
 	ASSERT(pParent);
-	return pParent->FindControl(__FindControlFromName, (LPVOID)strName.c_str(), UIFIND_ALL);
+	return pParent->FindControl(__FindControlFromName, (LPVOID)strName.GetData(), UIFIND_ALL);
 }
 
 Control* Window::FindSubControlByClass(Control* pParent, const type_info& typeinfo, int iIndex)
@@ -1715,7 +1715,7 @@ ui::IRenderContext* Window::GetRenderContext() const
 	return m_renderContext.get();
 }
 
-void Window::Invalidate(const UiRect& rcItem)
+void Window::Invalidate(const CUiRect& rcItem)
 {
 	::InvalidateRect(m_hWnd, &rcItem, FALSE);
 	// Invalidating a layered window will not trigger a WM_PAINT message,
@@ -1735,26 +1735,26 @@ void Window::Paint()
 	}
 
 	if (m_bIsArranged && m_pRoot->IsArranged() && (m_pRoot->GetFixedWidth() == DUI_LENGTH_AUTO || m_pRoot->GetFixedHeight() == DUI_LENGTH_AUTO)) {
-		CSize maxSize(99999, 99999);
-		CSize needSize = m_pRoot->EstimateSize(maxSize);
+		CUiSize maxSize(99999, 99999);
+		CUiSize needSize = m_pRoot->EstimateSize(maxSize);
 		if (needSize.cx < m_pRoot->GetMinWidth()) needSize.cx = m_pRoot->GetMinWidth();
 		if (m_pRoot->GetMaxWidth() >= 0 && needSize.cx > m_pRoot->GetMaxWidth()) needSize.cx = m_pRoot->GetMaxWidth();
 		if (needSize.cy < m_pRoot->GetMinHeight()) needSize.cy = m_pRoot->GetMinHeight();
 		if (needSize.cy > m_pRoot->GetMaxHeight()) needSize.cy = m_pRoot->GetMaxHeight();
-		UiRect rect;
+		CUiRect rect;
 		::GetWindowRect(m_hWnd, &rect);
 		::MoveWindow(m_hWnd, rect.left, rect.top, needSize.cx, needSize.cy, TRUE);
 	}
 
 	// Should we paint?
-	UiRect rcPaint;
+	CUiRect rcPaint;
 	if (!::GetUpdateRect(m_hWnd, &rcPaint, FALSE) && !m_bFirstLayout) {
 		return;
 	}
 
-	UiRect rcClient;
+	CUiRect rcClient;
 	::GetClientRect(m_hWnd, &rcClient);
-	UiRect rcWindow;
+	CUiRect rcWindow;
 	::GetWindowRect(m_hWnd, &rcWindow);
 
 	//使用层窗口时，窗口部分在屏幕外时，获取到的无效区域仅仅是屏幕内的部分，这里做修正处理
@@ -1820,7 +1820,7 @@ void Window::Paint()
 
 	// 绘制
 	AutoClip rectClip(m_renderContext.get(), rcPaint, true);
-	CPoint ptOldWindOrg = m_renderContext->OffsetWindowOrg(m_renderOffset);
+	CUiPoint ptOldWindOrg = m_renderContext->OffsetWindowOrg(m_renderOffset);
 	m_pRoot->Paint(m_renderContext.get(), rcPaint);
 	m_pRoot->PaintChild(m_renderContext.get(), rcPaint);
 	m_renderContext->SetWindowOrg(ptOldWindOrg);
@@ -1829,9 +1829,9 @@ void Window::Paint()
 	if (m_bIsLayeredWindow) {
 		if (m_shadow.IsShadowAttached() && m_renderOffset.x == 0 && m_renderOffset.y == 0) {
 			//补救由于Gdi绘制造成的alpha通道为0
-			UiRect rcNewPaint = rcPaint;
+			CUiRect rcNewPaint = rcPaint;
 			rcNewPaint.Intersect(m_pRoot->GetPaddingPos());
-			UiRect rcRootPadding = m_pRoot->GetLayout()->GetPadding();
+			CUiRect rcRootPadding = m_pRoot->GetLayout()->GetPadding();
 
 			//考虑圆角
 			rcRootPadding.left += 1;
@@ -1842,15 +1842,15 @@ void Window::Paint()
 			m_renderContext->RestoreAlpha(rcNewPaint, rcRootPadding);
 		}
 		else {
-			UiRect rcAlphaFixCorner = GetAlphaFixCorner();
+			CUiRect rcAlphaFixCorner = GetAlphaFixCorner();
 			if (rcAlphaFixCorner.left > 0 || rcAlphaFixCorner.top > 0 || rcAlphaFixCorner.right > 0 || rcAlphaFixCorner.bottom > 0)
 			{
-				UiRect rcNewPaint = rcPaint;
-				UiRect rcRootPaddingPos = m_pRoot->GetPaddingPos();
+				CUiRect rcNewPaint = rcPaint;
+				CUiRect rcRootPaddingPos = m_pRoot->GetPaddingPos();
 				rcRootPaddingPos.Deflate(rcAlphaFixCorner);
 				rcNewPaint.Intersect(rcRootPaddingPos);
 
-				UiRect rcRootPadding;
+				CUiRect rcRootPadding;
 				m_renderContext->RestoreAlpha(rcNewPaint, rcRootPadding);
 			}
 		}
@@ -1858,9 +1858,9 @@ void Window::Paint()
 
 	// 渲染到窗口
 	if (m_bIsLayeredWindow) {
-		CPoint pt(rcWindow.left, rcWindow.top);
-		CSize szWindow(rcClient.right - rcClient.left, rcClient.bottom - rcClient.top);
-		CPoint ptSrc;
+		CUiPoint pt(rcWindow.left, rcWindow.top);
+		CUiSize szWindow(rcClient.right - rcClient.left, rcClient.bottom - rcClient.top);
+		CUiPoint ptSrc;
 		BLENDFUNCTION bf = { AC_SRC_OVER, 0, m_nAlpha, AC_SRC_ALPHA };
 		::UpdateLayeredWindow(m_hWnd, NULL, &pt, &szWindow, m_renderContext->GetDC(), &ptSrc, 0, &bf, ULW_ALPHA);
 	}
@@ -1891,7 +1891,7 @@ bool Window::SetRenderTransparent(bool bCanvasTransparent)
 	return m_renderContext->SetRenderTransparent(bCanvasTransparent);
 }
 
-void Window::SetRenderOffset(CPoint renderOffset)
+void Window::SetRenderOffset(CUiPoint renderOffset)
 {
 	if (m_pRoot) {
 		m_renderOffset = renderOffset;
@@ -1953,8 +1953,8 @@ void Window::OnInitLayout()
 Control* CALLBACK Window::__FindControlFromNameHash(Control* pThis, LPVOID pData)
 {
 	Window* pManager = static_cast<Window*>(pData);
-	std::wstring sName = pThis->GetName();
-	if( sName.empty() ) return NULL;
+	CUiString sName = pThis->GetName();
+	if( sName.IsEmpty() ) return NULL;
 	// Add this control to the hash list
 	pManager->m_mNameHash[sName] = pThis;
 	return NULL; // Attempt to add all controls
@@ -1970,7 +1970,7 @@ Control* CALLBACK Window::__FindControlFromCount(Control* /*pThis*/, LPVOID pDat
 Control* CALLBACK Window::__FindControlFromPoint(Control* pThis, LPVOID pData)
 {
 	LPPOINT pPoint = static_cast<LPPOINT>(pData);
-	UiRect pos = pThis->GetPos();
+	CUiRect pos = pThis->GetPos();
 	return ::PtInRect(&pos, *pPoint) ? pThis : NULL;
 }
 
@@ -2005,9 +2005,9 @@ Control* CALLBACK Window::__FindControlFromUpdate(Control* pThis, LPVOID pData)
 Control* CALLBACK Window::__FindControlFromName(Control* pThis, LPVOID pData)
 {
 	LPCTSTR pstrName = static_cast<LPCTSTR>(pData);
-	const std::wstring& sName = pThis->GetName();
-	if( sName.empty() ) return NULL;
-	return (_tcsicmp(sName.c_str(), pstrName) == 0) ? pThis : NULL;
+	const CUiString& sName = pThis->GetName();
+	if( sName.IsEmpty() ) return NULL;
+	return (_tcsicmp(sName, pstrName) == 0) ? pThis : NULL;
 }
 
 Control* CALLBACK Window::__FindControlFromClass(Control* pThis, LPVOID pData)

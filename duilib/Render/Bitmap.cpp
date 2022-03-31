@@ -101,7 +101,7 @@ int GdiBitmap::GetHeight()
 	return m_nHeight;
 }
 
-void GdiBitmap::ClearAlpha(const UiRect& rcDirty, int alpha)
+void GdiBitmap::ClearAlpha(const CUiRect& rcDirty, int alpha)
 {
 	ASSERT(m_hBitmap && m_pPiexl != NULL);
 	if (m_pPiexl == NULL)
@@ -119,7 +119,7 @@ void GdiBitmap::ClearAlpha(const UiRect& rcDirty, int alpha)
 	}
 }
 
-void GdiBitmap::RestoreAlpha(const UiRect& rcDirty, const UiRect& rcShadowPadding, int alpha)
+void GdiBitmap::RestoreAlpha(const CUiRect& rcDirty, const CUiRect& rcShadowPadding, int alpha)
 {
 	ASSERT(m_hBitmap && m_pPiexl != NULL);
 	if (m_pPiexl == NULL)

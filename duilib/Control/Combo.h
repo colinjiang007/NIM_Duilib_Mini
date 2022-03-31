@@ -21,7 +21,7 @@ public:
 	virtual bool RemoveAt(std::size_t iIndex) override;
 	virtual void RemoveAll() override;
 	virtual void Activate() override;
-	virtual void SetAttribute(const std::wstring& strName, const std::wstring& strValue) override;
+	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
 	virtual void PaintText(IRenderContext* pRender) override;
 
 	/**
@@ -53,14 +53,14 @@ public:
 	 * @brief 获取下拉框容器大小
 	 * @return 返回容器大小
 	 */
-    CSize GetDropBoxSize() const;
+    CUiSize GetDropBoxSize() const;
 
 	/**
 	 * @brief 设置下拉框容器大小
 	 * @param[in] szDropBox 要设置的大小信息
 	 * @return 无
 	 */
-    void SetDropBoxSize(CSize szDropBox);
+    void SetDropBoxSize(CUiSize szDropBox);
 	
 	/**
 	 * @brief 设置 Combobox 是否向上弹出
@@ -121,7 +121,7 @@ protected:
 	std::unique_ptr<ListBox> m_pLayout;
     int m_iCurSel;  
 	ControlStateType m_uButtonState;
-	CSize m_szDropBox;
+	CUiSize m_szDropBox;
 	std::wstring m_sDropBoxAttributes;
 	bool m_bPopupTop;
 };

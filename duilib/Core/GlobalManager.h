@@ -24,7 +24,7 @@ public:
 	 * @param[in] language 使用语言，默认为 lang\\zh_CN
 	 * @return 无
 	 */
-	static void Startup(const std::wstring& strResourcePath, const CreateControlCallback& callback, bool bAdaptDpi, const std::wstring& theme = L"themes\\default", const std::wstring& language = L"lang\\zh_CN");
+	static void Startup(const CUiString& strResourcePath, const CreateControlCallback& callback, bool bAdaptDpi, const CUiString& theme = _T("themes\\default"), const CUiString& language = _T("lang\\zh_CN"));
 
 	/**
 	 * @brief 释放资源
@@ -36,34 +36,34 @@ public:
 	 * @brief 获取当前程序所在目录
 	 * @return 返回当前程序所在目录
 	 */
-	static std::wstring GetCurrentPath();
+	static CUiString GetCurrentPath();
 
 	/**
 	 * @brief 获取当前资源所在目录
 	 * @return 返回当前资源所在目录
 	 */
-	static std::wstring GetResourcePath();
+	static CUiString GetResourcePath();
 
 	/**
 	 * @brief 设置程序当前目录
 	 * @param[in] strPath 要设置的路径
 	 * @return 无
 	 */
-	static void SetCurrentPath(const std::wstring& strPath);
+	static void SetCurrentPath(const CUiString& strPath);
 
 	/**
 	 * @brief 设置皮肤资源所在目录
 	 * @param[in] strPath 要设置的路径
 	 * @return 无
 	 */
-	static void SetResourcePath(const std::wstring& strPath);
+	static void SetResourcePath(const CUiString& strPath);
 
 	/**
 	 * @brief 重新加载皮肤资源
 	 * @param[in] resourcePath 资源路径
 	 * @return 无
 	 */
-	static void ReloadSkin(const std::wstring& resourcePath);
+	static void ReloadSkin(const CUiString& resourcePath);
 
 	/**
 	 * @brief 获取绘制接口类对象
@@ -110,14 +110,14 @@ public:
 	 * @param[in] strControlAttrList 属性列表，需要做 XML 转义
 	 * @return 无
 	 */
-	static void AddClass(const std::wstring& strClassName, const std::wstring& strControlAttrList);
+	static void AddClass(const CUiString& strClassName, const CUiString& strControlAttrList);
 
 	/**
 	 * @brief 获取一个全局 class 属性的值
 	 * @param[in] strClassName 全局 class 名称
 	 * @return 返回字符串形式的 class 属性值
 	 */
-	static std::wstring GetClassAttributes(const std::wstring& strClassName);
+	static CUiString GetClassAttributes(const CUiString& strClassName);
 
 	/**
 	 * @brief 从全局属性中删除所有 class 属性
@@ -131,14 +131,14 @@ public:
 	 * @param[in] strValue 颜色具体数值（如 #FFFFFFFF）
 	 * @return 无
 	 */
-	static void AddTextColor(const std::wstring& strName, const std::wstring& strValue);
+	static void AddTextColor(const CUiString& strName, const CUiString& strValue);
 
 	/**
 	 * @brief 根据名称获取一个颜色的具体数值
 	 * @param[in] strName 要获取的颜色名称
 	 * @return 返回 DWORD 格式的颜色描述值
 	 */
-	static DWORD GetTextColor(const std::wstring& strName);
+	static DWORD GetTextColor(const CUiString& strName);
 
 	/**
 	 * @brief 删除所有全局颜色属性
@@ -151,7 +151,7 @@ public:
 	 * @param[in] bitmap 图片路径
 	 * @return 如果已经被缓存，则返回 ImageInfo 的智能指针对象
 	 */
-	static std::shared_ptr<ImageInfo> IsImageCached(const std::wstring& bitmap);
+	static std::shared_ptr<ImageInfo> IsImageCached(const CUiString& bitmap);
 
 	/**
 	 * @brief 添加一个图片到缓存中
@@ -165,7 +165,7 @@ public:
 	 * @param[in] imageFullPath 图片路径
 	 * @return 无
 	 */
-	static void RemoveFromImageCache(const std::wstring& imageFullPath);
+	static void RemoveFromImageCache(const CUiString& imageFullPath);
 
 	/**
 	 * @brief 图片被销毁的回调
@@ -179,7 +179,7 @@ public:
 	 * @param[in] bitmap 图片路径
 	 * @return 返回图片 ImageInfo 对象的智能指针
 	 */
-	static std::shared_ptr<ImageInfo> GetImage(const std::wstring& bitmap);
+	static std::shared_ptr<ImageInfo> GetImage(const CUiString& bitmap);
 
 	/**
 	 * @brief 从缓存中删除所有图片
@@ -191,7 +191,7 @@ public:
 	 * @brief 获取默认字体名称
 	 * @return 字体名称
 	 */
-	static std::wstring GetDefaultFontName();
+	static CUiString GetDefaultFontName();
 
 	/**
 	 * @brief 添加一个字体
@@ -204,21 +204,21 @@ public:
 	 * @param[in] bDefault 是否默认
 	 * @return 返回字体的 HFONT 句柄
 	 */
-	static HFONT AddFont(const std::wstring& strFontId, const std::wstring& strFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bDefault);
+	static HFONT AddFont(const CUiString& strFontId, const CUiString& strFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bDefault);
 
 	/**
 	 * @brief 根据索引返回一个字体信息
 	 * @param[in] strFontId 字体ID
 	 * @return 返回字体的 TFontInfo 信息
 	 */
-	static TFontInfo* GetTFontInfo(const std::wstring& strFontId);
+	static TFontInfo* GetTFontInfo(const CUiString& strFontId);
 
 	/**
 	 * @brief 根据字体ID返回一个字体对象
 	 * @param[in] strFontId 字体ID
 	 * @return 返回字体的 HFONT 句柄
 	 */
-	static HFONT GetFont(const std::wstring& strFontId);
+	static HFONT GetFont(const CUiString& strFontId);
 	/**
 	 * @brief 根据字体属性获取字体对象
 	 * @param[in] strFontName 字体名称
@@ -228,7 +228,7 @@ public:
 	 * @param[in] bItalic 是否倾斜
 	 * @return 返回字体的 HFONT 句柄
 	 */
-	static HFONT GetFont(const std::wstring& strFontName, int nSize, bool bBold, bool bUnderline, bool bItalic);
+	static HFONT GetFont(const CUiString& strFontName, int nSize, bool bBold, bool bUnderline, bool bItalic);
 
 	/**
 	 * @brief 获取字体信息
@@ -236,7 +236,7 @@ public:
 	 * @param[in] hDcPaint 设备句柄
 	 * @return 返回字体的 TFontInfo 信息
 	 */
-	static TFontInfo* GetFontInfo(const std::wstring& strFontId, HDC hDcPaint);
+	static TFontInfo* GetFontInfo(const CUiString& strFontId, HDC hDcPaint);
 
 	/**
 	 * @brief 获取字体信息
@@ -266,7 +266,7 @@ public:
 	 *     @retval true 存在
 	 *     @retval false 不存在
 	 */
-	static bool FindFont(const std::wstring& strFontName, int nSize, bool bBold, bool bUnderline, bool bItalic);
+	static bool FindFont(const CUiString& strFontName, int nSize, bool bBold, bool bUnderline, bool bItalic);
 
 	/**
 	 * @brief 根据字体索引删除字体
@@ -275,7 +275,7 @@ public:
 	 *     @retval true 删除成功
 	 *     @retval false 字体不存在或删除失败
 	 */
-	static bool RemoveFontAt(const std::wstring& strFontId);
+	static bool RemoveFontAt(const CUiString& strFontId);
 
 	/**
 	 * @brief 删除所有字体
@@ -287,27 +287,27 @@ public:
 	 * @brief 获取默认禁用状态下字体颜色
 	 * @return 默认禁用状态颜色的字符串表示，对应 global.xml 中指定颜色值
 	 */
-	static std::wstring GetDefaultDisabledTextColor();
+	static CUiString GetDefaultDisabledTextColor();
 
 	/**
 	 * @brief 设置默认禁用状态下的字体颜色
 	 * @param[in] dwColor 字体颜色字符串值（如 white）
 	 * @return 无
 	 */
-	static void SetDefaultDisabledTextColor(const std::wstring& strColor);
+	static void SetDefaultDisabledTextColor(const CUiString& strColor);
 
 	/**
 	 * @brief 获取默认字体颜色
 	 * @return 默认字体颜色字符串表示，对应 global.xml 中指定颜色值
 	 */
-	static std::wstring GetDefaultTextColor();
+	static CUiString GetDefaultTextColor();
 
 	/**
 	 * @brief 设置默认字体颜色
 	 * @param[in] 字体颜色的字符串值，对应 global.xml 中指定颜色值
 	 * @return 无
 	 */
-	static void SetDefaultTextColor(const std::wstring& strColor);
+	static void SetDefaultTextColor(const CUiString& strColor);
 
 	/**
 	 * @brief 获取默认链接字体颜色
@@ -354,7 +354,7 @@ public:
 	 * @param[in] callback 自定义控件的回调处理函数
 	 * @return 指定布局模块的对象指针
 	 */
-	static Box* CreateBox(const std::wstring& strXmlPath, CreateControlCallback callback = CreateControlCallback());
+	static Box* CreateBox(const CUiString& strXmlPath, CreateControlCallback callback = CreateControlCallback());
 
 	/**
 	 * @brief 根据 XML 在缓存中查找指定 Box，如果没有则创建
@@ -362,7 +362,7 @@ public:
 	 * @param[in] callback 自定义控件的回调处理函数
 	 * @return 指定布局模块的对象指针
 	 */
-	static Box* CreateBoxWithCache(const std::wstring& strXmlPath, CreateControlCallback callback = CreateControlCallback());
+	static Box* CreateBoxWithCache(const CUiString& strXmlPath, CreateControlCallback callback = CreateControlCallback());
 
 	/**
 	 * @brief 使用 XML 填充指定 Box
@@ -371,7 +371,7 @@ public:
 	 * @param[in] callback 自定义控件的回调处理函数
 	 * @return 无
 	 */
-	static void FillBox(Box* pUserDefinedBox, const std::wstring& strXmlPath, CreateControlCallback callback = CreateControlCallback());
+	static void FillBox(Box* pUserDefinedBox, const CUiString& strXmlPath, CreateControlCallback callback = CreateControlCallback());
 
 	/**
 	 * @brief 使用构建过的缓存填充指定 Box，如果没有则重新构建
@@ -380,14 +380,14 @@ public:
 	 * @param[in] callback 自定义控件的回调处理函数
 	 * @return 无
 	 */
-	static void FillBoxWithCache(Box* pUserDefinedBox, const std::wstring& strXmlPath, CreateControlCallback callback = CreateControlCallback());
+	static void FillBoxWithCache(Box* pUserDefinedBox, const CUiString& strXmlPath, CreateControlCallback callback = CreateControlCallback());
 
 	/**
 	 * @brief 自定义控件创建后的全局回调函数
 	 * @param[in] strControlName 自定义控件名称
 	 * @return 返回一个自定义控件的对象指针
 	 */
-	static Control* CreateControl(const std::wstring& strControlName);
+	static Control* CreateControl(const CUiString& strControlName);
 
 	/**
 	 * @brief 判断当前是否使用了 zip 压缩包
@@ -410,21 +410,21 @@ public:
 	 * @param[in] password 压缩包密码
 	 * @return 返回 true 打开成功，返回 false 为打开失败
 	 */
-	static bool OpenResZip(const std::wstring& path, const std::string& password);
+	static bool OpenResZip(const CUiString& path, const std::string& password);
 
 	/**
 	 * @brief 获取压缩包中的内容到内存
 	 * @param[in] path 要获取的文件的路径
 	 * @return 返回文件的内存地址
 	 */
-	static HGLOBAL GetData(const std::wstring& path);
+	static HGLOBAL GetData(const CUiString& path);
 
 	/**
 	 * @brief 获取文件在压缩包中的位置
 	 * @param[in] path 要获取的文件路径
 	 * @return 返回在压缩包中的文件位置
 	 */
-	static std::wstring GetZipFilePath(const std::wstring& path);
+	static CUiString GetZipFilePath(const CUiString& path);
 
 private:
 	/**
@@ -441,29 +441,29 @@ private:
 		// 这个比较函数不是比较字典序的，而是按照以下法则：
 		// 首先比较，长度小的更小
 		// 再逆向比较，可以认为是逆向字典序
-		bool operator()(const std::wstring& key1, const std::wstring& key2) const;
+		bool operator()(const CUiString& key1, const CUiString& key2) const;
 	};
-	typedef std::map<std::wstring, std::weak_ptr<ImageInfo>, ImageCacheKeyCompare> MapStringToImagePtr;
+	typedef std::map<CUiString, std::weak_ptr<ImageInfo>, ImageCacheKeyCompare> MapStringToImagePtr;
 
-	static std::wstring m_pStrResourcePath; //全局的资源路径，换肤的时候修改这个变量
+	static CUiString m_pStrResourcePath; //全局的资源路径，换肤的时候修改这个变量
 	static std::vector<Window*> m_aPreMessages;
-	static std::map<std::wstring, std::unique_ptr<WindowBuilder>> m_builderMap;
+	static std::map<CUiString, std::unique_ptr<WindowBuilder>> m_builderMap;
 	static CreateControlCallback m_createControlCallback;
 
 	static MapStringToImagePtr m_mImageHash;
-	static std::map<std::wstring, DWORD> m_mapTextColor;
-	static std::map<std::wstring, std::wstring> m_mGlobalClass;
-	static std::map<std::wstring, TFontInfo*> m_mCustomFonts;
+	static std::map<CUiString, DWORD> m_mapTextColor;
+	static std::map<CUiString, CUiString> m_mGlobalClass;
+	static std::map<CUiString, TFontInfo*> m_mCustomFonts;
 
-	static std::wstring m_sDefaultFontId;
+	static CUiString m_sDefaultFontId;
 
 	static short m_H;
 	static short m_S;
 	static short m_L;
 
-	static std::wstring m_strDefaultFontName;
-	static std::wstring m_strDefaultDisabledColor;
-	static std::wstring m_strDefaultFontColor;
+	static CUiString m_strDefaultFontName;
+	static CUiString m_strDefaultDisabledColor;
+	static CUiString m_strDefaultFontColor;
 	static DWORD m_dwDefaultLinkFontColor;
 	static DWORD m_dwDefaultLinkHoverFontColor;
 	static DWORD m_dwDefaultSelectedBkColor;

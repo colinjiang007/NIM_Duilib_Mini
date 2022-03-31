@@ -13,7 +13,7 @@ public:
 
 	/// 重写父类方法，提供个性化功能，请参考父类声明
 	virtual void Init() override;
-	virtual void SetAttribute(const std::wstring& strName, const std::wstring& strValue) override;
+	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
 
 	/**
 	 * @brief 设置 ChildBox 关联的 XML 文件

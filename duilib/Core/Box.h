@@ -26,7 +26,7 @@ public:
 	 * @param[in] rcContainer 要设置的位置信息
 	 * @return 返回控件最终的位置信息
 	 */
-	static CSize SetFloatPos(Control* pControl, UiRect rcContainer);
+	static CUiSize SetFloatPos(Control* pControl, CUiRect rcContainer);
 
 	/**
 	 * @brief 设置布局属性
@@ -34,7 +34,7 @@ public:
 	 * @param[in] strValue 要设置的属性值
 	 * @return true 设置成功，false 属性不存在
 	 */
-	virtual bool SetAttribute(const std::wstring& strName, const std::wstring& strValue);
+	virtual bool SetAttribute(const CUiString& strName, const CUiString& strValue);
 
 	/**
 	 * @brief 调整内部所有控件的位置信息
@@ -42,7 +42,7 @@ public:
 	 * @param[in] rc 当前容器位置信息
 	 * @return 返回排列后最终盒子的宽度和高度信息
 	 */
-	virtual CSize ArrangeChild(const std::vector<Control*>& items, UiRect rc);
+	virtual CUiSize ArrangeChild(const std::vector<Control*>& items, CUiRect rc);
 
 	/**
 	 * @brief 根据内部子控件大小调整容器自身大小
@@ -50,13 +50,13 @@ public:
 	 * @param[in] szAvailable 子控件允许的最大宽度
 	 * @return 返回排列后最终盒子的宽度和高度信息
 	 */
-	virtual CSize AjustSizeByChild(const std::vector<Control*>& items, CSize szAvailable);
+	virtual CUiSize AjustSizeByChild(const std::vector<Control*>& items, CUiSize szAvailable);
 
 	/**
 	 * @brief 获取内边距
 	 * @return 返回内边距四边的大小
 	 */
-	virtual UiRect GetPadding() const;
+	virtual CUiRect GetPadding() const;
 
 	/**
 	 * @brief 设置内边距，相当于设置客户区
@@ -64,7 +64,7 @@ public:
 	 * @param[in] bNeedDpiScale 是否根据 DPI 自适应，默认为 true
 	 * @return 无
 	 */
-	virtual void SetPadding(UiRect rcPadding, bool bNeedDpiScale = true);
+	virtual void SetPadding(CUiRect rcPadding, bool bNeedDpiScale = true);
 
 	/**
 	 * @brief 获取子控件之间的额外边距
@@ -83,10 +83,10 @@ public:
 	 * @brief 获取除了内边距外的可用范围
 	 * @return 返回可用范围位置信息
 	 */
-	UiRect GetInternalPos() const;
+	CUiRect GetInternalPos() const;
 
 protected:
-	UiRect m_rcPadding;
+	CUiRect m_rcPadding;
 	int m_iChildMargin;
 	Box *m_pOwner;
 };
@@ -107,15 +107,15 @@ public:
 public:
 	/// 重写父类接口，提供个性化功能。方法具体说明请查看 Control 控件             */
 	virtual void SetWindow(Window* pManager, Box* pParent, bool bInit = true) override;
-	virtual void SetAttribute(const std::wstring& strName, const std::wstring& strValue) override;
-	virtual void SetPos(UiRect rc) override;
+	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
+	virtual void SetPos(CUiRect rc) override;
 	virtual void HandleMessageTemplate(EventArgs& msg) override;
-	virtual void PaintChild(IRenderContext* pRender, const UiRect& rcPaint) override;
+	virtual void PaintChild(IRenderContext* pRender, const CUiRect& rcPaint) override;
 	virtual void SetVisible_(bool bVisible) override;
 	virtual void SetInternVisible(bool bVisible = true) override;
 	virtual void SetEnabled(bool bEnabled) override;
-	virtual CSize EstimateSize(CSize szAvailable) override;
-	virtual Control* FindControl(FINDCONTROLPROC Proc, LPVOID pData, UINT uFlags, CPoint scrollPos = CPoint()) override;
+	virtual CUiSize EstimateSize(CUiSize szAvailable) override;
+	virtual Control* FindControl(FINDCONTROLPROC Proc, LPVOID pData, UINT uFlags, CUiPoint scrollPos = CUiPoint()) override;
 	virtual void InvokeLoadImageCache() override;
 	virtual void UnLoadImageCache() override;
 	virtual void ClearImageCache() override;
@@ -128,7 +128,7 @@ public:
 	 * @param[in] pstrSubControlName 子控件名称
 	 * @return 返回子控件指针
 	 */
-	Control* FindSubControl(const std::wstring& pstrSubControlName);
+	Control* FindSubControl(const CUiString& pstrSubControlName);
 
 	/**
 	 * @brief 查找下一个可选控件的索引（面向 list、combo）
@@ -273,7 +273,7 @@ public:
 	 * @brief 获取内边距的位置信息
 	 * @return 返回内边距的位置信息
 	 */
-	virtual	UiRect GetPaddingPos() const;
+	virtual	CUiRect GetPaddingPos() const;
 
 	/**
 	 * @brief 绑定事件处理函数
@@ -311,35 +311,35 @@ public:
 	ScrollableBox(const ScrollableBox& r);
 	ScrollableBox& operator=(const ScrollableBox& r) = delete;
 
-	virtual void SetAttribute(const std::wstring& pstrName, const std::wstring& pstrValue) override;
-	virtual void SetPos(UiRect rc) override;
+	virtual void SetAttribute(const CUiString& pstrName, const CUiString& pstrValue) override;
+	virtual void SetPos(CUiRect rc) override;
 	virtual void HandleMessage(EventArgs& event) override;
 	virtual bool MouseEnter(EventArgs& msg) override;
 	virtual bool MouseLeave(EventArgs& msg) override;
-	virtual void PaintChild(IRenderContext* pRender, const UiRect& rcPaint) override;
+	virtual void PaintChild(IRenderContext* pRender, const CUiRect& rcPaint) override;
 	virtual void SetMouseEnabled(bool bEnable = true) override;
 	virtual void SetWindow(Window* pManager, Box* pParent, bool bInit) override;
-	virtual Control* FindControl(FINDCONTROLPROC Proc, LPVOID pData, UINT uFlags, CPoint scrollPos = CPoint()) override;
+	virtual Control* FindControl(FINDCONTROLPROC Proc, LPVOID pData, UINT uFlags, CUiPoint scrollPos = CUiPoint()) override;
 	virtual void ClearImageCache() override;
 
 	/**
 	 * @brief 获取滚动条位置
 	 * @return 返回滚动条的位置信息
 	 */
-	virtual CSize GetScrollPos() const;
+	virtual CUiSize GetScrollPos() const;
 
 	/**
 	 * @brief 获取滚动条的范围
 	 * @return 返回滚动条的范围信息
 	 */
-	virtual CSize GetScrollRange() const;
+	virtual CUiSize GetScrollRange() const;
 
 	/**
 	 * @brief 设置滚动条位置
 	 * @param[in] szPos 要设置的位置数据
 	 * @return 无
 	 */
-	virtual void SetScrollPos(CSize szPos);
+	virtual void SetScrollPos(CUiSize szPos);
 
 	/**
 	 * @brief 设置滚动条 Y 轴坐标
@@ -472,14 +472,14 @@ public:
 	 * @param[in] 待补充
 	 * @return 待补充
 	 */
-	virtual void ProcessVScrollBar(UiRect rc, int cyRequired);
+	virtual void ProcessVScrollBar(CUiRect rc, int cyRequired);
 
 	/**
 	 * @brief 待补充
 	 * @param[in] 待补充
 	 * @return 待补充
 	 */
-	virtual void ProcessHScrollBar(UiRect rc, int cxRequired);
+	virtual void ProcessHScrollBar(CUiRect rc, int cxRequired);
 
 	/**
 	 * @brief 判断垂直滚动条是否有效
@@ -569,14 +569,14 @@ public:
 	 * @brief 获取滚动条的外边距
 	 * @return 返回边距信息 
 	 */
-	UiRect GetScrollBarPadding() const;
+	CUiRect GetScrollBarPadding() const;
 
 	/**
 	 * @brief 设置滚动条的外边距，可以让滚动条不占满容器
 	 * @param[in] rcScrollBarPadding 要设置的边距
 	 * @return 无
 	 */
-	void SetScrollBarPadding(UiRect rcScrollBarPadding);
+	void SetScrollBarPadding(CUiRect rcScrollBarPadding);
 
 	/**
 	 * @brief 待补充
@@ -605,7 +605,7 @@ protected:
 	 * @param[in] rc 当前位置信息
 	 * @return 返回所需尺寸大小
 	 */
-	virtual CSize CalcRequiredSize(const UiRect& rc);
+	virtual CUiSize CalcRequiredSize(const CUiRect& rc);
 
 	/**
 	 * @brief 加载图片缓存，仅供 ScrollableBox 内部使用
@@ -619,7 +619,7 @@ private:
 	 * @param[in] 待补充
 	 * @return 待补充
 	 */
-	void SetPosInternally(UiRect rc);
+	void SetPosInternally(CUiRect rc);
 
 protected:
 	std::unique_ptr<ScrollBar> m_pVerticalScrollBar;
@@ -631,9 +631,9 @@ protected:
 	bool m_bHoldEnd;
 	bool m_bScrollBarFloat;
 	bool m_bDefaultDisplayScrollbar;
-	UiRect m_rcScrollBarPadding;
+	CUiRect m_rcScrollBarPadding;
 
-	CPoint m_ptLastTouchPos;
+	CUiPoint m_ptLastTouchPos;
 	AnimationPlayer m_scrollAnimation;
 	AnimationPlayer m_renderOffsetYAnimation;
 };

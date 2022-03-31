@@ -13,7 +13,7 @@ public:
 	virtual void Translate(int offsetX, int offsetY) override;
 	virtual void Scale(int scaleX, int scaleY) override;
 	virtual void Rotate(float angle) override;
-	virtual void RotateAt(float angle, const CPoint& center) override;
+	virtual void RotateAt(float angle, const CUiPoint& center) override;
 
 	Gdiplus::Matrix* GetMatrix() { return &matrix_; };
 private:

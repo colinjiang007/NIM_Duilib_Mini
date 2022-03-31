@@ -253,6 +253,14 @@ std::wstring StringHelper::ReparsePath(const std::wstring& strFilePath)
 	return tmp;
 }
 
+CUiString StringHelper::ReparsePath(const CUiString& strFilePath)
+{
+	CUiString tmp(strFilePath);
+	tmp.Replace(_T("/"), _T("\\"));
+	tmp.Replace(_T("\\\\"), _T("\\"));
+	return tmp;
+}
+
 std::wstring StringHelper::Printf(const wchar_t *format, ...)
 {
 	va_list	args;
@@ -376,6 +384,171 @@ bool StringHelper::UnicodeToMBCS(const std::wstring& input, std::string &output,
 		static_cast<int>(output.size()),
 		NULL,
 		NULL);
+	return true;
+}
+
+
+int StringHelper::Utf8ToUnicode(const std::string& utf, std::wstring& unicode)
+{
+
+	int dwUnicodeLen = MultiByteToWideChar(CP_UTF8, 0, utf.c_str(), utf.size(), NULL, 0);
+	unicode.resize(dwUnicodeLen);
+	MultiByteToWideChar(CP_UTF8, 0, utf.c_str(), utf.size(), (LPWSTR)unicode.c_str(), dwUnicodeLen);
+	return dwUnicodeLen;
+}
+
+int StringHelper::UnicodeToUtf8(const std::wstring& unicode, std::string& utf8)
+{
+	int len;
+	len = WideCharToMultiByte(CP_UTF8, 0, unicode.c_str(), unicode.size(), NULL, 0, NULL, NULL);
+	utf8.resize(len);
+	WideCharToMultiByte(CP_UTF8, 0, unicode.c_str(), unicode.size(), (LPSTR)utf8.c_str(), len, NULL, NULL);
+	return len;
+}
+
+int StringHelper::UnicodeToGB2312(const std::wstring& unicode, std::string& gb)
+{
+	int n = WideCharToMultiByte(CP_ACP, 0, unicode.c_str(), unicode.size(), 0, 0, 0, 0);
+	gb.resize(n);
+	::WideCharToMultiByte(CP_ACP, 0, unicode.c_str(), unicode.size(), (char*)gb.c_str(), n, 0, 0);
+	return n;
+}
+
+int StringHelper::Gb2312ToUnicode(const std::string& gb, std::wstring& unicode)
+{
+	int n = MultiByteToWideChar(CP_ACP, 0, gb.c_str(), gb.size(), NULL, 0);
+	unicode.resize(n);
+	::MultiByteToWideChar(CP_ACP, 0, gb.c_str(), gb.size(), (LPWSTR)unicode.c_str(), unicode.length());
+	return n;
+}
+
+
+void StringHelper::CUiStringToUnicode(const CUiString& src, std::wstring& ret)
+{
+	ret.clear();
+	if (src.IsEmpty()){
+		return;
+	}
+#ifdef _UNICODE
+	ret = (LPCTSTR)src;
+#else
+	Gb2312ToUnicode((LPCTSTR)src, ret);
+#endif // _UNICODE
+
+}
+
+void StringHelper::CUiStringToGB2312(const CUiString& src, std::string& ret)
+{
+	ret.clear();
+	if (src.IsEmpty()){
+		return;
+	}
+#ifdef _UNICODE
+	UnicodeToGB2312((LPCTSTR)src, ret);
+#else
+	ret = (LPCSTR)src;
+#endif // _UNICODE
+
+}
+
+void StringHelper::CUiStringToUtf8(const CUiString& src, std::string& ret)
+{
+	ret.clear();
+	if (src.IsEmpty()){
+		return;
+	}
+#ifdef _UNICODE
+	UnicodeToUtf8((LPCTSTR)src, ret);
+#else
+	wstring usrc;
+	Gb2312ToUnicode((LPCTSTR)src, usrc);
+	UnicodeToUtf8(usrc, ret);
+#endif // _UNICODE
+}
+
+void StringHelper::UnicodeToCUiString(const std::wstring& src, CUiString& ret)
+{
+	ret.Empty();
+	if (src.empty()){
+		return;
+	}
+#ifdef _UNICODE
+	ret = src.c_str();
+#else
+	string gbret;
+	UnicodeToGB2312(src, gbret);
+	ret = gbret.c_str();
+#endif // _UNICODE
+}
+
+void StringHelper::GB2312ToCUiString(const std::string& src, CUiString& ret)
+{
+	ret.Empty();
+	if (src.empty()){
+		return;
+	}
+#ifdef _UNICODE
+	std::wstring wret;
+	Gb2312ToUnicode(src, wret);
+	ret = wret.c_str();
+#else
+	ret = src.c_str();
+#endif // _UNICODE
+}
+
+void StringHelper::Utf8ToCUiString(const std::string& src, CUiString& ret)
+{
+	ret.Empty();
+	if (src.empty()){
+		return;
+	}
+	std::wstring uret;
+	Utf8ToUnicode(src, uret);
+#ifdef _UNICODE
+	ret = uret.c_str();
+#else
+	string gbret;
+	UnicodeToGB2312(uret, gbret);
+	ret = gbret.c_str();
+#endif // _UNICODE
+}
+
+void StringHelper::SplitCUiString(const CUiString& strSource, const CUiString& token, std::vector<CUiString>& ret)
+{
+	ret.clear();
+	TCHAR* nowtk = nullptr;
+	TCHAR* nexttk = nullptr;
+
+	nowtk = _tcstok_s((LPTSTR)(LPCTSTR)strSource, token, &nexttk);//(LPSTR)(LPCTSTR)将CString转char*
+	CUiString strItem;
+	do
+	{
+		if (nullptr == nowtk) {
+			break;
+		}
+		strItem = nowtk;
+		strItem.TrimLeft();
+		ret.push_back(strItem);
+		nowtk = _tcstok_s(NULL, token, &nexttk);//(LPSTR)(LPCTSTR)将CString转char*
+	} while (true);
+}
+
+bool StringHelper::SplitCUiStringKeyValue(const CUiString& strSource, const CUiString& token, CUiString& key, CUiString& value)
+{
+	if (strSource.GetLength() <= token.GetLength()) {
+		return false;
+	}
+	key.Empty();
+	value.Empty();
+	int pos = strSource.Find(token);
+	if (pos <= 0) {
+		return false;
+	}
+	key = strSource.Left(pos);
+	value = strSource.Right(strSource.GetLength() - pos - token.GetLength());
+	if (key.IsEmpty() || value.IsEmpty()) {
+		return false;
+	}
 	return true;
 }
 

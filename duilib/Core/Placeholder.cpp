@@ -50,7 +50,7 @@ PlaceHolder::~PlaceHolder()
 	
 }
 
-ui::Box* PlaceHolder::GetAncestor(const std::wstring& strName)
+ui::Box* PlaceHolder::GetAncestor(const CUiString& strName)
 {
 	Box* pAncestor = this->GetParent();
 	while (pAncestor && pAncestor->GetName() != strName)
@@ -61,7 +61,7 @@ ui::Box* PlaceHolder::GetAncestor(const std::wstring& strName)
 	return pAncestor;
 }
 
-std::wstring PlaceHolder::GetName() const
+CUiString PlaceHolder::GetName() const
 {
 	return m_sName;
 }
@@ -73,16 +73,14 @@ std::string PlaceHolder::GetUTF8Name() const
 	return strOut;
 }
 
-void PlaceHolder::SetName(const std::wstring& strName)
+void PlaceHolder::SetName(const CUiString& strName)
 {
 	m_sName = strName;
 }
 
 void PlaceHolder::SetUTF8Name(const std::string& strName)
 {
-	std::wstring strOut;
-	StringHelper::MBCSToUnicode(strName, strOut, CP_UTF8);
-	m_sName = strOut;
+	StringHelper::Utf8ToCUiString(strName, m_sName);
 }
 
 Window* PlaceHolder::GetWindow() const
@@ -292,17 +290,17 @@ void PlaceHolder::SetReEstimateSize(bool bReEstimateSize)
 	m_bReEstimateSize = bReEstimateSize;
 }
 
-CSize PlaceHolder::EstimateSize(CSize szAvailable)
+CUiSize PlaceHolder::EstimateSize(CUiSize szAvailable)
 {
 	return m_cxyFixed;
 }
 
-UiRect PlaceHolder::GetPos(bool bContainShadow) const
+CUiRect PlaceHolder::GetPos(bool bContainShadow) const
 {
 	return m_rcItem;
 }
 
-void PlaceHolder::SetPos(UiRect rc)
+void PlaceHolder::SetPos(CUiRect rc)
 {
 	m_rcItem = rc;
 }
@@ -381,21 +379,21 @@ void PlaceHolder::Invalidate()
 	if (!IsVisible()) return;
 
 	SetCacheDirty(true);
-	UiRect rcInvalidate = GetPosWithScrollOffset();
+	CUiRect rcInvalidate = GetPosWithScrollOffset();
 	if (m_pWindow != NULL) m_pWindow->Invalidate(rcInvalidate);
 }
 
-UiRect PlaceHolder::GetPosWithScrollOffset() const
+CUiRect PlaceHolder::GetPosWithScrollOffset() const
 {
-	UiRect pos = GetPos();
-	CPoint offset = GetScrollOffset();
+	CUiRect pos = GetPos();
+	CUiPoint offset = GetScrollOffset();
 	pos.Offset(-offset.x, -offset.y);
 	return pos;
 }
 
-CPoint PlaceHolder::GetScrollOffset() const
+CUiPoint PlaceHolder::GetScrollOffset() const
 {
-	CPoint scrollPos;
+	CUiPoint scrollPos;
 	Control* parent = GetParent();
 	ScrollableBox* lbParent = dynamic_cast<ScrollableBox*>(parent);
 	if (lbParent && lbParent->IsVScrollBarValid() && IsFloat()) {

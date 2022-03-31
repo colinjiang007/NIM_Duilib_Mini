@@ -523,7 +523,7 @@ bool StateColorMap::HasHotColor()
 	return !m_stateColorMap[kControlStateHot].empty();
 }
 
-void StateColorMap::PaintStatusColor(IRenderContext* pRender, UiRect rcPaint, ControlStateType stateType)
+void StateColorMap::PaintStatusColor(IRenderContext* pRender, CUiRect rcPaint, ControlStateType stateType)
 {
 	if (m_pControl) {
 		bool bFadeHot = m_pControl->GetAnimationManager().GetAnimationPlayer(kAnimationHot) != nullptr;

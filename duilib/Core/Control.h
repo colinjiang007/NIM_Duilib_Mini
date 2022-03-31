@@ -31,21 +31,21 @@ public:
 	 * @brief 获取背景颜色
 	 * @return 返回背景颜色的字符串，该值在 global.xml 中定义
 	 */
-	std::wstring GetBkColor() const;
+	CUiString GetBkColor() const;
 
 	/**
 	 * @brief 设置背景颜色
 	 * @param[in] strColor 要设置的背景颜色值，该值必须在 global.xml 中存在
 	 * @return 无
 	 */
-	void SetBkColor(const std::wstring& strColor);
+	void SetBkColor(const CUiString& strColor);
 
 	/**
 	 * @brief 获取某个状态下的字体颜色
 	 * @param[in] stateType 要获取何种状态下的颜色值，参考 ControlStateType 枚举
 	 * @return 指定状态下设定的颜色字符串，对应 global.xml 中指定色值
 	 */
-	std::wstring GetStateColor(ControlStateType stateType);
+	CUiString GetStateColor(ControlStateType stateType);
 
 	/**
 	 * @brief 设置某个状态下的字体颜色
@@ -53,40 +53,30 @@ public:
 	 * @param[in] strColor 要设置的颜色值，该值必须在 global.xml 中存在
 	 * @return 无
 	 */
-	void SetStateColor(ControlStateType stateType, const std::wstring& strColor);
+	void SetStateColor(ControlStateType stateType, const CUiString& strColor);
 
 	/**
 	 * @brief 获取背景图片位置
 	 * @return 背景图片位置  
 	 */
-    std::wstring GetBkImage() const;
+    CUiString GetBkImage() const;
 
-	/**
-	 * @brief 获取 UTF8 格式的背景图片位置
-	 * @return 背景图片位置
-	 */
-	std::string GetUTF8BkImage() const;
 
 	/**
 	 * @brief 设置背景图片
 	 * @param[in] strImage 要设置的图片路径
 	 * @return 无
 	 */
-    void SetBkImage(const std::wstring& strImage);
+    void SetBkImage(const CUiString& strImage);
 
-	/**
-	 * @brief 设置背景图片（UTF8 格式字符串）
-	 * @param[in] strImage 要设置的图片路径
-	 * @return 无
-	 */
-	void SetUTF8BkImage(const std::string& strImage);
+	
 
 	/**
 	 * @brief 获取指定状态下的图片位置
 	 * @param[in] 要获取何种状态下的图片，参考 ControlStateType 枚举
 	 * @return 指定状态下的图片位置
 	 */
-	std::wstring GetStateImage(ControlStateType stateType);
+	CUiString GetStateImage(ControlStateType stateType);
 
 	/**
 	 * @brief 设置某个状态下的图片
@@ -94,14 +84,14 @@ public:
 	 * @param[in] strImage 要设置的图片路径
 	 * @return 无
 	 */
-	void SetStateImage(ControlStateType stateType, const std::wstring& strImage);
+	void SetStateImage(ControlStateType stateType, const CUiString& strImage);
 
 	/**
 	 * @brief 获取指定状态下的前景图片
 	 * @param[in] 要获取何种状态下的图片，参考 `ControlStateType` 枚举
 	 * @return 指定状态下前景图片位置
 	 */
-	std::wstring GetForeStateImage(ControlStateType stateType);
+	CUiString GetForeStateImage(ControlStateType stateType);
 
 	/**
 	 * @brief 设置某个状态下前景图片
@@ -109,7 +99,7 @@ public:
 	 * @param[in] strImage 要设置的前景图片路径
 	 * @return 无
 	 */
-	void SetForeStateImage(ControlStateType stateType, const std::wstring& strImage);
+	void SetForeStateImage(ControlStateType stateType, const CUiString& strImage);
 
 	/**
 	 * @brief 获取控件状态
@@ -148,21 +138,21 @@ public:
 	 * @brief 获取边框颜色
 	 * @return 边框的颜色字符串，对应 global.xml 中的具体颜色值
 	 */
-	std::wstring GetBorderColor() const;
+	CUiString GetBorderColor() const;
 
 	/**
 	 * @brief 设置边框颜色
 	 * @param[in] strBorderColor 设置边框的颜色字符串值，该值必须在 global.xml 中存在
 	 * @return 无
 	 */
-	void SetBorderColor(const std::wstring& strBorderColor);
+	void SetBorderColor(const CUiString& strBorderColor);
 
 	/**
 	 * @brief 设置边框的大小
 	 * @param[in] rc 一个 `UiRect` 结构的边框大小集合
 	 * @return 无
 	 */
-	void SetBorderSize(UiRect rc);
+	void SetBorderSize(CUiRect rc);
 
 	/**
 	 * @brief 获取左侧边框大小
@@ -220,14 +210,14 @@ public:
 	 * @brief 获取边框大小
 	 * @return 四个方向的边框大小
 	 */
-	CSize GetBorderRound() const;
+	CUiSize GetBorderRound() const;
 
 	/**
 	 * @brief 设置边框大小
 	 * @param[in] cxyRound 一个 CSize 结构表示了四个方向边框的大小
 	 * @return 无
 	 */
-	void SetBorderRound(CSize cxyRound);
+	void SetBorderRound(CUiSize cxyRound);
 
     /// 鼠标相关
 	/**
@@ -247,41 +237,24 @@ public:
 	 * @brief 获取控件在鼠标悬浮状态下的提示文本
 	 * @return 返回当前鼠标悬浮状态提示的文本
 	 */
-    virtual std::wstring GetToolTipText() const;
+    virtual CUiString GetToolTipText() const;
 
-	/**
-	 * @brief 获取控件在鼠标悬浮状态下的提示文本（UTF8 格式）
-	 * @return 返回当前鼠标悬浮状态提示的文本
-	 */
-	virtual std::string GetUTF8ToolTipText() const;
+
 
 	/**
 	 * @brief 设置鼠标悬浮到控件显示的提示文本
 	 * @param[in] strText 要设置的文本
 	 * @return 无
 	 */
-	virtual void SetToolTipText(const std::wstring& strText);
+	virtual void SetToolTipText(const CUiString& strText);
 
-	/**
-	 * @brief 设置鼠标悬浮到控件显示的提示文本（UTF8 格式）
-	 * @param[in] strText 要设置的文本
-	 * @return 无
-	 */
-	virtual void SetUTF8ToolTipText(const std::string& strText);
-
+	
 	/**
 	 * @brief 设置鼠标悬浮到控件显示的提示文本在语言文件中对应的文字
 	 * @param[in] strTextId 在语言文件中对应的提示文字 ID
 	 * @return 无
 	 */
-	virtual void SetToolTipTextId(const std::wstring& strTextId);
-
-	/**
-	 * @brief 设置鼠标悬浮到控件显示的提示文本在语言文件中对应的文字（UTF8 格式）
-	 * @param[in] strTextId 在语言文件中对应的提示文字 ID
-	 * @return 无
-	 */
-	virtual void SetUTF8ToolTipTextId(const std::string& strTextId);
+	virtual void SetToolTipTextId(const CUiString& strTextId);
 
 	/**
 	 * @brief 设置鼠标悬浮到控件上提示的文本单行最大宽度
@@ -315,28 +288,17 @@ public:
 	 * @brief 获取用户绑定到控件的数据字符串
 	 * @return 返回具体数据字符串
 	 */
-    virtual std::wstring GetDataID() const;
-
-	/**
-	 * @brief 获取用户绑定到控件的数据字符串（UTF8 格式）
-	 * @return 返回具体数据字符串
-	 */
-	virtual std::string GetUTF8DataID() const;				
+    virtual CUiString GetDataID() const;
+				
 
 	/**
 	 * @brief 绑定一个字符串数据到控件
 	 * @param[in] strText 要绑定的字符串数据
 	 * @return 无
 	 */
-    virtual void SetDataID(const std::wstring& strText);
+    virtual void SetDataID(const CUiString& strText);
 
-	/**
-	 * @brief 绑定一个字符串数据到控件（UTF8 格式）
-	 * @param[in] strText 要绑定的字符串数据
-	 * @return 无
-	 */
-	virtual void SetUTF8DataID(const std::string& strText);	
-
+	
 	/**
 	 * @brief 获取用户绑定的自定义数据结构
 	 * @return 用户绑定的自定义结构数据指针
@@ -470,7 +432,7 @@ public:
 	 * @param[in] scrollPos
 	 * @return 返回控件的指针
 	 */
-    virtual Control* FindControl(FINDCONTROLPROC Proc, LPVOID pData, UINT uFlags, CPoint scrollPos = CPoint());
+    virtual Control* FindControl(FINDCONTROLPROC Proc, LPVOID pData, UINT uFlags, CUiPoint scrollPos = CUiPoint());
 
 	/// 位置相关
 	/**
@@ -478,20 +440,20 @@ public:
 	 * @param[in] bContainShadow 是否包含阴影，默认为 true 则包含阴影范围，否则 false 为不包含
 	 * @return 返回控件的位置信息
 	 */
-	virtual	UiRect GetPos(bool bContainShadow = true) const override;
+	virtual	CUiRect GetPos(bool bContainShadow = true) const override;
 
 	/**
 	 * @brief 设置控件位置
 	 * @param[in] rc 控件位置的描述信息
 	 * @return 无
 	 */
-	virtual void SetPos(UiRect rc) override;
+	virtual void SetPos(CUiRect rc) override;
 
 	/**
 	 * @brief 获取控件的外边距
 	 * @return 返回控件的外边距
 	 */
-	virtual UiRect GetMargin() const;
+	virtual CUiRect GetMargin() const;
 
 	/**
 	 * @brief 设置控件的外边距
@@ -499,28 +461,28 @@ public:
 	 * @param[in] bNeedDpiScale 是否让外边距根据 DPI 适配，默认为 true，false 不适配 DPI
 	 * @return 无
 	 */
-	virtual void SetMargin(UiRect rcMargin, bool bNeedDpiScale = true);
+	virtual void SetMargin(CUiRect rcMargin, bool bNeedDpiScale = true);
 
 	/**
 	 * @brief 计算控件大小
 	 * @param[in] szAvailable 暂无意义
 	 * @return szAvailable 控件实际大小（如果设置了图片并设置 width 或 height 任意一项为 auto，将根据图片来计算最终大小）
 	 */
-	virtual CSize EstimateSize(CSize szAvailable);
+	virtual CUiSize EstimateSize(CUiSize szAvailable);
 
 	/**
 	 * @brief 待补充
 	 * @param[in] 待补充
 	 * @return 待补充
 	 */
-	virtual CSize EstimateText(CSize szAvailable, bool& bReEstimateSize);
+	virtual CUiSize EstimateText(CUiSize szAvailable, bool& bReEstimateSize);
 
 	/**
 	 * @brief 检查指定坐标是否在滚动条当前滚动位置的范围内
 	 * @param[in] point 具体坐标
 	 * @return 返回是否在范围内，true 在滚动条当前滚动位置范围内，false 不在滚动条当前滚动位置范围内
 	 */
-	virtual bool IsPointInWithScrollOffset(const CPoint& point) const;
+	virtual bool IsPointInWithScrollOffset(const CUiPoint& point) const;
 
 	// 消息处理
 	/**
@@ -532,7 +494,7 @@ public:
 	 * @param[in] mousePos	鼠标信息
 	 * @return 无
 	 */
-	void HandleMessageTemplate(EventType eventType, WPARAM wParam = 0, LPARAM lParam = 0, TCHAR tChar = 0, CPoint mousePos = CPoint(), FLOAT pressure = 0.0f);
+	void HandleMessageTemplate(EventType eventType, WPARAM wParam = 0, LPARAM lParam = 0, TCHAR tChar = 0, CUiPoint mousePos = CUiPoint(), FLOAT pressure = 0.0f);
 
 	/**
 	 * @brief 将转换后的消息派发到消息处理函数
@@ -580,28 +542,28 @@ public:
 	 * @param[in] strValue 要设置的属性值（如 100）
 	 * @return 无
 	 */
-    virtual void SetAttribute(const std::wstring& strName, const std::wstring& strValue);
+    virtual void SetAttribute(const CUiString& strName, const CUiString& strValue);
 
 	/**
 	 * @brief 设置控件的 class 全局属性
 	 * @param[in] strClass 要设置的 class 名称，该名称必须在 global.xml 中存在
 	 * @return 无
 	 */
-	void SetClass(const std::wstring& strClass);
+	void SetClass(const CUiString& strClass);
 
 	/**
 	 * @brief 应用一套属性列表
 	 * @param[in] strList 属性列表的字符串表示，如 `width="100" height="30"`
 	 * @return 无
 	 */
-    void ApplyAttributeList(const std::wstring& strList);
+    void ApplyAttributeList(const CUiString& strList);
 
 	/**
 	 * @brief 待补充
 	 * @param[in] 待补充
 	 * @return 待补充
 	 */
-	bool OnApplyAttributeList(const std::wstring& strReceiver, const std::wstring& strList, EventArgs* eventArgs);
+	bool OnApplyAttributeList(const CUiString& strReceiver, const CUiString& strList, EventArgs* eventArgs);
 
 	/// 绘制操作
 	/**
@@ -619,7 +581,7 @@ public:
 	 * @param[in] nFade 控件的透明度，如果启用动画效果该值在绘制时是不断变化的
 	 * @return 成功返回 true，失败返回 false
 	 */
-	bool DrawImage(IRenderContext* pRender, Image& duiImage, const std::wstring& strModify = L"", int nFade = DUI_NOSET_VALUE);
+	bool DrawImage(IRenderContext* pRender, Image& duiImage, const CUiString& strModify = L"", int nFade = DUI_NOSET_VALUE);
 
 	/**
 	* @brief 获取绘制上下文对象
@@ -638,7 +600,7 @@ public:
 	 * @param[in] 待补充
 	 * @return 待补充
 	 */
-	virtual void AlphaPaint(IRenderContext* pRender, const UiRect& rcPaint);
+	virtual void AlphaPaint(IRenderContext* pRender, const CUiRect& rcPaint);
 	
 	/**
 	* @brief 绘制控件的入口函数
@@ -646,7 +608,7 @@ public:
 	* @param[in] rcPaint 指定绘制坐标
 	* @return 无
 	*/
-	virtual void Paint(IRenderContext* pRender, const UiRect& rcPaint);
+	virtual void Paint(IRenderContext* pRender, const CUiRect& rcPaint);
 
 	/**
 	* @brief 绘制控件子项入口函数
@@ -654,7 +616,7 @@ public:
 	* @param[in] rcPaint 指定绘制坐标
 	* @return 无
 	*/
-	virtual void PaintChild(IRenderContext* pRender, const UiRect& rcPaint) {};
+	virtual void PaintChild(IRenderContext* pRender, const CUiRect& rcPaint) {};
 
 	/**
 	* @brief 设置是否对绘制范围做剪裁限制
@@ -705,14 +667,14 @@ public:
 	 * @brief 获取控件绘制偏移量
 	 * @return 返回当前控件的绘制偏移量
 	 */
-	CPoint GetRenderOffset() const { return m_renderOffset;	}
+	CUiPoint GetRenderOffset() const { return m_renderOffset;	}
 
 	/**
 	 * @brief 设置控件绘制偏移量
 	 * @param[in] renderOffset 控件偏移数据
 	 * @return 无
 	 */
-	void SetRenderOffset(CPoint renderOffset);
+	void SetRenderOffset(CUiPoint renderOffset);
 
 	/**
 	 * @brief 设置控件偏移的 X 坐标
@@ -876,7 +838,51 @@ protected:
 	virtual void PaintStatusImage(IRenderContext* pRender);
 	virtual void PaintText(IRenderContext* pRender);
 	virtual void PaintBorder(IRenderContext* pRender);
+protected:
+	/**
+	* @brief 获取 UTF8 格式的背景图片位置
+	* @return 背景图片位置
+	*/
+	std::string GetUTF8BkImage() const;
+	/**
+	* @brief 设置背景图片（UTF8 格式字符串）
+	* @param[in] strImage 要设置的图片路径
+	* @return 无
+	*/
+	void SetUTF8BkImage(const std::string& strImage);
 
+	/**
+	* @brief 获取控件在鼠标悬浮状态下的提示文本（UTF8 格式）
+	* @return 返回当前鼠标悬浮状态提示的文本
+	*/
+	virtual std::string GetUTF8ToolTipText() const;
+
+	/**
+	* @brief 设置鼠标悬浮到控件显示的提示文本（UTF8 格式）
+	* @param[in] strText 要设置的文本
+	* @return 无
+	*/
+	virtual void SetUTF8ToolTipText(const std::string& strText);
+
+	/**
+	* @brief 设置鼠标悬浮到控件显示的提示文本在语言文件中对应的文字（UTF8 格式）
+	* @param[in] strTextId 在语言文件中对应的提示文字 ID
+	* @return 无
+	*/
+	virtual void SetUTF8ToolTipTextId(const std::string& strTextId);
+
+	/**
+	* @brief 获取用户绑定到控件的数据字符串（UTF8 格式）
+	* @return 返回具体数据字符串
+	*/
+	virtual std::string GetUTF8DataID() const;
+
+	/**
+	* @brief 绑定一个字符串数据到控件（UTF8 格式）
+	* @param[in] strText 要绑定的字符串数据
+	* @return 无
+	*/
+	virtual void SetUTF8DataID(const std::string& strText);
 private:
 	void BroadcastGifEvent(int nVirtualEvent);
 	int GetGifFrameIndex(GifStopType frame);
@@ -902,22 +908,22 @@ protected:
 	int m_nTooltipWidth;
 	int m_nAlpha;
 	int m_nHotAlpha;
-	CSize m_szEstimateSize;
-	CPoint m_renderOffset;
-	CSize m_cxyBorderRound;
-	UiRect m_rcMargin;
-	UiRect m_rcPaint;
-	UiRect m_rcBorderSize;
+	CUiSize m_szEstimateSize;
+	CUiPoint m_renderOffset;
+	CUiSize m_cxyBorderRound;
+	CUiRect m_rcMargin;
+	CUiRect m_rcPaint;
+	CUiRect m_rcBorderSize;
 	CursorType m_cursorType;	//影响控件的鼠标形状
 	ControlStateType m_uButtonState;
-	std::wstring m_sToolTipText;
-	std::wstring m_sToolTipTextId;
-	std::wstring m_sUserData;
-	std::wstring m_strBkColor;
+	CUiString m_sToolTipText;
+	CUiString m_sToolTipTextId;
+	CUiString m_sUserData;
+	CUiString m_strBkColor;
 	StateColorMap m_colorMap;
 	Image m_bkImage;
 	StateImageMap m_imageMap;
-	std::wstring m_strBorderColor;
+	CUiString m_strBorderColor;
 	nbase::WeakCallbackFlag m_gifWeakFlag;
 	AnimationManager m_animationManager;
 	nbase::WeakCallbackFlag m_loadBkImageWeakFlag;

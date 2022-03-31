@@ -19,7 +19,7 @@ void Matrix_Gdiplus::Rotate(float angle)
 	matrix_.Rotate(angle);
 }
 
-void Matrix_Gdiplus::RotateAt(float angle, const CPoint& center)
+void Matrix_Gdiplus::RotateAt(float angle, const CUiPoint& center)
 {
 	matrix_.RotateAt(angle, PointF(center.x, center.y));
 }

@@ -14,9 +14,9 @@ Slider::Slider() :
 	m_uTextStyle = DT_SINGLELINE | DT_CENTER;
 }
 
-UiRect Slider::GetProgressPos()
+CUiRect Slider::GetProgressPos()
 {
-	UiRect rc;
+	CUiRect rc;
 	if (m_bHorizontal) {
 		rc.right = int((m_nValue - m_nMin) * (m_rcItem.right - m_rcItem.left - m_szThumb.cx) / (m_nMax - m_nMin) + m_szThumb.cx / 2 + 0.5);
 		rc.bottom = m_rcItem.bottom - m_rcItem.top;
@@ -40,9 +40,9 @@ void Slider::HandleMessage(EventArgs& event)
 
 	if (event.Type == kEventMouseButtonDown || event.Type == kEventInternalDoubleClick || event.Type == kEventPointDown) {
 		if( IsEnabled() ) {
-			CPoint newPtMouse = event.ptMouse;
+			CUiPoint newPtMouse = event.ptMouse;
 			newPtMouse.Offset(GetScrollOffset());
-			UiRect rcThumb = GetThumbRect();
+			CUiRect rcThumb = GetThumbRect();
 			if (rcThumb.IsPointIn(newPtMouse)) {
 				SetMouseFocused(true);
 			}
@@ -113,14 +113,14 @@ void Slider::SetAttribute(const std::wstring& strName, const std::wstring& strVa
 	else if (strName == _T("thumbpushedimage")) SetThumbStateImage(kControlStatePushed, strValue);
 	else if (strName == _T("thumbdisabledimage")) SetThumbStateImage(kControlStateDisabled, strValue);
 	else if (strName == _T("thumbsize")) {
-		CSize szXY;
+		CUiSize szXY;
 		LPTSTR pstr = NULL;
 		szXY.cx = _tcstol(strValue.c_str(), &pstr, 10);  ASSERT(pstr);
 		szXY.cy = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);
 		SetThumbSize(szXY);
 	}
 	else if (strName == _T("progressbarpadding")) {
-		UiRect rcPadding;
+		CUiRect rcPadding;
 		LPTSTR pstr = NULL;
 		rcPadding.left = _tcstol(strValue.c_str(), &pstr, 10);  ASSERT(pstr);
 		rcPadding.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);
@@ -137,7 +137,7 @@ void Slider::PaintStatusImage(IRenderContext* pRender)
 	Progress::PaintStatusImage(pRender);
 	m_rcItem.Inflate(m_rcProgressBarPadding);
 
-	UiRect rcThumb = GetThumbRect();
+	CUiRect rcThumb = GetThumbRect();
 	rcThumb.left -= m_rcItem.left;
 	rcThumb.top -= m_rcItem.top;
 	rcThumb.right -= m_rcItem.left;
@@ -184,23 +184,23 @@ void Slider::SetChangeStep(int step)
 	m_nStep = step;
 }
 
-void Slider::SetThumbSize(CSize szXY)
+void Slider::SetThumbSize(CUiSize szXY)
 {
 	DpiManager::GetInstance()->ScaleSize(szXY);
 	m_szThumb = szXY;
 }
 
-UiRect Slider::GetThumbRect() const
+CUiRect Slider::GetThumbRect() const
 {
 	if( m_bHorizontal ) {
 		int left = int(m_rcItem.left + (m_rcItem.right - m_rcItem.left - m_szThumb.cx) * (m_nValue - m_nMin) / (m_nMax - m_nMin));
 		int top = (m_rcItem.bottom + m_rcItem.top - m_szThumb.cy) / 2;
-		return UiRect(left, top, left + m_szThumb.cx, top + m_szThumb.cy); 
+		return CUiRect(left, top, left + m_szThumb.cx, top + m_szThumb.cy); 
 	}
 	else {
 		int left = (m_rcItem.right + m_rcItem.left - m_szThumb.cx) / 2;
 		int top = int(m_rcItem.bottom - m_szThumb.cy - (m_rcItem.bottom - m_rcItem.top - m_szThumb.cy) * (m_nValue - m_nMin) / (m_nMax - m_nMin));
-		return UiRect(left, top, left + m_szThumb.cx, top + m_szThumb.cy); 
+		return CUiRect(left, top, left + m_szThumb.cx, top + m_szThumb.cy); 
 	}
 }
 
@@ -215,12 +215,12 @@ void Slider::SetThumbStateImage(ControlStateType stateType, const std::wstring& 
 	Invalidate();
 }
 
-UiRect Slider::GetProgressBarPadding() const
+CUiRect Slider::GetProgressBarPadding() const
 {
 	return m_rcProgressBarPadding;
 }
 
-void Slider::SetProgressBarPadding(UiRect rc)
+void Slider::SetProgressBarPadding(CUiRect rc)
 {
 	DpiManager::GetInstance()->ScaleRect(rc);
 	m_rcProgressBarPadding = rc;

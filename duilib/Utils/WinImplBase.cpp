@@ -34,12 +34,12 @@ UINT WindowImplBase::GetClassStyle() const
 	return CS_DBLCLKS;
 }
 
-std::wstring WindowImplBase::GetResourceID() const
+CUiString WindowImplBase::GetResourceID() const
 {
 	return _T("");
 }
 
-Control* WindowImplBase::CreateControl(const std::wstring& pstrClass)
+Control* WindowImplBase::CreateControl(const CUiString& pstrClass)
 {
 	return NULL;
 }
@@ -124,13 +124,13 @@ LRESULT WindowImplBase::OnNcHitTest(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 	POINT pt; pt.x = GET_X_LPARAM(lParam); pt.y = GET_Y_LPARAM(lParam);
 	::ScreenToClient(GetHWND(), &pt);
 
-	UiRect rcClient;
+	CUiRect rcClient;
 	::GetClientRect(GetHWND(), &rcClient);
 	
 	rcClient.Deflate(m_shadow.GetShadowCorner());
 	
 	if( !::IsZoomed(GetHWND()) ) {
-		UiRect rcSizeBox = GetSizeBox();
+		CUiRect rcSizeBox = GetSizeBox();
 		if( pt.y < rcClient.top + rcSizeBox.top ) {
 			if (pt.y >= rcClient.top) {
 				if (pt.x < (rcClient.left + rcSizeBox.left) && pt.x >= rcClient.left) return HTTOPLEFT;
@@ -158,7 +158,7 @@ LRESULT WindowImplBase::OnNcHitTest(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 		}
 	}
 
-	UiRect rcCaption = GetCaptionRect();
+	CUiRect rcCaption = GetCaptionRect();
 	if( pt.x >= rcClient.left + rcCaption.left && pt.x < rcClient.right - rcCaption.right \
 		&& pt.y >= rcClient.top + rcCaption.top && pt.y < rcClient.top + rcCaption.bottom ) {
 			Control* pControl = FindControl(pt);
@@ -179,11 +179,11 @@ LRESULT WindowImplBase::OnGetMinMaxInfo(UINT uMsg, WPARAM wParam, LPARAM lParam,
 	MONITORINFO oMonitor = {};
 	oMonitor.cbSize = sizeof(oMonitor);
 	::GetMonitorInfo(::MonitorFromWindow(GetHWND(), MONITOR_DEFAULTTONEAREST), &oMonitor);
-	UiRect rcWork = oMonitor.rcWork;
-	UiRect rcMonitor = oMonitor.rcMonitor;
+	CUiRect rcWork = oMonitor.rcWork;
+	CUiRect rcMonitor = oMonitor.rcMonitor;
 	rcWork.Offset(-oMonitor.rcMonitor.left, -oMonitor.rcMonitor.top);
 
-	UiRect rcMaximize = GetMaximizeInfo();
+	CUiRect rcMaximize = GetMaximizeInfo();
 	if (rcMaximize.GetWidth() > 0 && rcMaximize.GetHeight() > 0) {
 		lpMMI->ptMaxPosition.x	= rcWork.left + rcMaximize.left;
 		lpMMI->ptMaxPosition.y	= rcWork.top + rcMaximize.top;
@@ -244,9 +244,9 @@ LRESULT WindowImplBase::OnDpiChanged(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 
 LRESULT WindowImplBase::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
-	CSize szRoundCorner = GetRoundCorner();
+	CUiSize szRoundCorner = GetRoundCorner();
 	if( !::IsIconic(GetHWND()) && (szRoundCorner.cx != 0 || szRoundCorner.cy != 0) ) {
-		UiRect rcWnd;
+		CUiRect rcWnd;
 		::GetWindowRect(GetHWND(), &rcWnd);
 		rcWnd.Offset(-rcWnd.left, -rcWnd.top);
 		rcWnd.right++; rcWnd.bottom++;
@@ -291,15 +291,15 @@ LRESULT WindowImplBase::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	SetWindowResourcePath(GetSkinFolder());
 
 	WindowBuilder builder;
-	std::wstring strSkinFile = GetWindowResourcePath() + GetSkinFile();
+	CUiString strSkinFile = GetWindowResourcePath() + GetSkinFile();
 
 	auto callback = nbase::Bind(&WindowImplBase::CreateControl, this, std::placeholders::_1);
-	auto pRoot = (Box*)builder.Create(strSkinFile.c_str(), callback, this);
+	auto pRoot = (Box*)builder.Create(strSkinFile.GetData(), callback, this);
 
 	ASSERT(pRoot && L"Faield to load xml file.");
 	if (pRoot == NULL) {
 		TCHAR szErrMsg[MAX_PATH] = { 0 };
-		_stprintf_s(szErrMsg, L"Failed to load xml file %s", strSkinFile.c_str());
+		_stprintf_s(szErrMsg, _T("Failed to load xml file %s"), strSkinFile.GetData());
 		MessageBox(NULL, szErrMsg, _T("Duilib"), MB_OK | MB_ICONERROR);
 		return -1;
 	}
@@ -309,8 +309,8 @@ LRESULT WindowImplBase::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	InitWindow();
 
 	if (pRoot->GetFixedWidth() == DUI_LENGTH_AUTO || pRoot->GetFixedHeight() == DUI_LENGTH_AUTO) {
-		CSize maxSize(99999, 99999);
-		CSize needSize = pRoot->EstimateSize(maxSize);
+		CUiSize maxSize(99999, 99999);
+		CUiSize needSize = pRoot->EstimateSize(maxSize);
 		if( needSize.cx < pRoot->GetMinWidth() ) needSize.cx = pRoot->GetMinWidth();
 		if( pRoot->GetMaxWidth() >= 0 && needSize.cx > pRoot->GetMaxWidth() ) needSize.cx = pRoot->GetMaxWidth();
 		if( needSize.cy < pRoot->GetMinHeight() ) needSize.cy = pRoot->GetMinHeight();
@@ -424,7 +424,7 @@ LRESULT WindowImplBase::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 bool WindowImplBase::OnButtonClick(EventArgs* msg)
 {
-	std::wstring sCtrlName = msg->pSender->GetName();
+	CUiString sCtrlName = msg->pSender->GetName();
 	if( sCtrlName == _T("closebtn") ) {
 		Close();
 	}
@@ -471,9 +471,9 @@ void WindowImplBase::ActiveWindow()
 	}
 }
 
-void WindowImplBase::SetTaskbarTitle(const std::wstring &title)
+void WindowImplBase::SetTaskbarTitle(const CUiString &title)
 {
-	::SetWindowTextW(m_hWnd, title.c_str());
+	::SetWindowText(m_hWnd, title);
 }
 
 

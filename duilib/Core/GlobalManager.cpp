@@ -6,24 +6,24 @@
 namespace ui
 {
 
-std::wstring GlobalManager::m_pStrResourcePath;
+CUiString GlobalManager::m_pStrResourcePath;
 std::vector<Window*> GlobalManager::m_aPreMessages;
-std::map<std::wstring, std::unique_ptr<WindowBuilder>> GlobalManager::m_builderMap;
+std::map<CUiString, std::unique_ptr<WindowBuilder>> GlobalManager::m_builderMap;
 CreateControlCallback GlobalManager::m_createControlCallback;
 
 GlobalManager::MapStringToImagePtr GlobalManager::m_mImageHash;
-std::map<std::wstring, DWORD> GlobalManager::m_mapTextColor;
-std::map<std::wstring, std::wstring> GlobalManager::m_mGlobalClass;
-std::map<std::wstring, TFontInfo*> GlobalManager::m_mCustomFonts;
-std::wstring GlobalManager::m_sDefaultFontId;
+std::map<CUiString, DWORD> GlobalManager::m_mapTextColor;
+std::map<CUiString, CUiString> GlobalManager::m_mGlobalClass;
+std::map<CUiString, TFontInfo*> GlobalManager::m_mCustomFonts;
+CUiString GlobalManager::m_sDefaultFontId;
 
 short GlobalManager::m_H = 180;
 short GlobalManager::m_S = 100;
 short GlobalManager::m_L = 100;
 
-std::wstring GlobalManager::m_strDefaultFontName;
-std::wstring GlobalManager::m_strDefaultDisabledColor = L"textdefaultdisablecolor";
-std::wstring GlobalManager::m_strDefaultFontColor = L"textdefaultcolor";
+CUiString GlobalManager::m_strDefaultFontName;
+CUiString GlobalManager::m_strDefaultDisabledColor = _T("textdefaultdisablecolor");
+CUiString GlobalManager::m_strDefaultFontColor = _T("textdefaultcolor");
 DWORD GlobalManager::m_dwDefaultLinkFontColor = 0xFF0000FF;
 DWORD GlobalManager::m_dwDefaultLinkHoverFontColor = 0xFFD3215F;
 DWORD GlobalManager::m_dwDefaultSelectedBkColor = 0xFFBAE4FF;
@@ -34,7 +34,7 @@ static ULONG_PTR g_gdiplusToken;
 static Gdiplus::GdiplusStartupInput g_gdiplusStartupInput;
 static HZIP g_hzip = NULL;
 
-void GlobalManager::Startup(const std::wstring& strResourcePath, const CreateControlCallback& callback, bool bAdaptDpi, const std::wstring& theme, const std::wstring& language)
+void GlobalManager::Startup(const CUiString& strResourcePath, const CreateControlCallback& callback, bool bAdaptDpi, const CUiString& theme, const CUiString& language)
 {
 	m_renderFactory = std::make_unique<RenderFactory_GdiPlus>();
 	GlobalManager::SetResourcePath(strResourcePath + theme);
@@ -51,14 +51,14 @@ void GlobalManager::Startup(const std::wstring& strResourcePath, const CreateCon
 
 	// 加载多语言文件，如果使用了资源压缩包则从内存中加载语言文件
 	if (g_hzip) {
-		HGLOBAL hGlobal = GetData(strResourcePath + language + L"\\gdstrings.ini");
+		HGLOBAL hGlobal = GetData(strResourcePath + language + _T("\\gdstrings.ini"));
 		if (hGlobal) {
 			ui::MutiLanSupport::GetInstance()->LoadStringTable(hGlobal);
 			GlobalFree(hGlobal);
 		}
 	}
 	else {
-		MutiLanSupport::GetInstance()->LoadStringTable(strResourcePath + language + L"\\gdstrings.ini");
+		MutiLanSupport::GetInstance()->LoadStringTable(strResourcePath + language + _T("\\gdstrings.ini"));
 	}
 
 	GdiplusStartup(&g_gdiplusToken, &g_gdiplusStartupInput, NULL);
@@ -78,28 +78,28 @@ void GlobalManager::Shutdown()
 	Gdiplus::GdiplusShutdown(g_gdiplusToken);
 }
 
-std::wstring GlobalManager::GetCurrentPath()
+CUiString GlobalManager::GetCurrentPath()
 {
 	TCHAR tszModule[MAX_PATH + 1] = { 0 };
 	::GetCurrentDirectory(MAX_PATH, tszModule);
 	return tszModule;
 }
 
-std::wstring GlobalManager::GetResourcePath()
+CUiString GlobalManager::GetResourcePath()
 {
 	return m_pStrResourcePath;
 }
 
-void GlobalManager::SetCurrentPath(const std::wstring& strPath)
+void GlobalManager::SetCurrentPath(const CUiString& strPath)
 {
-	::SetCurrentDirectory(strPath.c_str());
+	::SetCurrentDirectory(strPath);
 }
 
-void GlobalManager::SetResourcePath(const std::wstring& strPath)
+void GlobalManager::SetResourcePath(const CUiString& strPath)
 {
 	m_pStrResourcePath = strPath;
-	if (m_pStrResourcePath.empty()) return;
-	TCHAR cEnd = m_pStrResourcePath.at(m_pStrResourcePath.length() - 1);
+	if (m_pStrResourcePath.IsEmpty()) return;
+	TCHAR cEnd = m_pStrResourcePath.GetAt(m_pStrResourcePath.GetLength() - 1);
 	if (cEnd != _T('\\') && cEnd != _T('/')) m_pStrResourcePath += _T('\\');
 }
 
@@ -107,10 +107,10 @@ void GlobalManager::LoadGlobalResource()
 {
 	ui::WindowBuilder dialog_builder;
 	ui::Window paint_manager;
-	dialog_builder.Create(L"global.xml", CreateControlCallback(), &paint_manager);
+	dialog_builder.Create(_T("global.xml"), CreateControlCallback(), &paint_manager);
 }
 
-void GlobalManager::ReloadSkin(const std::wstring& resourcePath)
+void GlobalManager::ReloadSkin(const CUiString& resourcePath)
 {
 	RemoveAllFonts();
 	RemoveAllTextColors();
@@ -165,21 +165,21 @@ std::unique_ptr<ui::IPath> GlobalManager::CreatePath()
 	return p;
 }
 
-void GlobalManager::AddClass(const std::wstring& strClassName, const std::wstring& strControlAttrList)
+void GlobalManager::AddClass(const CUiString& strClassName, const CUiString& strControlAttrList)
 {
-	ASSERT(!strClassName.empty());
-	ASSERT(!strControlAttrList.empty());
+	ASSERT(!strClassName.IsEmpty());
+	ASSERT(!strControlAttrList.IsEmpty());
 	m_mGlobalClass[strClassName] = strControlAttrList;
 }
 
-std::wstring GlobalManager::GetClassAttributes(const std::wstring& strClassName)
+CUiString GlobalManager::GetClassAttributes(const CUiString& strClassName)
 {
 	auto it = m_mGlobalClass.find(strClassName);
 	if (it != m_mGlobalClass.end()) {
 		return it->second;
 	}
 
-	return L"";
+	return _T("");
 }
 
 void GlobalManager::RemoveAllClasss()
@@ -187,16 +187,16 @@ void GlobalManager::RemoveAllClasss()
 	m_mGlobalClass.clear();
 }
 
-void GlobalManager::AddTextColor(const std::wstring& strName, const std::wstring& strValue)
+void GlobalManager::AddTextColor(const CUiString& strName, const CUiString& strValue)
 {
-	std::wstring strColor = strValue.substr(1);
+	CUiString strColor = strValue.Mid(1);
 	LPTSTR pstr = NULL;
-	DWORD dwBackColor = _tcstoul(strColor.c_str(), &pstr, 16);
+	DWORD dwBackColor = _tcstoul(strColor, &pstr, 16);
 
 	m_mapTextColor[strName] = dwBackColor;
 }
 
-DWORD GlobalManager::GetTextColor(const std::wstring& strName)
+DWORD GlobalManager::GetTextColor(const CUiString& strName)
 {
 	// 必须在global.xml中提前定义到颜色值
 	ASSERT(m_mapTextColor[strName] != 0);
@@ -208,9 +208,9 @@ void GlobalManager::RemoveAllTextColors()
 	m_mapTextColor.clear();
 }
 
-std::shared_ptr<ImageInfo> GlobalManager::IsImageCached(const std::wstring& strImagePath)
+std::shared_ptr<ImageInfo> GlobalManager::IsImageCached(const CUiString& strImagePath)
 {
-	std::wstring imageFullPath = StringHelper::ReparsePath(strImagePath);
+	CUiString imageFullPath = StringHelper::ReparsePath(strImagePath);
 	std::shared_ptr<ImageInfo> sharedImage;
 	auto it = m_mImageHash.find(imageFullPath);
 	if (it != m_mImageHash.end()) {
@@ -228,7 +228,7 @@ std::shared_ptr<ImageInfo> GlobalManager::AddImageCached(const std::shared_ptr<I
 	return sharedImage;
 }
 
-void GlobalManager::RemoveFromImageCache(const std::wstring& imageFullPath)
+void GlobalManager::RemoveFromImageCache(const CUiString& imageFullPath)
 {
 	auto it = m_mImageHash.find(imageFullPath);
 	if (it != m_mImageHash.end()) {
@@ -243,16 +243,16 @@ void GlobalManager::OnImageInfoDestroy(ImageInfo* pImageInfo)
 {
 	ASSERT(pImageInfo);
 	if (pImageInfo && pImageInfo->IsCached()) {
-		if (!pImageInfo->sImageFullPath.empty()) {
+		if (!pImageInfo->sImageFullPath.IsEmpty()) {
 			GlobalManager::RemoveFromImageCache(pImageInfo->sImageFullPath);
 		}
 	}
 	delete pImageInfo;
 }
 
-std::shared_ptr<ImageInfo> GlobalManager::GetImage(const std::wstring& bitmap)
+std::shared_ptr<ImageInfo> GlobalManager::GetImage(const CUiString& bitmap)
 {
-	std::wstring imageFullPath = StringHelper::ReparsePath(bitmap);
+	CUiString imageFullPath = StringHelper::ReparsePath(bitmap);
 	if (IsUseZip())
 	{
 		imageFullPath = GetZipFilePath(imageFullPath);
@@ -281,7 +281,7 @@ std::shared_ptr<ImageInfo> GlobalManager::GetImage(const std::wstring& bitmap)
 	return sharedImage;
 }
 
-std::wstring GlobalManager::GetDefaultFontName()
+CUiString GlobalManager::GetDefaultFontName()
 {
 	return m_strDefaultFontName;
 }
@@ -295,26 +295,30 @@ void GlobalManager::RemoveAllImages()
 	m_mImageHash.clear();
 }
 
-HFONT GlobalManager::AddFont(const std::wstring& strFontId, const std::wstring& strFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bDefault)
+HFONT GlobalManager::AddFont(const CUiString& strFontId, const CUiString& strFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bDefault)
 {
-	std::wstring strNewFontId = strFontId;
-	if (strNewFontId.empty())
+	CUiString strNewFontId = strFontId;
+	if (strNewFontId.IsEmpty())
 	{
-		strNewFontId = std::to_wstring(m_mCustomFonts.size());
+#ifdef _UNICODE
+		strNewFontId = std::to_wstring(m_mCustomFonts.size()).c_str();
+#else
+		strNewFontId = std::to_string(m_mCustomFonts.size()).c_str();
+#endif // _UNICODE
 	}
 
 	auto iter = m_mCustomFonts.find(strNewFontId);
 	ASSERT(iter == m_mCustomFonts.end());
 
 	static bool bOsOverXp = IsWindowsVistaOrGreater();
-	std::wstring fontName = strFontName;
-	if (fontName == L"system") {
-		fontName = bOsOverXp ? L"微软雅黑" : L"新宋体";
+	CUiString fontName = strFontName;
+	if (fontName == _T("system")) {
+		fontName = bOsOverXp ? _T("微软雅黑") : _T("新宋体");
 	}
 
 	LOGFONT lf = { 0 };
 	::GetObject(::GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
-	_tcscpy(lf.lfFaceName, fontName.c_str());
+	_tcscpy(lf.lfFaceName, fontName.GetData());
 	lf.lfCharSet = DEFAULT_CHARSET;
 	lf.lfHeight = -DpiManager::GetInstance()->ScaleInt(nSize);
 	if (bBold) lf.lfWeight += FW_BOLD;
@@ -340,12 +344,12 @@ HFONT GlobalManager::AddFont(const std::wstring& strFontId, const std::wstring& 
 	return hFont;
 }
 
-TFontInfo* GlobalManager::GetTFontInfo(const std::wstring& strFontId)
+TFontInfo* GlobalManager::GetTFontInfo(const CUiString& strFontId)
 {
-	std::wstring strFindId = strFontId;
-	if (strFindId.empty())
+	CUiString strFindId = strFontId;
+	if (strFindId.IsEmpty())
 	{
-		ASSERT(!m_sDefaultFontId.empty());
+		ASSERT(!m_sDefaultFontId.IsEmpty());
 		strFindId = m_sDefaultFontId;
 	}
 
@@ -356,7 +360,7 @@ TFontInfo* GlobalManager::GetTFontInfo(const std::wstring& strFontId)
 	return pFontInfo;
 }
 
-HFONT GlobalManager::GetFont(const std::wstring& strFontId)
+HFONT GlobalManager::GetFont(const CUiString& strFontId)
 {
 	TFontInfo* pFontInfo = GetTFontInfo(strFontId);
 	if (pFontInfo)
@@ -364,7 +368,7 @@ HFONT GlobalManager::GetFont(const std::wstring& strFontId)
 	return nullptr;
 }
 
-HFONT GlobalManager::GetFont(const std::wstring& strFontName, int nSize, bool bBold, bool bUnderline, bool bItalic)
+HFONT GlobalManager::GetFont(const CUiString& strFontName, int nSize, bool bBold, bool bUnderline, bool bItalic)
 {
 	for (auto it = m_mCustomFonts.begin(); it != m_mCustomFonts.end(); it++) {
 		auto pFontInfo = it->second;
@@ -375,7 +379,7 @@ HFONT GlobalManager::GetFont(const std::wstring& strFontName, int nSize, bool bB
 	return NULL;
 }
 
-TFontInfo* GlobalManager::GetFontInfo(const std::wstring& strFontId, HDC hDcPaint)
+TFontInfo* GlobalManager::GetFontInfo(const CUiString& strFontId, HDC hDcPaint)
 {
 	TFontInfo* pFontInfo = GetTFontInfo(strFontId);
 	if (pFontInfo->tm.tmHeight == 0) {
@@ -414,7 +418,7 @@ bool GlobalManager::FindFont(HFONT hFont)
 	return false;
 }
 
-bool GlobalManager::FindFont(const std::wstring& strFontName, int nSize, bool bBold, bool bUnderline, bool bItalic)
+bool GlobalManager::FindFont(const CUiString& strFontName, int nSize, bool bBold, bool bUnderline, bool bItalic)
 {
 	for (auto it = m_mCustomFonts.begin(); it != m_mCustomFonts.end(); it++) {
 		auto pFontInfo = it->second;
@@ -425,7 +429,7 @@ bool GlobalManager::FindFont(const std::wstring& strFontName, int nSize, bool bB
 	return false;
 }
 
-bool GlobalManager::RemoveFontAt(const std::wstring& strFontId)
+bool GlobalManager::RemoveFontAt(const CUiString& strFontId)
 {
 	auto iter = m_mCustomFonts.find(strFontId);
 	if (iter == m_mCustomFonts.end()) return false;
@@ -449,22 +453,22 @@ void GlobalManager::RemoveAllFonts()
 	m_mCustomFonts.clear();
 }
 
-std::wstring GlobalManager::GetDefaultDisabledTextColor()
+CUiString GlobalManager::GetDefaultDisabledTextColor()
 {
 	return m_strDefaultDisabledColor;
 }
 
-void GlobalManager::SetDefaultDisabledTextColor(const std::wstring& strColor)
+void GlobalManager::SetDefaultDisabledTextColor(const CUiString& strColor)
 {
 	m_strDefaultDisabledColor = strColor;
 }
 
-std::wstring GlobalManager::GetDefaultTextColor()
+CUiString GlobalManager::GetDefaultTextColor()
 {
 	return m_strDefaultFontColor;
 }
 
-void GlobalManager::SetDefaultTextColor(const std::wstring& strColor)
+void GlobalManager::SetDefaultTextColor(const CUiString& strColor)
 {
 	m_strDefaultFontColor = strColor;
 }
@@ -499,22 +503,22 @@ void GlobalManager::SetDefaultSelectedBkColor(DWORD dwColor)
 	m_dwDefaultSelectedBkColor = dwColor;
 }
 
-Box* GlobalManager::CreateBox(const std::wstring& strXmlPath, CreateControlCallback callback)
+Box* GlobalManager::CreateBox(const CUiString& strXmlPath, CreateControlCallback callback)
 {
 	WindowBuilder builder;
-	Box* box = builder.Create(strXmlPath.c_str(), callback);
+	Box* box = builder.Create(strXmlPath.GetData(), callback);
 	ASSERT(box);
 
 	return box;
 }
 
-Box* GlobalManager::CreateBoxWithCache(const std::wstring& strXmlPath, CreateControlCallback callback)
+Box* GlobalManager::CreateBoxWithCache(const CUiString& strXmlPath, CreateControlCallback callback)
 {
 	Box* box = nullptr;
 	auto it = m_builderMap.find(strXmlPath);
 	if (it == m_builderMap.end()) {
 		WindowBuilder* builder = new WindowBuilder();
-		box = builder->Create(strXmlPath.c_str(), callback);
+		box = builder->Create(strXmlPath.GetData(), callback);
 		if (box) {
 			m_builderMap[strXmlPath].reset(builder);
 		}
@@ -529,22 +533,22 @@ Box* GlobalManager::CreateBoxWithCache(const std::wstring& strXmlPath, CreateCon
 	return box;
 }
 
-void GlobalManager::FillBox(Box* pUserDefinedBox, const std::wstring& strXmlPath, CreateControlCallback callback)
+void GlobalManager::FillBox(Box* pUserDefinedBox, const CUiString& strXmlPath, CreateControlCallback callback)
 {
 	WindowBuilder winBuilder;
-	Box* box = winBuilder.Create(strXmlPath.c_str(), callback, pUserDefinedBox->GetWindow(), nullptr, pUserDefinedBox);
+	Box* box = winBuilder.Create(strXmlPath.GetData(), callback, pUserDefinedBox->GetWindow(), nullptr, pUserDefinedBox);
 	ASSERT(box);
 
 	return;
 }
 
-void GlobalManager::FillBoxWithCache(Box* pUserDefinedBox, const std::wstring& strXmlPath, CreateControlCallback callback)
+void GlobalManager::FillBoxWithCache(Box* pUserDefinedBox, const CUiString& strXmlPath, CreateControlCallback callback)
 {
 	Box* box = nullptr;
 	auto it = m_builderMap.find(strXmlPath);
 	if (it == m_builderMap.end()) {
 		WindowBuilder* winBuilder = new WindowBuilder();
-		box = winBuilder->Create(strXmlPath.c_str(), callback, pUserDefinedBox->GetWindow(), nullptr, pUserDefinedBox);
+		box = winBuilder->Create(strXmlPath.GetData(), callback, pUserDefinedBox->GetWindow(), nullptr, pUserDefinedBox);
 		if (box) {
 			m_builderMap[strXmlPath].reset(winBuilder);
 		}
@@ -559,7 +563,7 @@ void GlobalManager::FillBoxWithCache(Box* pUserDefinedBox, const std::wstring& s
 	return;
 }
 
-Control* GlobalManager::CreateControl(const std::wstring& strControlName)
+Control* GlobalManager::CreateControl(const CUiString& strControlName)
 {
 	if (m_createControlCallback) {
 		return m_createControlCallback(strControlName);
@@ -592,26 +596,26 @@ bool GlobalManager::OpenResZip(LPCTSTR  resource_name, LPCTSTR  resource_type, c
 	return g_hzip != NULL;
 }
 
-bool GlobalManager::OpenResZip(const std::wstring& path, const std::string& password)
+bool GlobalManager::OpenResZip(const CUiString& path, const std::string& password)
 {
 	if (g_hzip)
 	{
 		CloseZip(g_hzip);
 		g_hzip = NULL;
 	}
-	g_hzip = OpenZip(path.c_str(), password.c_str());
+	g_hzip = OpenZip(path, password.c_str());
 	return g_hzip != NULL;
 }
 
-HGLOBAL GlobalManager::GetData(const std::wstring& path)
+HGLOBAL GlobalManager::GetData(const CUiString& path)
 {
 	HGLOBAL hGlobal = NULL;
-	std::wstring file_path = GetZipFilePath(path);
-	if (g_hzip && !file_path.empty())
+	CUiString file_path = GetZipFilePath(path);
+	if (g_hzip && !file_path.IsEmpty())
 	{
 		ZIPENTRY ze;
 		int i = 0;
-		if (FindZipItem(g_hzip, file_path.c_str(), true, &i, &ze) == ZR_OK)
+		if (FindZipItem(g_hzip, file_path, true, &i, &ze) == ZR_OK)
 		{
 			if (ze.index >= 0)
 			{
@@ -642,20 +646,20 @@ HGLOBAL GlobalManager::GetData(const std::wstring& path)
 	return hGlobal;
 }
 
-std::wstring GlobalManager::GetZipFilePath(const std::wstring& path)
+CUiString GlobalManager::GetZipFilePath(const CUiString& path)
 {
-	std::wstring file_path = path;
-	StringHelper::ReplaceAll(L"\\", L"/", file_path);
-	StringHelper::ReplaceAll(L"//", L"/", file_path);
-	for (unsigned int i = 0; i < file_path.size();)
+	CUiString file_path = path;
+	file_path.Replace(_T("\\"), _T("/"));
+	file_path.Replace(_T("//"), _T("/"));
+	for (unsigned int i = 0; i < file_path.GetLength();)
 	{
 		bool start_node = false;
-		if (i == 0 || file_path.at(i - 1) == L'/')
+		if (i == 0 || file_path.GetAt(i - 1) == _T('/'))
 		{
 			start_node = true;
 		}
-		WCHAR wch = file_path.at(i);
-		if (start_node && wch == L'/')//"//"
+		TCHAR wch = file_path.GetAt(i);
+		if (start_node && wch == _T('/'))//"//"
 		{
 			file_path.erase(i, 1);
 			continue;
@@ -687,17 +691,17 @@ std::wstring GlobalManager::GetZipFilePath(const std::wstring& path)
 	return file_path;
 }
 
-bool GlobalManager::ImageCacheKeyCompare::operator()(const std::wstring& key1, const std::wstring& key2) const
+bool GlobalManager::ImageCacheKeyCompare::operator()(const CUiString& key1, const CUiString& key2) const
 {
-	int nLen1 = (int)key1.length();
-	int nLen2 = (int)key2.length();
+	int nLen1 = (int)key1.GetLength();
+	int nLen2 = (int)key2.GetLength();
 	if (nLen1 != nLen2)
 		return nLen1 < nLen2;
 
-	LPCWSTR pStr1Begin = key1.c_str();
-	LPCWSTR pStr2Begin = key2.c_str();
-	LPCWSTR pStr1End = pStr1Begin + nLen1;
-	LPCWSTR pStr2End = pStr2Begin + nLen2;
+	LPCTSTR pStr1Begin = key1;
+	LPCTSTR pStr2Begin = key2;
+	LPCTSTR pStr1End = pStr1Begin + nLen1;
+	LPCTSTR pStr2End = pStr2Begin + nLen2;
 
 	// 逆向比较
 	while (--pStr1End >= pStr1Begin && --pStr2End >= pStr2Begin && *pStr1End == *pStr2End);

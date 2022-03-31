@@ -12,9 +12,9 @@ public:
 	Slider();
 
 	/// 重写父类方法，提供个性化功能，请参考父类声明
-	virtual UiRect GetProgressPos() override;
+	virtual CUiRect GetProgressPos() override;
 	virtual void HandleMessage(EventArgs& event) override;
-	virtual void SetAttribute(const std::wstring& strName, const std::wstring& strValue) override;
+	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
 	virtual void PaintStatusImage(IRenderContext* pRender) override;
 	virtual void ClearImageCache() override;
 
@@ -36,13 +36,13 @@ public:
 	 * @param[in] szXY 要设置的大小
 	 * @return 无
 	 */
-	void SetThumbSize(CSize szXY);
+	void SetThumbSize(CUiSize szXY);
 
 	/**
 	 * @brief 获取滑块的矩形信息
 	 * @return 返回滑块的矩形信息
 	 */
-	UiRect GetThumbRect() const;
+	CUiRect GetThumbRect() const;
 
 	/**
 	 * @brief 获取指定状态下滑块的图片
@@ -63,14 +63,14 @@ public:
 	 * @brief 获取进度条内边距
 	 * @return 返回内边距信息
 	 */
-	UiRect GetProgressBarPadding() const;
+	CUiRect GetProgressBarPadding() const;
 
 	/**
 	 * @brief 设置进度条内边距
 	 * @param[in] rc 要设置的边距信息
 	 * @return 无
 	 */
-	void SetProgressBarPadding(UiRect rc);
+	void SetProgressBarPadding(CUiRect rc);
 
 	/**
 	 * @brief 监听进度条进度改变事件
@@ -81,9 +81,9 @@ public:
 
 protected:
 	int m_nStep;
-	CSize m_szThumb;
+	CUiSize m_szThumb;
 	StateImage m_thumbStateImage;
-	UiRect	m_rcProgressBarPadding;
+	CUiRect	m_rcProgressBarPadding;
 	ControlStateType m_uButtonState;
 	std::wstring m_sImageModify;
 };

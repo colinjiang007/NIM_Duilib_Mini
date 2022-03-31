@@ -17,7 +17,7 @@ public:
 	virtual bool Remove(Control* pControl) override;
 	virtual bool RemoveAt(std::size_t iIndex) override;
 	virtual void RemoveAll() override;
-	virtual void SetAttribute(const std::wstring& strName, const std::wstring& strValue) override;
+	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
 
 	/**
 	 * @brief 获取当前选择项

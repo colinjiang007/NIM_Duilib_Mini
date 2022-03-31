@@ -26,19 +26,19 @@ void CComboWnd::Init(Combo* pOwner)
     m_iOldSel = m_pOwner->GetCurSel();
 
     // Position the popup window in absolute space
-    CSize szDrop = m_pOwner->GetDropBoxSize();
-    UiRect rcOwner = pOwner->GetPosWithScrollOffset();
-    UiRect rc = rcOwner;
+    CUiSize szDrop = m_pOwner->GetDropBoxSize();
+    CUiRect rcOwner = pOwner->GetPosWithScrollOffset();
+    CUiRect rc = rcOwner;
     rc.top = rc.bottom + 1;		// 父窗口left、bottom位置作为弹出窗口起点
     rc.bottom = rc.top + szDrop.cy;	// 计算弹出窗口高度
     if( szDrop.cx > 0 ) rc.right = rc.left + szDrop.cx;	// 计算弹出窗口宽度
 
-    CSize szAvailable(rc.right - rc.left, rc.bottom - rc.top);
+    CUiSize szAvailable(rc.right - rc.left, rc.bottom - rc.top);
     int cyFixed = 0;
 	for (int it = 0; it < pOwner->GetListBox()->GetCount(); it++) {
 		Control* pControl = pOwner->GetListBox()->GetItemAt(it);
         if( !pControl->IsVisible() ) continue;
-        CSize sz = pControl->EstimateSize(szAvailable);
+        CUiSize sz = pControl->EstimateSize(szAvailable);
         cyFixed += sz.cy;
     }
     cyFixed += 2; // VBox 默认的Padding 调整
@@ -49,7 +49,7 @@ void CComboWnd::Init(Combo* pOwner)
     MONITORINFO oMonitor = {};
     oMonitor.cbSize = sizeof(oMonitor);
     ::GetMonitorInfo(::MonitorFromWindow(GetHWND(), MONITOR_DEFAULTTOPRIMARY), &oMonitor);
-    UiRect rcWork = oMonitor.rcWork;
+    CUiRect rcWork = oMonitor.rcWork;
     if( rc.bottom > rcWork.bottom || m_pOwner->IsPopupTop()) {
         rc.left = rcOwner.left;
         rc.right = rcOwner.right;
@@ -143,8 +143,8 @@ Combo::Combo() :
 	// reassigned by this operation - which is why it is important to reassign
 	// the items back to the righfull owner/manager when the window closes.
 	m_pLayout.reset(new ListBox(new VLayout));
-	m_pLayout->GetLayout()->SetPadding(UiRect(1, 1, 1, 1));
-	m_pLayout->SetBorderSize(UiRect(1, 1, 1, 1));
+	m_pLayout->GetLayout()->SetPadding(CUiRect(1, 1, 1, 1));
+	m_pLayout->SetBorderSize(CUiRect(1, 1, 1, 1));
 	m_pLayout->SetAutoDestroy(false);
 	m_pLayout->EnableScrollBar();
 	m_pLayout->ApplyAttributeList(GetDropBoxAttributeList());
@@ -198,7 +198,7 @@ void Combo::SetAttribute(const std::wstring& strName, const std::wstring& strVal
 	else if (strName == _T("vscrollbar")) {}
 	else if (strName == _T("dropboxsize"))
 	{
-		CSize szDropBoxSize;
+		CUiSize szDropBoxSize;
 		LPTSTR pstr = NULL;
 		szDropBoxSize.cx = _tcstol(strValue.c_str(), &pstr, 10); ASSERT(pstr);
 		szDropBoxSize.cy = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
@@ -210,12 +210,12 @@ void Combo::SetAttribute(const std::wstring& strName, const std::wstring& strVal
 
 void Combo::PaintText(IRenderContext* pRender)
 {
-	UiRect rcText = m_rcItem;
+	CUiRect rcText = m_rcItem;
 
 	if (m_iCurSel >= 0) {
 		Control* pControl = static_cast<Control*>((m_pLayout->GetItemAt(m_iCurSel)));
 		ListContainerElement* pElement = dynamic_cast<ListContainerElement*>(pControl);
-		UiRect rcTextPadding = pElement->GetTextPadding();
+		CUiRect rcTextPadding = pElement->GetTextPadding();
 		rcText.left += rcTextPadding.left;
 		rcText.right -= rcTextPadding.right;
 		rcText.top += rcTextPadding.top;
@@ -234,7 +234,7 @@ void Combo::PaintText(IRenderContext* pRender)
 				pElement->GetFont(), DT_SINGLELINE | DT_VCENTER | DT_END_ELLIPSIS);
 		}
 		else {
-			UiRect rcOldPos = pControl->GetPos();
+			CUiRect rcOldPos = pControl->GetPos();
 			pControl->SetPos(rcText);
 			pControl->AlphaPaint(pRender, rcText);
 			pControl->SetPos(rcOldPos);
@@ -260,12 +260,12 @@ void Combo::SetDropBoxAttributeList(const std::wstring& pstrList)
     m_pLayout->ApplyAttributeList(pstrList);
 }
 
-CSize Combo::GetDropBoxSize() const
+CUiSize Combo::GetDropBoxSize() const
 {
     return m_szDropBox;
 }
 
-void Combo::SetDropBoxSize(CSize szDropBox)
+void Combo::SetDropBoxSize(CUiSize szDropBox)
 {
 	DpiManager::GetInstance()->ScaleSize(szDropBox);
     m_szDropBox = szDropBox;

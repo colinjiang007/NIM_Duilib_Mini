@@ -12,7 +12,7 @@ public:
 	Progress();
 
 	/// 重写父类方法，提供个性化功能，请参考父类声明
-	virtual void SetAttribute(const std::wstring& strName, const std::wstring& strValue) override;
+	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
 	virtual void PaintStatusImage(IRenderContext* pRender) override;
 	virtual void ClearImageCache() override;
 
@@ -111,7 +111,7 @@ public:
 	 * @brief 获取进度条位置
 	 * @return 返回进度条当前位置
 	 */
-	virtual UiRect GetProgressPos();
+	virtual CUiRect GetProgressPos();
 
 protected:
 	bool m_bHorizontal;

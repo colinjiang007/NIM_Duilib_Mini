@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "base/win32/path_util.h"
-#include "base/thread/thread_manager.h"
+#include "../Utils/Utils.h"
+//#include "base/thread/thread_manager.h"
 
 // These constants are for backward compatibility. They are the 
 // sizes used for initialization and reset in RichEdit 1.0
@@ -41,8 +41,8 @@ public:
     virtual ~CTxtWinHost();
 
     ITextServices* GetTextServices(void) { return pserv; }
-    void SetClientRect(UiRect *prc);
-    UiRect* GetClientRect() { return &rcClient; }
+    void SetClientRect(CUiRect *prc);
+    CUiRect* GetClientRect() { return &rcClient; }
     BOOL GetWordWrap(void) { return fWordWrap; }
     void SetWordWrap(BOOL fWordWrap);
     BOOL GetReadOnly();
@@ -68,7 +68,7 @@ public:
     HRESULT OnTxInPlaceDeactivate();
     HRESULT OnTxInPlaceActivate(LPCRECT prcClient);
     BOOL GetActiveState(void) { return fInplaceActive; }
-    BOOL DoSetCursor(UiRect *prc, POINT *pt);
+    BOOL DoSetCursor(CUiRect *prc, POINT *pt);
     void SetTransparent(BOOL fTransparent);
     void GetControlRect(LPRECT prc);
     LONG SetAccelPos(LONG laccelpos);
@@ -193,7 +193,7 @@ private:
     DWORD		dwEventMask;			// HandleMessage mask to pass on to parent window
     LONG		icf;
     LONG		ipf;
-    UiRect		rcClient;				// Client Rect for this control
+    CUiRect		rcClient;				// Client Rect for this control
     SIZEL		sizelExtent;			// Extent array
     CHARFORMAT2W cf;					// Default character format
     PARAFORMAT2	pf;					    // Default paragraph format
@@ -305,7 +305,7 @@ BOOL CTxtWinHost::Init(RichEdit *re, const CREATESTRUCT *pcs)
     IUnknown *pUnk = nullptr;
 	HMODULE hmod = NULL;
     HRESULT hr;
-	std::wstring edit_dll(L"msftedit.dll");
+	CUiString edit_dll(_T("msftedit.dll"));
     m_re = re;
     // Initialize Reference count
     cRefs = 1;
@@ -353,13 +353,13 @@ BOOL CTxtWinHost::Init(RichEdit *re, const CREATESTRUCT *pcs)
 
 	//解决32位系统下跨窗口间拖拽文字在win7及win7以下系统上会出现重复的问题（64位暂不修复） lty 20170714
 #if defined(_M_X64) || defined(__x86_64__)
-	edit_dll = L"msftedit.dll";
+	edit_dll = _T("msftedit.dll");
 #else
-	edit_dll = nbase::win32::GetCurrentModuleDirectory() + L"msftedit50.dll";
-	if (!(::GetFileAttributesW(edit_dll.c_str()) != INVALID_FILE_ATTRIBUTES))
-		edit_dll = L"msftedit.dll";
+	edit_dll = ui::PathUtil::GetCurrentModuleDir() + _T("msftedit50.dll");
+	if (!(::GetFileAttributes(edit_dll) != INVALID_FILE_ATTRIBUTES))
+		edit_dll = _T("msftedit.dll");
 #endif
-	hmod = LoadLibraryW(edit_dll.c_str()); //msftedit.dll
+	hmod = LoadLibrary(edit_dll); //msftedit.dll
 	if (hmod)
 	{
 		TextServicesProc = (PCreateTextServices)GetProcAddress(hmod,"CreateTextServices");
@@ -560,14 +560,14 @@ BOOL CTxtWinHost::TxSetScrollPos (INT fnBar, INT nPos, BOOL fRedraw)
 
 void CTxtWinHost::TxInvalidateRect(LPCRECT prc, BOOL fMode)
 {
-	CPoint scrollOffset = m_re->GetScrollOffset();
+	CUiPoint scrollOffset = m_re->GetScrollOffset();
     if( prc == NULL ) {
-		UiRect newRcClient = rcClient;
+		CUiRect newRcClient = rcClient;
 		newRcClient.Offset(-scrollOffset.x, -scrollOffset.y);
         m_re->GetWindow()->Invalidate(newRcClient);
         return;
     }
-    UiRect rc = *prc;
+    CUiRect rc = *prc;
 	rc.Offset(-scrollOffset.x, -scrollOffset.y);
     m_re->GetWindow()->Invalidate(rc);
 }
@@ -780,7 +780,7 @@ HRESULT CTxtWinHost::TxGetPropertyBits(DWORD dwMask, DWORD *pdwBits)
 HRESULT CTxtWinHost::TxNotify(DWORD iNotify, void *pv)
 {
     if( iNotify == EN_REQUESTRESIZE ) {
-        UiRect rc;
+        CUiRect rc;
         REQRESIZE *preqsz = (REQRESIZE *)pv;
         GetControlRect(&rc);
         rc.bottom = rc.top + preqsz->rc.bottom;
@@ -958,7 +958,7 @@ void CTxtWinHost::SetDefaultLeftIndent(LONG lNewIndent)
     pserv->OnTxPropertyBitsChange(TXTBIT_PARAFORMATCHANGE, 0);
 }
 
-void CTxtWinHost::SetClientRect(UiRect *prc) 
+void CTxtWinHost::SetClientRect(CUiRect *prc) 
 {
     rcClient = *prc;
 
@@ -1013,16 +1013,16 @@ HRESULT	CTxtWinHost::OnTxInPlaceActivate(LPCRECT prcClient)
     return hr;
 }
 
-BOOL CTxtWinHost::DoSetCursor(UiRect *prc, POINT *pt)
+BOOL CTxtWinHost::DoSetCursor(CUiRect *prc, POINT *pt)
 {
-    UiRect rc = (prc != NULL) ? *prc : rcClient;
+    CUiRect rc = (prc != NULL) ? *prc : rcClient;
 
     // Is this in our rectangle?
-	CPoint newPt = *pt;
+	CUiPoint newPt = *pt;
 	newPt.Offset(m_re->GetScrollOffset());
     if (PtInRect(&rc, newPt))
     {
-        UiRect *prcClient = (!fInplaceActive || prc) ? &rc : NULL;
+        CUiRect *prcClient = (!fInplaceActive || prc) ? &rc : NULL;
         pserv->OnTxSetCursor(DVASPECT_CONTENT,	-1, NULL, NULL,  m_re->GetWindow()->GetPaintDC(),
             NULL, prcClient, newPt.x, newPt.y);
 
@@ -1034,7 +1034,7 @@ BOOL CTxtWinHost::DoSetCursor(UiRect *prc, POINT *pt)
 
 void CTxtWinHost::GetControlRect(LPRECT prc)
 {
-	UiRect rc = rcClient;
+	CUiRect rc = rcClient;
 	VerAlignType alignType = m_re->GetTextVerAlignType();
 	if (alignType != kVerAlignTop) {
 		LONG iWidth = rc.right - rc.left;
@@ -1275,12 +1275,12 @@ void RichEdit::SetWordWrap(bool bWordWrap)
     if( m_pTwh ) m_pTwh->SetWordWrap(bWordWrap);
 }
 
-std::wstring RichEdit::GetFont() const
+CUiString RichEdit::GetFont() const
 {
     return m_sFontId;
 }
 
-void RichEdit::SetFont(const std::wstring& strFontId)
+void RichEdit::SetFont(const CUiString& strFontId)
 {
     m_sFontId = strFontId;
     if( m_pTwh ) {
@@ -1288,7 +1288,7 @@ void RichEdit::SetFont(const std::wstring& strFontId)
     }
 }
 
-void RichEdit::SetFont(const std::wstring& pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic)
+void RichEdit::SetFont(const CUiString& pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic)
 {
     if( m_pTwh ) {
         LOGFONT lf = { 0 };
@@ -1328,7 +1328,7 @@ ui::VerAlignType RichEdit::GetTextVerAlignType()
 	return m_textVerAlignType;
 }
 
-void RichEdit::SetTextColor(const std::wstring& dwTextColor)
+void RichEdit::SetTextColor(const CUiString& dwTextColor)
 {
 	if(m_sCurrentColor == dwTextColor)
 		return;
@@ -1347,7 +1347,7 @@ void RichEdit::SetTextColor(DWORD color)
 	}
 }
 
-std::wstring RichEdit::GetTextColor()
+CUiString RichEdit::GetTextColor()
 {
 	return m_sCurrentColor;
 }
@@ -1379,7 +1379,7 @@ long RichEdit::GetTextLength(DWORD dwFlags) const
     return (long)lResult;
 }
 
-std::wstring RichEdit::GetText() const
+CUiString RichEdit::GetText() const
 {
     long lLen = GetTextLength(GTL_DEFAULT);
     LPTSTR lpText = NULL;
@@ -1399,7 +1399,7 @@ std::wstring RichEdit::GetText() const
     gt.lpDefaultChar = NULL;
     gt.lpUsedDefChar = NULL;
     TxSendMessage(EM_GETTEXTEX, (WPARAM)&gt, (LPARAM)lpText, 0);
-    std::wstring sText(lpText);
+    CUiString sText(lpText);
     delete[] lpText;
     return sText;
 }
@@ -1411,7 +1411,7 @@ std::string RichEdit::GetUTF8Text() const
 	return strOut;
 }
 
-void RichEdit::SetText(const std::wstring& strText)
+void RichEdit::SetText(const CUiString& strText)
 {
 	m_sText = strText;
 	if( !m_bInited )
@@ -1423,19 +1423,19 @@ void RichEdit::SetText(const std::wstring& strText)
 	m_linkInfo.clear();
 }
 
-void RichEdit::SetTextId(const std::wstring& strTextId)
+void RichEdit::SetTextId(const CUiString& strTextId)
 {
 	MutiLanSupport* mutilan = MutiLanSupport::GetInstance();
 	if (mutilan)
 	{
-		std::wstring strText = mutilan->GetStringViaID(strTextId);
+		CUiString strText = mutilan->GetStringViaID(strTextId);
 		SetText(strText);
 	}
 }
 
 void RichEdit::SetUTF8Text( const std::string& strText )
 {
-	std::wstring strOut;
+	CUiString strOut;
 	StringHelper::MBCSToUnicode(strText, strOut, CP_UTF8);
 	SetText(strOut);
 }
@@ -1483,12 +1483,12 @@ int RichEdit::SetSel(long nStartChar, long nEndChar)
     return (int)lResult;
 }
 
-void RichEdit::ReplaceSel(const std::wstring& lpszNewText, bool bCanUndo)
+void RichEdit::ReplaceSel(const CUiString& lpszNewText, bool bCanUndo)
 {
 #ifdef _UNICODE		
     TxSendMessage(EM_REPLACESEL, (WPARAM) bCanUndo, (LPARAM)lpszNewText.c_str(), 0); 
 #else
-	std::wstring strOut;
+	CUiString strOut;
 	StringHelper::MBCSToUnicode(lpszNewText, strOut, CP_ACP);
 	TxSendMessage(EM_REPLACESEL, (WPARAM) bCanUndo, (LPARAM)strOut.c_str(), 0); 
 #endif
@@ -1499,9 +1499,9 @@ void RichEdit::ReplaceSelW(LPCWSTR lpszNewText, bool bCanUndo)
     TxSendMessage(EM_REPLACESEL, (WPARAM) bCanUndo, (LPARAM)lpszNewText, 0); 
 }
 
-std::wstring RichEdit::GetSelText() const
+CUiString RichEdit::GetSelText() const
 {
-    if( !m_pTwh ) return std::wstring();
+    if( !m_pTwh ) return CUiString();
     CHARRANGE cr;
     cr.cpMin = cr.cpMax = 0;
     TxSendMessage(EM_EXGETSEL, 0, (LPARAM)&cr, 0);
@@ -1509,7 +1509,7 @@ std::wstring RichEdit::GetSelText() const
     lpText = new WCHAR[cr.cpMax - cr.cpMin + 1];
     ::ZeroMemory(lpText, (cr.cpMax - cr.cpMin + 1) * sizeof(WCHAR));
     TxSendMessage(EM_GETSELTEXT, 0, (LPARAM)lpText, 0);
-    std::wstring sText;
+    CUiString sText;
     sText = (LPCWSTR)lpText;
     delete[] lpText;
     return sText;
@@ -1583,7 +1583,7 @@ DWORD RichEdit::SetEventMask(DWORD dwEventMask)
     return (DWORD)lResult;
 }
 
-std::wstring RichEdit::GetTextRange(long nStartChar, long nEndChar) const
+CUiString RichEdit::GetTextRange(long nStartChar, long nEndChar) const
 {
     TEXTRANGEW tr = { 0 };
     tr.chrg.cpMin = nStartChar;
@@ -1593,7 +1593,7 @@ std::wstring RichEdit::GetTextRange(long nStartChar, long nEndChar) const
     ::ZeroMemory(lpText, (nEndChar - nStartChar + 1) * sizeof(WCHAR));
     tr.lpstrText = lpText;
     TxSendMessage(EM_GETTEXTRANGE, 0, (LPARAM)&tr, 0);
-    std::wstring sText;
+    CUiString sText;
     sText = (LPCWSTR)lpText;
     delete[] lpText;
     return sText;
@@ -1616,7 +1616,7 @@ int RichEdit::InsertText(long nInsertAfterChar, LPCTSTR lpstrText, bool bCanUndo
     return nRet;
 }
 
-int RichEdit::AppendText(const std::wstring& strText, bool bCanUndo)
+int RichEdit::AppendText(const CUiString& strText, bool bCanUndo)
 {
     int nRet = SetSel(-1, -1);
     ReplaceSel(strText, bCanUndo);
@@ -1752,14 +1752,14 @@ int RichEdit::GetLineCount() const
     return (int)lResult; 
 }
 
-std::wstring RichEdit::GetLine(int nIndex, int nMaxLength) const
+CUiString RichEdit::GetLine(int nIndex, int nMaxLength) const
 {
     LPWSTR lpText = NULL;
     lpText = new WCHAR[nMaxLength + 1];
     ::ZeroMemory(lpText, (nMaxLength + 1) * sizeof(WCHAR));
     *(LPWORD)lpText = (WORD)nMaxLength;
     TxSendMessage(EM_GETLINE, nIndex, (LPARAM)lpText, 0);
-    std::wstring sText;
+    CUiString sText;
     sText = (LPCWSTR)lpText;
     delete[] lpText;
     return sText;
@@ -1786,9 +1786,9 @@ bool RichEdit::LineScroll(int nLines, int nChars)
     return (BOOL)lResult == TRUE;
 }
 
-CPoint RichEdit::GetCharPos(long lChar) const
+CUiPoint RichEdit::GetCharPos(long lChar) const
 { 
-    CPoint pt; 
+    CUiPoint pt; 
     TxSendMessage(EM_POSFROMCHAR, (WPARAM)&pt, (LPARAM)lChar, 0); 
     return pt;
 }
@@ -1801,14 +1801,14 @@ long RichEdit::LineFromChar(long nIndex) const
     return (long)lResult;
 }
 
-CPoint RichEdit::PosFromChar(UINT nChar) const
+CUiPoint RichEdit::PosFromChar(UINT nChar) const
 { 
     POINTL pt; 
     TxSendMessage(EM_POSFROMCHAR, (WPARAM)&pt, nChar, 0); 
-    return CPoint(pt.x, pt.y); 
+    return CUiPoint(pt.x, pt.y); 
 }
 
-int RichEdit::CharFromPos(CPoint pt) const
+int RichEdit::CharFromPos(CUiPoint pt) const
 { 
     POINTL ptl = {pt.x, pt.y}; 
     if( !m_pTwh ) return 0;
@@ -1881,8 +1881,8 @@ void RichEdit::OnTxNotify(DWORD iNotify, void *pv)
 
 			if(link->msg == WM_LBUTTONUP) {
 				this->SetSel(link->chrg);
-				std::wstring url = GetSelText();	
-				wprintf_s(L"[Link]%s\n", url.c_str());
+				CUiString url = GetSelText();	
+				_tprintf_s(_T("[Link]%s\n"), (LPCTSTR)url);
 
 				HWND hwnd = this->GetWindow()->GetHWND();
 				SendMessage(hwnd, WM_NOTIFY, EN_LINK, (LPARAM)&url);
@@ -1945,7 +1945,7 @@ BOOL RichEdit::SetOleCallback(IRichEditOleCallback* pCallback)
 	return m_pTwh->SetOleCallback(pCallback);
 }
 
-CSize RichEdit::GetNaturalSize(LONG width, LONG height)
+CUiSize RichEdit::GetNaturalSize(LONG width, LONG height)
 {
 	if (width < 0) {
 		width = 0;
@@ -1953,7 +1953,7 @@ CSize RichEdit::GetNaturalSize(LONG width, LONG height)
 	if (height < 0) {
 		height = 0;
 	}	
-	CSize sz(0,0);
+	CUiSize sz(0,0);
 	if (m_cbGetNaturalSize != nullptr && m_cbGetNaturalSize(width, height, sz))
 		return sz;
 	LONG lWidth = width;
@@ -2020,7 +2020,7 @@ void RichEdit::KillTimer(UINT idTimer)
 
 // 多行非rich格式的richedit有一个滚动条bug，在最后一行是空行时，LineDown和SetScrollPos无法滚动到最后
 // 引入iPos就是为了修正这个bug
-void RichEdit::SetScrollPos(CSize szPos)
+void RichEdit::SetScrollPos(CUiSize szPos)
 {
     int cx = 0;
     int cy = 0;
@@ -2164,9 +2164,9 @@ void RichEdit::SetEnabled(bool bEnable /*= true*/)
 	}
 }
 
-CSize RichEdit::EstimateSize(CSize szAvailable)
+CUiSize RichEdit::EstimateSize(CUiSize szAvailable)
 {
-	CSize size(GetFixedWidth(), GetFixedHeight());
+	CUiSize size(GetFixedWidth(), GetFixedHeight());
 	if (size.cx == DUI_LENGTH_AUTO || size.cy == DUI_LENGTH_AUTO) {
 		LONG iWidth = size.cx;
 		LONG iHeight = size.cy;
@@ -2200,7 +2200,7 @@ CSize RichEdit::EstimateSize(CSize szAvailable)
     return size;
 }
 
-void RichEdit::SetPos(UiRect rc)
+void RichEdit::SetPos(CUiRect rc)
 {
     Control::SetPos(rc);
     rc = m_rcItem;
@@ -2249,11 +2249,11 @@ void RichEdit::SetPos(UiRect rc)
     }
 
     if( m_pVerticalScrollBar != NULL && m_pVerticalScrollBar->IsValid() ) {
-        UiRect rcScrollBarPos(rc.right, rc.top, rc.right + m_pVerticalScrollBar->GetFixedWidth(), rc.bottom);
+        CUiRect rcScrollBarPos(rc.right, rc.top, rc.right + m_pVerticalScrollBar->GetFixedWidth(), rc.bottom);
         m_pVerticalScrollBar->SetPos(rcScrollBarPos);
     }
     if( m_pHorizontalScrollBar != NULL && m_pHorizontalScrollBar->IsValid() ) {
-        UiRect rcScrollBarPos(rc.left, rc.bottom, rc.right, rc.bottom + m_pHorizontalScrollBar->GetFixedHeight());
+        CUiRect rcScrollBarPos(rc.left, rc.bottom, rc.right, rc.bottom + m_pHorizontalScrollBar->GetFixedHeight());
         m_pHorizontalScrollBar->SetPos(rcScrollBarPos);
     }
 
@@ -2313,7 +2313,7 @@ void RichEdit::HandleMessage(EventArgs& event)
 
 	if (event.Type == kEventMouseButtonDown || event.Type == kEventPointDown) {
 		if (m_linkInfo.size() > 0)	{
-			std::wstring strLink;
+			CUiString strLink;
 			if (HittestCustomLink(event.ptMouse, strLink))
 			{
 				//::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_HAND)));
@@ -2387,7 +2387,7 @@ void RichEdit::HandleMessage(EventArgs& event)
 
 void RichEdit::OnSetCursor(EventArgs& event)
 {
-	std::wstring strLink;
+	CUiString strLink;
 	if (HittestCustomLink(event.ptMouse, strLink))
 	{
 		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_HAND)));
@@ -2462,10 +2462,10 @@ void RichEdit::OnKeyDown(EventArgs& event)
 		}
 	}
 	else if (m_bNumberOnly && event.wParam == 'V' && ::GetKeyState(VK_CONTROL) < 0) {
-		std::wstring strClipText;
+		CUiString strClipText;
 		GetClipboardText(strClipText);
 		if (!strClipText.empty()) {
-			std::wstring strNum;
+			CUiString strNum;
 			for (auto it = strClipText.begin(); it != strClipText.end(); it++)
 			{
 				if ((*it) <= L'9' && (*it) >= L'0') {
@@ -2494,7 +2494,7 @@ void RichEdit::OnImeStartComposition(EventArgs& event)
 		return;
 
 	COMPOSITIONFORM	cfs;
-	CPoint ptScrollOffset = GetScrollOffset();
+	CUiPoint ptScrollOffset = GetScrollOffset();
 	POINT pt;
 	pt.x = m_iCaretPosX - ptScrollOffset.x;
 	pt.y = m_iCaretPosY - ptScrollOffset.y;
@@ -2516,20 +2516,20 @@ void RichEdit::OnImeEndComposition(EventArgs& event)
 
 void RichEdit::OnMouseMessage(UINT uMsg, EventArgs& event)
 {
-	CPoint pt(GET_X_LPARAM(event.lParam), GET_Y_LPARAM(event.lParam));
+	CUiPoint pt(GET_X_LPARAM(event.lParam), GET_Y_LPARAM(event.lParam));
 	pt.Offset(GetScrollOffset());
 	TxSendMessage(uMsg, event.wParam, MAKELPARAM(pt.x, pt.y), NULL);
 }
 
-void RichEdit::Paint(IRenderContext* pRender, const UiRect& rcPaint)
+void RichEdit::Paint(IRenderContext* pRender, const CUiRect& rcPaint)
 {
-    UiRect rcTemp;
+    CUiRect rcTemp;
     if( !::IntersectRect(&rcTemp, &rcPaint, &m_rcItem) ) return;
 
     Control::Paint(pRender, rcPaint);
 
     if( m_pTwh ) {
-        UiRect rc;
+        CUiRect rc;
         m_pTwh->GetControlRect(&rc);
         // Remember wparam is actually the hdc and lparam is the update
         // rect because this message has been preprocessed by the window.
@@ -2542,7 +2542,7 @@ void RichEdit::Paint(IRenderContext* pRender, const UiRect& rcPaint)
             NULL, 				   	// Target device HDC
             (RECTL*)&rc,			// Bounding client rectangle
             NULL, 		            // Clipping rectangle for metafiles
-            (UiRect*)&rcPaint,		// Update rectangle
+            (CUiRect*)&rcPaint,		// Update rectangle
             NULL, 	   				// Call back function
             NULL,					// Call back parameter
             0);				        // What view of the object
@@ -2569,15 +2569,15 @@ void RichEdit::Paint(IRenderContext* pRender, const UiRect& rcPaint)
 	}
 }
 
-void RichEdit::PaintChild(IRenderContext* pRender, const UiRect& rcPaint)
+void RichEdit::PaintChild(IRenderContext* pRender, const CUiRect& rcPaint)
 {
-	UiRect rcTemp;
+	CUiRect rcTemp;
 	if (!::IntersectRect(&rcTemp, &rcPaint, &m_rcItem)) return;
 
 	PaintCaret(pRender, rcPaint);
 
     if( m_items.size() > 0 ) {
-        UiRect rc = m_rcItem;
+        CUiRect rc = m_rcItem;
         rc.left += m_pLayout->GetPadding().left;
         rc.top += m_pLayout->GetPadding().top;
         rc.right -= m_pLayout->GetPadding().right;
@@ -2589,7 +2589,7 @@ void RichEdit::PaintChild(IRenderContext* pRender, const UiRect& rcPaint)
 			for( auto it = m_items.begin(); it != m_items.end(); it++ ) {
 				auto pControl = *it;
                 if( !pControl->IsVisible() ) continue;
-				UiRect controlPos = pControl->GetPos();
+				CUiRect controlPos = pControl->GetPos();
 				if (!::IntersectRect(&rcTemp, &rcPaint, &controlPos)) continue;
                 if( pControl ->IsFloat() ) {
 					if( !::IntersectRect(&rcTemp, &m_rcItem, &controlPos )) continue;
@@ -2602,7 +2602,7 @@ void RichEdit::PaintChild(IRenderContext* pRender, const UiRect& rcPaint)
 			for( auto it = m_items.begin(); it != m_items.end(); it++ ) {
 				auto pControl = *it;
                 if( !pControl->IsVisible() ) continue;
-				UiRect controlPos = pControl->GetPos();
+				CUiRect controlPos = pControl->GetPos();
 				if (!::IntersectRect(&rcTemp, &rcPaint, &controlPos)) continue;
                 if( pControl ->IsFloat() ) {
 					if( !::IntersectRect(&rcTemp, &m_rcItem, &controlPos) ) continue;
@@ -2617,21 +2617,21 @@ void RichEdit::PaintChild(IRenderContext* pRender, const UiRect& rcPaint)
     }
 
     if( m_pVerticalScrollBar != NULL && m_pVerticalScrollBar->IsVisible() ) {
-		UiRect verBarPos = m_pVerticalScrollBar->GetPos();
+		CUiRect verBarPos = m_pVerticalScrollBar->GetPos();
 		if( ::IntersectRect(&rcTemp, &rcPaint, &verBarPos) ) {
             m_pVerticalScrollBar->AlphaPaint(pRender, rcPaint);
         }
     }
 
     if( m_pHorizontalScrollBar != NULL && m_pHorizontalScrollBar->IsVisible() ) {
-		UiRect horBarPos = m_pVerticalScrollBar->GetPos();
+		CUiRect horBarPos = m_pVerticalScrollBar->GetPos();
 		if( ::IntersectRect(&rcTemp, &rcPaint, &horBarPos) ) {
             m_pHorizontalScrollBar->AlphaPaint(pRender, rcPaint);
         }
     }
 }
 
-void RichEdit::SetAttribute(const std::wstring& strName, const std::wstring& strValue)
+void RichEdit::SetAttribute(const CUiString& strName, const CUiString& strValue)
 {
 	if (strName == _T("vscrollbar")) {
 		if (strValue == _T("true")) {
@@ -2698,25 +2698,25 @@ void RichEdit::SetAttribute(const std::wstring& strName, const std::wstring& str
 		}
 	}
 	else if (strName == _T("align")) {
-		if (strValue.find(_T("left")) != std::wstring::npos) {
+		if (strValue.find(_T("left")) != CUiString::npos) {
 			m_lTwhStyle &= ~(ES_CENTER | ES_RIGHT);
 			m_lTwhStyle |= ES_LEFT;
 		}
-		if (strValue.find(_T("hcenter")) != std::wstring::npos) {
+		if (strValue.find(_T("hcenter")) != CUiString::npos) {
 			m_lTwhStyle &= ~(ES_LEFT | ES_RIGHT);
 			m_lTwhStyle |= ES_CENTER;
 		}
-		if (strValue.find(_T("right")) != std::wstring::npos) {
+		if (strValue.find(_T("right")) != CUiString::npos) {
 			m_lTwhStyle &= ~(ES_LEFT | ES_CENTER);
 			m_lTwhStyle |= ES_RIGHT;
 		}
-		if (strValue.find(_T("top")) != std::wstring::npos) {
+		if (strValue.find(_T("top")) != CUiString::npos) {
 			m_textVerAlignType = kVerAlignTop;
 		}
-		if (strValue.find(_T("vcenter")) != std::wstring::npos) {
+		if (strValue.find(_T("vcenter")) != CUiString::npos) {
 			m_textVerAlignType = kVerAlignCenter;
 		}
-		if (strValue.find(_T("bottom")) != std::wstring::npos) {
+		if (strValue.find(_T("bottom")) != CUiString::npos) {
 			m_textVerAlignType = kVerAlignBottom;
 		}
 	}
@@ -2727,14 +2727,14 @@ void RichEdit::SetAttribute(const std::wstring& strName, const std::wstring& str
 		if (m_bEnabled)
 			SetTextColor(m_sTextColor);
 	}
-	else if (strName == L"disabledtextcolor") {
+	else if (strName == _T("disabledtextcolor") {
 		LPCTSTR pValue = strValue.c_str();
 		while (*pValue > _T('\0') && *pValue <= _T(' ')) pValue = ::CharNext(pValue);
 		m_sDisabledTextColor = pValue;
 		if (!m_bEnabled)
 			SetTextColor(m_sDisabledTextColor);
 	}
-	else if (strName == L"caretcolor") {
+	else if (strName == _T("caretcolor") {
 		LPCTSTR pValue = strValue.c_str();
 		while (*pValue > _T('\0') && *pValue <= _T(' ')) pValue = ::CharNext(pValue);
 		SetCaretColor(pValue);
@@ -2785,12 +2785,12 @@ BOOL RichEdit::ShowCaret(BOOL fShow)
 	return true;
 }
 
-void RichEdit::SetCaretColor(const std::wstring& dwColor)
+void RichEdit::SetCaretColor(const CUiString& dwColor)
 {
 	m_sCaretColor = dwColor;
 }
 
-std::wstring RichEdit::GetCaretColor()
+CUiString RichEdit::GetCaretColor()
 {
 	return m_sCaretColor;
 }
@@ -2816,13 +2816,13 @@ void RichEdit::ChangeCaretVisiable()
 	Invalidate();
 }
 
-void RichEdit::PaintCaret(IRenderContext* pRender, const UiRect& rcPaint)
+void RichEdit::PaintCaret(IRenderContext* pRender, const CUiRect& rcPaint)
 {
 	if (m_bReadOnly && m_bNoCaretReadonly)
 		return;
 
 	if (m_bIsCaretVisiable && !m_bIsComposition) {
-		UiRect rect(m_iCaretPosX, m_iCaretPosY, m_iCaretPosX, m_iCaretPosY + m_iCaretHeight);
+		CUiRect rect(m_iCaretPosX, m_iCaretPosY, m_iCaretPosX, m_iCaretPosY + m_iCaretHeight);
 		DWORD dwClrColor = 0xff000000;
 
 		if (!m_sCaretColor.empty())
@@ -2840,9 +2840,9 @@ void RichEdit::SetPromptMode(bool bPrompt)
 	Invalidate();
 }
 
-std::wstring RichEdit::GetPromptText() const
+CUiString RichEdit::GetPromptText() const
 {
-	std::wstring strText = m_sPromptText;
+	CUiString strText = m_sPromptText;
 	if (strText.empty() && !m_sPromptTextId.empty()) {
 		strText = MutiLanSupport::GetInstance()->GetStringViaID(m_sPromptTextId);
 	}
@@ -2857,7 +2857,7 @@ std::string RichEdit::GetUTF8PromptText() const
 	return strOut;
 }
 
-void RichEdit::SetPromptText(const std::wstring& strText)
+void RichEdit::SetPromptText(const CUiString& strText)
 {
 	if (m_sPromptText == strText) return;
 	m_sPromptText = strText;
@@ -2867,12 +2867,12 @@ void RichEdit::SetPromptText(const std::wstring& strText)
 
 void RichEdit::SetUTF8PromptText(const std::string& strText)
 {
-	std::wstring strOut;
+	CUiString strOut;
 	StringHelper::MBCSToUnicode(strText, strOut, CP_UTF8);
 	SetPromptText(strOut);
 }
 
-void RichEdit::SetPromptTextId(const std::wstring& strTextId)
+void RichEdit::SetPromptTextId(const CUiString& strTextId)
 {
 	if (m_sPromptTextId == strTextId) return;
 	m_sPromptTextId = strTextId;
@@ -2882,7 +2882,7 @@ void RichEdit::SetPromptTextId(const std::wstring& strTextId)
 
 void RichEdit::SetUTF8PromptTextId(const std::string& strTextId)
 {
-	std::wstring strOut;
+	CUiString strOut;
 	StringHelper::MBCSToUnicode(strTextId, strOut, CP_UTF8);
 	SetPromptTextId(strOut);
 }
@@ -2896,11 +2896,11 @@ void RichEdit::PaintPromptText(IRenderContext* pRender)
 	if (!m_pTwh)
 		return;
 
-	std::wstring strPrompt = GetPromptText();
+	CUiString strPrompt = GetPromptText();
 	if (strPrompt.empty() || m_sPromptColor.empty())
 		return;
 
-	UiRect rc;
+	CUiRect rc;
 	m_pTwh->GetControlRect(&rc);
 
 	DWORD dwClrColor = GlobalManager::GetTextColor(m_sPromptColor);
@@ -2908,12 +2908,12 @@ void RichEdit::PaintPromptText(IRenderContext* pRender)
 	pRender->DrawText(rc, strPrompt, dwClrColor, m_sFontId, dwStyle);
 }
 
-std::wstring RichEdit::GetFocusedImage()
+CUiString RichEdit::GetFocusedImage()
 {
 	return m_sFocusedImage.imageAttribute.simageString;
 }
 
-void RichEdit::SetFocusedImage( const std::wstring& strImage )
+void RichEdit::SetFocusedImage( const CUiString& strImage )
 {
 	m_sFocusedImage.SetImageString(strImage);
 	Invalidate();
@@ -2949,7 +2949,7 @@ void RichEdit::SetNoCaretReadonly()
 	m_bNoCaretReadonly = true;
 }
 
-void RichEdit::AddColorText(const std::wstring &str, const std::wstring &color)
+void RichEdit::AddColorText(const CUiString &str, const CUiString &color)
 {
 	if( !m_bRich || str.empty() || color.empty() ) {
 		ASSERT(FALSE);
@@ -2974,7 +2974,7 @@ void RichEdit::AddColorText(const std::wstring &str, const std::wstring &color)
 	SetSelectionCharFormat(cf);
 }
 
-void RichEdit::AddLinkColorText(const std::wstring &str, const std::wstring &color, const std::wstring &linkInfo)
+void RichEdit::AddLinkColorText(const CUiString &str, const CUiString &color, const CUiString &linkInfo)
 {
 	if( !m_bRich || str.empty() || color.empty() ) {
 		ASSERT(FALSE);
@@ -3001,7 +3001,7 @@ void RichEdit::AddLinkColorText(const std::wstring &str, const std::wstring &col
 	GetDefaultCharFormat(cf);
 	SetSelectionCharFormat(cf);
 }
-void  RichEdit::AddLinkColorTextEx(const std::wstring& str, const std::wstring &color, const std::wstring &linkInfo, const std::wstring& strFontId)
+void  RichEdit::AddLinkColorTextEx(const CUiString& str, const CUiString &color, const CUiString &linkInfo, const CUiString& strFontId)
 {
 	if (!m_bRich || str.empty() || color.empty()) {
 		ASSERT(FALSE);
@@ -3017,7 +3017,7 @@ void  RichEdit::AddLinkColorTextEx(const std::wstring& str, const std::wstring &
 	if (hFont == NULL)
 		hFont = GlobalManager::GetFont(m_sFontId);
 	if (hFont == NULL)
-		hFont = GlobalManager::GetFont(L"");
+		hFont = GlobalManager::GetFont(_T("");
 	LOGFONT lf;
 	::GetObject(hFont, sizeof(LOGFONT), &lf);
 	StringHelper::UnicodeToMBCS(lf.lfFaceName, font_face);
@@ -3031,7 +3031,7 @@ void  RichEdit::AddLinkColorTextEx(const std::wstring& str, const std::wstring &
 	sprintf(scolor, color_format.c_str(), GetBValue(dwTextColor), GetGValue(dwTextColor), GetRValue(dwTextColor));
 	char slinke[1024];
 	sprintf(slinke, link_format.c_str(), sfont, scolor, ((int)(-lf.lfHeight *1.5))/2*2, link.c_str(), text.c_str());
-	std::wstring temp;
+	CUiString temp;
 	StringHelper::MBCSToUnicode(slinke, temp);
 	SETTEXTEX st;
 	st.codepage = ((UINT32)~((UINT32)0));
@@ -3039,7 +3039,7 @@ void  RichEdit::AddLinkColorTextEx(const std::wstring& str, const std::wstring &
 	TxSendMessage(EM_SETTEXTEX, (WPARAM)&st, (LPARAM)(LPCTSTR)slinke, NULL);
 	return;
 }
-void RichEdit::AddLinkInfo(const CHARRANGE cr, const std::wstring &linkInfo)
+void RichEdit::AddLinkInfo(const CHARRANGE cr, const CUiString &linkInfo)
 {
 	LinkInfo info;
 	info.info = linkInfo;
@@ -3048,7 +3048,7 @@ void RichEdit::AddLinkInfo(const CHARRANGE cr, const std::wstring &linkInfo)
 }
 
 //根据point来hittest自定义link的数据，返回true表示在link上，info是link的自定义属性
-bool RichEdit::HittestCustomLink(CPoint pt, std::wstring& info)
+bool RichEdit::HittestCustomLink(CUiPoint pt, CUiString& info)
 {
 	bool bLink = false;
 	info.clear();
@@ -3080,7 +3080,7 @@ bool IsAsciiChar(const wchar_t ch)
 	return (ch <= 0x7e && ch >= 0x20);
 }
 
-int GetAsciiCharNumber(const std::wstring &str)
+int GetAsciiCharNumber(const CUiString &str)
 {
 	int len = (int)str.size(), sum = 0;
 	for( int i = 0; i < len; i++ )
@@ -3093,7 +3093,7 @@ int GetAsciiCharNumber(const std::wstring &str)
 	return sum;
 }
 
-void LimitAsciiNumber(std::wstring &src, int limit)
+void LimitAsciiNumber(CUiString &src, int limit)
 {
 	int len = (int)src.size(), sum = 0;
 	for( int i = 0; i < len; i++ )
@@ -3109,7 +3109,7 @@ void LimitAsciiNumber(std::wstring &src, int limit)
 	}
 }
 
-void GetClipboardText( std::wstring &out )
+void GetClipboardText( CUiString &out )
 {
 	out.clear();
 
@@ -3120,7 +3120,7 @@ void GetClipboardText( std::wstring &out )
 			if(h != INVALID_HANDLE_VALUE) {
 				wchar_t* buf = (wchar_t*)::GlobalLock(h);
 				if(buf != NULL)	{
-					std::wstring str(buf, GlobalSize(h)/sizeof(wchar_t));
+					CUiString str(buf, GlobalSize(h)/sizeof(wchar_t));
 					out = str;
 					::GlobalUnlock(h);
 				}
@@ -3142,7 +3142,7 @@ void GetClipboardText( std::wstring &out )
 	}
 }
 
-void SetClipBoardText(const std::wstring &str)
+void SetClipBoardText(const CUiString &str)
 {
 	if (!::OpenClipboard(NULL))
 		return;

@@ -10,9 +10,9 @@
 namespace ui 
 {
 
-CSize VirtualLayout::ArrangeChild(const std::vector<Control*>& items, UiRect rc) 
+CUiSize VirtualLayout::ArrangeChild(const std::vector<Control*>& items, CUiRect rc) 
 {
-    CSize sz(rc.GetWidth(), 0);
+    CUiSize sz(rc.GetWidth(), 0);
 
     VirtualListBox *pList = dynamic_cast<VirtualListBox*>(m_pOwner);
     ASSERT(pList);
@@ -136,7 +136,7 @@ void VirtualListBox::GetDisplayCollection(std::vector<int>& collection)
 	if (GetCount() == 0)
 		return;
 
-	UiRect rcThis = this->GetPos(false);
+	CUiRect rcThis = this->GetPos(false);
 
 	int min = GetScrollPos().cy / m_nElementHeight;
 	int max = min + (rcThis.GetHeight() / m_nElementHeight);
@@ -176,7 +176,7 @@ void VirtualListBox::EnsureVisible(int iIndex, bool bToTop)
 			nNewPos = CalcElementsHeight(iIndex);
 		}
 	}
-	CSize sz(0, nNewPos);
+	CUiSize sz(0, nNewPos);
 	SetScrollPos(sz);
 }
 
@@ -198,7 +198,7 @@ void VirtualListBox::ReArrangeChild(bool bForce)
 
 	if (direction == kScrollDown) {
 		// 向下滚动
-		ui::UiRect rcItem = m_rcItem;
+		ui::CUiRect rcItem = m_rcItem;
 		rcItem.bottom = rcItem.top + nTopIndexBottom;
 
 		for (int i = 0; i < (int)m_items.size(); i++) {
@@ -218,7 +218,7 @@ void VirtualListBox::ReArrangeChild(bool bForce)
 		int nHideCount = (int)m_items.size() - nDisplayCount;
 
 		// 上半部分
-		UiRect rcItem = m_rcItem;
+		CUiRect rcItem = m_rcItem;
 		rcItem.top = m_rcItem.top + nTopIndexBottom;
 		for (int i = nHideCount - 1; i >= 0; i--) {
 			rcItem.bottom = rcItem.top;
@@ -271,7 +271,7 @@ void VirtualListBox::RemoveElement(int iIndex)
     }
 }
 
-void VirtualListBox::SetScrollPos(ui::CSize szPos) 
+void VirtualListBox::SetScrollPos(ui::CUiSize szPos) 
 {
     m_nOldYScrollPos = m_pVerticalScrollBar->GetScrollPos();
     ListBox::SetScrollPos(szPos);
@@ -329,7 +329,7 @@ void VirtualListBox::HandleMessage(ui::EventArgs& event) {
     __super::HandleMessage(event);
 }
 
-void VirtualListBox::SetPos(UiRect rc) 
+void VirtualListBox::SetPos(CUiRect rc) 
 {
     bool bChange = false;
     if (!m_rcItem.Equal(rc))
@@ -421,12 +421,12 @@ bool VirtualListBox::NeedReArrange(ScrollDirection &direction)
     if (GetElementCount() <= nCount)
         return false;
 
-    UiRect rcThis = this->GetPos();
+    CUiRect rcThis = this->GetPos();
     if (rcThis.GetWidth() <= 0)
         return false;
 
 	int nPos = m_pVerticalScrollBar->GetScrollPos();
-    UiRect rcItem;
+    CUiRect rcItem;
 
     // 补救措施
     // 情况一：通讯录列表，一开始不可见，切换后可见，如果提前布局，

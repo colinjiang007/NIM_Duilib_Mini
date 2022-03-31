@@ -40,11 +40,11 @@ void Progress::PaintStatusImage(IRenderContext* pRender)
 	if (m_nValue > m_nMax) m_nValue = m_nMax;
 	if (m_nValue < m_nMin) m_nValue = m_nMin;
 
-	UiRect rc = GetProgressPos();
+	CUiRect rc = GetProgressPos();
 	if (!m_sProgressColor.empty()) {
 		DWORD dwProgressColor = GlobalManager::GetTextColor(m_sProgressColor);
 		if (dwProgressColor != 0) {
-			UiRect rcProgressColor = m_rcItem;
+			CUiRect rcProgressColor = m_rcItem;
 			if (m_bHorizontal) {
 				rcProgressColor.right = rcProgressColor.left + rc.right;
 			}
@@ -157,9 +157,9 @@ void Progress::SetProgressColor(const std::wstring& strProgressColor)
 	Invalidate();
 }
 
-UiRect Progress::GetProgressPos()
+CUiRect Progress::GetProgressPos()
 {
-	UiRect rc;
+	CUiRect rc;
 	if (m_bHorizontal) {
 		rc.right = int((m_nValue - m_nMin) * (m_rcItem.right - m_rcItem.left) / (m_nMax - m_nMin));
 		rc.bottom = m_rcItem.bottom - m_rcItem.top;

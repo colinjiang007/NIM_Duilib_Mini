@@ -6,7 +6,7 @@ namespace ui
 class ShadowBox : public Box
 {
 public:
-	virtual void Paint(IRenderContext* pRender, const UiRect& rcPaint) override
+	virtual void Paint(IRenderContext* pRender, const CUiRect& rcPaint) override
 	{
 		auto rcPos = GetPaddingPos();
 		if (rcPaint.left >= rcPos.left && rcPaint.top >= rcPos.top && rcPaint.right <= rcPos.right && rcPaint.bottom <= rcPos.bottom) {
@@ -28,31 +28,31 @@ Shadow::Shadow() :
 	m_rcShadowCornerBackup = m_rcCurShadowCorner;
 }
 
-void Shadow::SetShadowImage(const std::wstring &image)
+void Shadow::SetShadowImage(const CUiString &image)
 {
 	m_strImage = image;
 	m_bUseDefaultImage = false;
 }
 
-std::wstring Shadow::GetShadowImage() const
+CUiString Shadow::GetShadowImage() const
 {
 	return m_strImage;
 }
 
-void Shadow::SetShadowCorner(const UiRect &rect)
+void Shadow::SetShadowCorner(const CUiRect &rect)
 {
 	m_rcDefaultShadowCorner = m_rcCurShadowCorner = rect;
 	DpiManager::GetInstance()->ScaleRect(m_rcCurShadowCorner);
 	m_rcShadowCornerBackup = m_rcCurShadowCorner;
 }
 
-UiRect Shadow::GetShadowCorner() const
+CUiRect Shadow::GetShadowCorner() const
 {
 	if (m_bShadowAttached) {
 		return m_rcCurShadowCorner;
 	}
 	else {
-		return UiRect(0, 0, 0, 0);
+		return CUiRect(0, 0, 0, 0);
 	}
 }
 
@@ -88,7 +88,7 @@ Box*Shadow::AttachShadow(Box* pRoot)
 
 	if (m_bUseDefaultImage)
 	{
-		CSize size(3, 3);
+		CUiSize size(3, 3);
 		pRoot->SetBorderRound(size);
 	}
 
@@ -104,13 +104,13 @@ void Shadow::MaximizedOrRestored(bool isMaximized)
 		return;
 
 	if (isMaximized && m_pRoot) {
-		m_rcCurShadowCorner = UiRect(0, 0, 0, 0);
+		m_rcCurShadowCorner = CUiRect(0, 0, 0, 0);
 		m_pRoot->GetLayout()->SetPadding(m_rcCurShadowCorner, false);
 
 		if (m_bUseDefaultImage)
 		{
 			Control* control = m_pRoot->GetItemAt(0);
-			CSize size(0, 0);
+			CUiSize size(0, 0);
 			control->SetBorderRound(size);
 		}
 	}
@@ -121,7 +121,7 @@ void Shadow::MaximizedOrRestored(bool isMaximized)
 		if (m_bUseDefaultImage)
 		{
 			Control* control = m_pRoot->GetItemAt(0);
-			CSize size(3, 3);
+			CUiSize size(3, 3);
 			control->SetBorderRound(size);
 		}
 	}

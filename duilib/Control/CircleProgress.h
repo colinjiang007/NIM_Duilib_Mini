@@ -19,7 +19,7 @@ public:
 	CircleProgress();
 
 	/// 重写父类方法，提供个性化功能，请参考父类声明
-	virtual void SetAttribute(const std::wstring& strName, const std::wstring& strValue) override;
+	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
 	virtual void PaintStatusImage(IRenderContext* pRender) override;
 	virtual void ClearImageCache() override;
 

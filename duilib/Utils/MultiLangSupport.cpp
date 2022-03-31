@@ -9,27 +9,26 @@ MutiLanSupport* MutiLanSupport::GetInstance()
 	return &mutiLanSupport;
 }
 
-bool MutiLanSupport::LoadStringTable(const std::wstring &strFilePath)
+bool MutiLanSupport::LoadStringTable(const CUiString &strFilePath)
 {
 	ClearAll();
 
 	FILE *hFile;
-	_wfopen_s(&hFile, strFilePath.c_str(), L"r");
+	_tfopen_s(&hFile, strFilePath, _T("r"));
 	if (hFile == NULL) {
 		return false;
 	}
 
 	char strRead[4096];
-	std::vector<std::wstring> stringList;
+	std::vector<CUiString> stringList;
+	CUiString strResource;
+
 	while (fgets(strRead, 4096, hFile) != NULL)
 	{
-		std::wstring strResource;
 		std::string src = strRead;
-
-		StringHelper::MBCSToUnicode(src.c_str(), strResource, CP_UTF8);
-		strResource = StringHelper::TrimLeft(strResource);
-		strResource = StringHelper::TrimRight(strResource);
-		if (!strResource.empty()) {
+		StringHelper::Utf8ToCUiString(src.c_str(), strResource);
+		strResource.Trim();
+		if (!strResource.IsEmpty()) {
 			stringList.push_back(strResource);
 		}
 	}
@@ -41,19 +40,18 @@ bool MutiLanSupport::LoadStringTable(const std::wstring &strFilePath)
 
 bool MutiLanSupport::LoadStringTable(const HGLOBAL& hGlobal)
 {
-	std::vector<std::wstring> string_list;
+	std::vector<CUiString> string_list;
 	std::string fragment((LPSTR)GlobalLock(hGlobal), GlobalSize(hGlobal));
 	fragment.append("\n");
 	std::string src;
+	CUiString string_resourse;
 	for (auto& it : fragment)
 	{
 		if (it == '\0' || it == '\n')
 		{
-			std::wstring string_resourse;
-			StringHelper::MBCSToUnicode(src.c_str(), string_resourse, CP_UTF8);
-			string_resourse = StringHelper::TrimLeft(string_resourse);
-			string_resourse = StringHelper::TrimRight(string_resourse);
-			if (!string_resourse.empty())
+			StringHelper::Utf8ToCUiString(src, string_resourse);
+			string_resourse.Trim();
+			if (!string_resourse.IsEmpty())
 			{
 				string_list.push_back(string_resourse);
 			}
@@ -69,10 +67,10 @@ bool MutiLanSupport::LoadStringTable(const HGLOBAL& hGlobal)
 	return true;
 }
 
-std::wstring MutiLanSupport::GetStringViaID(const std::wstring& id)
+CUiString MutiLanSupport::GetStringViaID(const CUiString& id)
 {
-	std::wstring text;
-	if(id.empty())
+	CUiString text;
+	if(id.IsEmpty())
 		return text;
 
 	auto it = m_stringTable.find(id);
@@ -82,39 +80,31 @@ std::wstring MutiLanSupport::GetStringViaID(const std::wstring& id)
 	}
 	else {
 		text = it->second;
-		StringHelper::ReplaceAll(L"\\r", L"\r", text);
-		StringHelper::ReplaceAll(L"\\n", L"\n", text);
 	}
 
 	return text;
 }
 
-bool MutiLanSupport::AnalyzeStringTable(const std::vector<std::wstring> &list)
+bool MutiLanSupport::AnalyzeStringTable(const std::vector<CUiString> &list)
 {
 	int	nCount = (int)list.size();
 	if (nCount <= 0)
 		return false;
 	
+	CUiString key, value;
 	for(int i = 0; i < nCount; i++)
 	{
-		std::wstring strSrc = list[i];
-		std::list<std::wstring> idAndString = StringHelper::Split(strSrc, L"=");
-		if (idAndString.size() != 2) {
+		const CUiString& strSrc = list[i];
+		bool isValid = StringHelper::SplitCUiStringKeyValue(strSrc, _T("="), key,value);
+		if (!isValid) {
 			continue;
 		}
-
-		std::wstring id = *(idAndString.begin());
-		id = StringHelper::TrimLeft(id);
-		id = StringHelper::TrimRight(id);
-
-		idAndString.pop_front();
-
-		std::wstring strResource = *(idAndString.begin());	
-		strResource = StringHelper::TrimLeft(strResource);
-		strResource = StringHelper::TrimRight(strResource);
-
-		if (id.find(L";") == -1) {
-			m_stringTable[id] = strResource;
+		key.Trim();
+		value.Trim();
+		if (key.Find(_T(";")) == -1) {
+			value.Replace(_T("\\r"), _T("\r"));
+			value.Replace(_T("\\n"), _T("\n"));
+			m_stringTable[key] = value;
 		}
 	}
 

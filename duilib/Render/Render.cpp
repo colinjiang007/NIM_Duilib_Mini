@@ -2,7 +2,7 @@
 
 namespace ui {
 
-static inline void DrawFunction(HDC hDC, bool bTransparent, UiRect rcDest, HDC hdcSrc, UiRect rcSrc, bool bAlphaChannel, int uFade)
+static inline void DrawFunction(HDC hDC, bool bTransparent, CUiRect rcDest, HDC hdcSrc, CUiRect rcSrc, bool bAlphaChannel, int uFade)
 {
 	if (bTransparent || bAlphaChannel || uFade < 255
 		|| (rcSrc.GetWidth() == rcDest.GetWidth() && rcSrc.GetHeight() == rcDest.GetHeight())) {
@@ -103,12 +103,12 @@ int RenderContext_GdiPlus::GetHeight()
 	return m_bitmap.GetHeight();
 }
 
-void RenderContext_GdiPlus::ClearAlpha(const UiRect& rcDirty, int alpha)
+void RenderContext_GdiPlus::ClearAlpha(const CUiRect& rcDirty, int alpha)
 {
 	m_bitmap.ClearAlpha(rcDirty, alpha);
 }
 
-void RenderContext_GdiPlus::RestoreAlpha(const UiRect& rcDirty, const UiRect& rcShadowPadding, int alpha)
+void RenderContext_GdiPlus::RestoreAlpha(const CUiRect& rcDirty, const CUiRect& rcShadowPadding, int alpha)
 {
 	m_bitmap.RestoreAlpha(rcDirty, rcShadowPadding, alpha);
 }
@@ -135,36 +135,36 @@ void RenderContext_GdiPlus::Restore()
 	RestoreDC(m_hDC, m_saveDC);
 }
 
-CPoint RenderContext_GdiPlus::OffsetWindowOrg(CPoint ptOffset)
+CUiPoint RenderContext_GdiPlus::OffsetWindowOrg(CUiPoint ptOffset)
 {
-	CPoint ptOldWindowOrg;
+	CUiPoint ptOldWindowOrg;
 	GetWindowOrgEx(m_hDC, &ptOldWindowOrg);
 	ptOffset.Offset(ptOldWindowOrg.x, ptOldWindowOrg.y);
 	::SetWindowOrgEx(m_hDC, ptOffset.x, ptOffset.y, NULL);
 	return ptOldWindowOrg;
 }
 
-CPoint RenderContext_GdiPlus::SetWindowOrg(CPoint ptOffset)
+CUiPoint RenderContext_GdiPlus::SetWindowOrg(CUiPoint ptOffset)
 {
-	CPoint ptOldWindowOrg;
+	CUiPoint ptOldWindowOrg;
 	GetWindowOrgEx(m_hDC, &ptOldWindowOrg);
 	::SetWindowOrgEx(m_hDC, ptOffset.x, ptOffset.y, NULL);
 	return ptOldWindowOrg;
 }
 
-CPoint RenderContext_GdiPlus::GetWindowOrg() const
+CUiPoint RenderContext_GdiPlus::GetWindowOrg() const
 {
-	CPoint ptWindowOrg;
+	CUiPoint ptWindowOrg;
 	GetWindowOrgEx(m_hDC, &ptWindowOrg);
 	return ptWindowOrg;
 }
 
-void RenderContext_GdiPlus::SetClip(const UiRect& rc)
+void RenderContext_GdiPlus::SetClip(const CUiRect& rc)
 {
 	m_clip.CreateClip(m_hDC, rc);
 }
 
-void RenderContext_GdiPlus::SetRoundClip(const UiRect& rc, int width, int height)
+void RenderContext_GdiPlus::SetRoundClip(const CUiRect& rc, int width, int height)
 {
 	m_clip.CreateRoundClip(m_hDC, rc, width, height);
 }
@@ -185,10 +185,10 @@ bool RenderContext_GdiPlus::AlphaBlend(int xDest, int yDest, int widthDest, int 
 	return (TRUE == ::AlphaBlend(m_hDC, xDest, yDest, widthDest, heightDest, hdcSrc, xSrc, yScr, widthSrc, heightSrc, bf));
 }
 
-void RenderContext_GdiPlus::DrawImage(const UiRect& rcPaint, HBITMAP hBitmap, bool bAlphaChannel,
-	const UiRect& rcImageDest, const UiRect& rcImageSource, const UiRect& rcCorners, BYTE uFade /*= 255*/, bool xtiled /*= false*/, bool ytiled /*= false*/)
+void RenderContext_GdiPlus::DrawImage(const CUiRect& rcPaint, HBITMAP hBitmap, bool bAlphaChannel,
+	const CUiRect& rcImageDest, const CUiRect& rcImageSource, const CUiRect& rcCorners, BYTE uFade /*= 255*/, bool xtiled /*= false*/, bool ytiled /*= false*/)
 {
-	UiRect rcTestTemp;
+	CUiRect rcTestTemp;
 	if (!::IntersectRect(&rcTestTemp, &rcImageDest, &rcPaint)) return;
 
 	ASSERT(::GetObjectType(m_hDC) == OBJ_DC || ::GetObjectType(m_hDC) == OBJ_MEMDC);
@@ -199,10 +199,10 @@ void RenderContext_GdiPlus::DrawImage(const UiRect& rcPaint, HBITMAP hBitmap, bo
 	HBITMAP hOldBitmap = (HBITMAP) ::SelectObject(hCloneDC, hBitmap);
 	int stretchBltMode = ::SetStretchBltMode(m_hDC, HALFTONE);
 
-	UiRect rcTemp;
-	UiRect rcSource;
-	UiRect rcDest;
-	UiRect rcDpiCorner = rcCorners;
+	CUiRect rcTemp;
+	CUiRect rcSource;
+	CUiRect rcDest;
+	CUiRect rcDpiCorner = rcCorners;
 	DpiManager::GetInstance()->ScaleRect(rcDpiCorner);
 
 	// middle
@@ -415,7 +415,7 @@ void RenderContext_GdiPlus::DrawImage(const UiRect& rcPaint, HBITMAP hBitmap, bo
 	::DeleteDC(hCloneDC);
 }
 
-void RenderContext_GdiPlus::DrawColor(const UiRect& rc, DWORD dwColor, BYTE uFade)
+void RenderContext_GdiPlus::DrawColor(const CUiRect& rc, DWORD dwColor, BYTE uFade)
 {
 	DWORD dwNewColor = dwColor;
 	if (uFade < 255) {
@@ -432,7 +432,7 @@ void RenderContext_GdiPlus::DrawColor(const UiRect& rc, DWORD dwColor, BYTE uFad
 	graphics.FillRectangle(&brush, rcFill);
 }
 
-void RenderContext_GdiPlus::DrawColor(const UiRect& rc, const std::wstring& colorStr, BYTE uFade)
+void RenderContext_GdiPlus::DrawColor(const CUiRect& rc, const CUiString& colorStr, BYTE uFade)
 {
 	if (colorStr.empty()) {
 		return;
@@ -442,7 +442,7 @@ void RenderContext_GdiPlus::DrawColor(const UiRect& rc, const std::wstring& colo
 	DrawColor(rc, dwColor, uFade);
 }
 
-void RenderContext_GdiPlus::DrawLine(const UiRect& rc, int nSize, DWORD dwPenColor)
+void RenderContext_GdiPlus::DrawLine(const CUiRect& rc, int nSize, DWORD dwPenColor)
 {
 	Gdiplus::Graphics graphics(m_hDC);
 	Gdiplus::Pen pen(Gdiplus::Color(dwPenColor), (Gdiplus::REAL)nSize);
@@ -463,7 +463,7 @@ void RenderContext_GdiPlus::DrawBezier(const IPen* pen, int x1, int y1, int x2, 
 	graphics.DrawBezier(((Pen_GdiPlus*)pen)->GetPen(), x1, y1, x2, y2, x3, y3, x4, y4);
 }
 
-void RenderContext_GdiPlus::DrawRect(const UiRect& rc, int nSize, DWORD dwPenColor)
+void RenderContext_GdiPlus::DrawRect(const CUiRect& rc, int nSize, DWORD dwPenColor)
 {
 	Gdiplus::Graphics graphics(m_hDC);
 	Gdiplus::Pen pen(Gdiplus::Color(dwPenColor), (Gdiplus::REAL)nSize);
@@ -471,7 +471,7 @@ void RenderContext_GdiPlus::DrawRect(const UiRect& rc, int nSize, DWORD dwPenCol
 }
 
 
-void RenderContext_GdiPlus::DrawRoundRect(const UiRect& rc, const CSize& roundSize, int nSize, DWORD dwPenColor)
+void RenderContext_GdiPlus::DrawRoundRect(const CUiRect& rc, const CUiSize& roundSize, int nSize, DWORD dwPenColor)
 {
 	Gdiplus::Graphics graphics(m_hDC);
 	graphics.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
@@ -495,7 +495,7 @@ void RenderContext_GdiPlus::DrawRoundRect(const UiRect& rc, const CSize& roundSi
 	graphics.DrawPath(&pen, &pPath);
 }
 
-void RenderContext_GdiPlus::DrawText(const UiRect& rc, const std::wstring& strText, DWORD dwTextColor, const std::wstring& strFontId, UINT uStyle, BYTE uFade /*= 255*/, bool bLineLimit /*= false*/)
+void RenderContext_GdiPlus::DrawText(const CUiRect& rc, const CUiString& strText, DWORD dwTextColor, const CUiString& strFontId, UINT uStyle, BYTE uFade /*= 255*/, bool bLineLimit /*= false*/)
 {
 	ASSERT(::GetObjectType(m_hDC) == OBJ_DC || ::GetObjectType(m_hDC) == OBJ_MEMDC);
 	if (strText.empty()) return;
@@ -562,7 +562,7 @@ void RenderContext_GdiPlus::DrawText(const UiRect& rc, const std::wstring& strTe
 	graphics.DrawString(strText.c_str(), (int)strText.length(), &font, rcPaint, &stringFormat, &tBrush);
 }
 
-void RenderContext_GdiPlus::DrawEllipse(const UiRect& rc, int nSize, DWORD dwColor)
+void RenderContext_GdiPlus::DrawEllipse(const CUiRect& rc, int nSize, DWORD dwColor)
 {
 	Gdiplus::Graphics graphics(m_hDC);
 	graphics.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
@@ -570,7 +570,7 @@ void RenderContext_GdiPlus::DrawEllipse(const UiRect& rc, int nSize, DWORD dwCol
 	graphics.DrawEllipse(&pen, rc.left, rc.top, rc.GetWidth(), rc.GetHeight());
 }
 
-void RenderContext_GdiPlus::FillEllipse(const UiRect& rc, DWORD dwColor)
+void RenderContext_GdiPlus::FillEllipse(const CUiRect& rc, DWORD dwColor)
 {
 	Gdiplus::Graphics graphics(m_hDC);
 	graphics.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
@@ -592,7 +592,7 @@ void RenderContext_GdiPlus::FillPath(const IPath* path, const IBrush* brush)
 	graphics.FillPath(((Brush_Gdiplus*)brush)->GetBrush(), ((Path_Gdiplus*)path)->GetPath());
 }
 
-ui::UiRect RenderContext_GdiPlus::MeasureText(const std::wstring& strText, const std::wstring& strFontId, UINT uStyle, int width /*= DUI_NOSET_VALUE*/)
+ui::CUiRect RenderContext_GdiPlus::MeasureText(const CUiString& strText, const CUiString& strFontId, UINT uStyle, int width /*= DUI_NOSET_VALUE*/)
 {
 	Gdiplus::Graphics graphics(m_hDC);
 	Gdiplus::Font font(m_hDC, GlobalManager::GetFont(strFontId));
@@ -619,7 +619,7 @@ ui::UiRect RenderContext_GdiPlus::MeasureText(const std::wstring& strText, const
 		graphics.MeasureString(strText.c_str(), (int)strText.length(), &font, rcText, &stringFormat, &bounds);
 	}
 
-	UiRect rc(int(bounds.GetLeft()), int(bounds.GetTop()), int(bounds.GetRight() + 1), int(bounds.GetBottom() + 1));
+	CUiRect rc(int(bounds.GetLeft()), int(bounds.GetTop()), int(bounds.GetRight() + 1), int(bounds.GetBottom() + 1));
 	return rc;
 }
 

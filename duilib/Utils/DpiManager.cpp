@@ -171,7 +171,7 @@ void DpiManager::ScaleSize(SIZE &size)
 	size.cy = MulDiv(size.cy, m_nScaleFactor, 100);
 }
 
-void DpiManager::ScaleSize(CSize &size)
+void DpiManager::ScaleSize(CUiSize &size)
 {
 	if (!m_bAdaptDPI || m_nScaleFactor == 100)
 		return;
@@ -190,7 +190,7 @@ void DpiManager::ScalePoint(POINT &point)
 }
 
 
-void DpiManager::ScalePoint(CPoint &point)
+void DpiManager::ScalePoint(CUiPoint &point)
 {
 	if (!m_bAdaptDPI || m_nScaleFactor == 100)
 		return;
@@ -212,7 +212,7 @@ void DpiManager::ScaleRect(RECT &rect)
 	rect.bottom = rect.top + height;
 }
 
-void DpiManager::ScaleRect(UiRect &rect)
+void DpiManager::ScaleRect(CUiRect &rect)
 {
 	if (!m_bAdaptDPI || m_nScaleFactor == 100)
 		return;

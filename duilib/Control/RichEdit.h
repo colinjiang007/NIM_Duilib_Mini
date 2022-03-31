@@ -16,7 +16,7 @@ class UILIB_API RichEdit : public ScrollableBox
 {
 public:
 	friend class CTxtWinHost;
-	typedef std::function<bool(LONG, LONG, CSize&)> FunGetNaturalSize;
+	typedef std::function<bool(LONG, LONG, CUiSize&)> FunGetNaturalSize;
 public:
 	RichEdit();
 	RichEdit(const RichEdit& r) = delete;
@@ -536,7 +536,7 @@ public:
 	 * @param[in] lChar 字符索引位置
 	 * @return 返回客户区坐标
 	 */
-	CPoint GetCharPos(long lChar) const;
+	CUiPoint GetCharPos(long lChar) const;
 
 	/**
 	 * @brief 获取指定字符所在行数
@@ -550,14 +550,14 @@ public:
 	 * @param[in] nChar 字符索引位置
 	 * @return 返回客户区坐标
 	 */
-    CPoint PosFromChar(UINT nChar) const;
+    CUiPoint PosFromChar(UINT nChar) const;
 
 	/**
 	 * @brief 根据坐标返回指定字符索引
 	 * @param[in] pt 坐标信息
 	 * @return 返回最接近参数 pt 所指定的坐标位置
 	 */
-	int CharFromPos(CPoint pt) const;
+	int CharFromPos(CUiPoint pt) const;
 
 	/**
 	 * @brief 清空撤销列表
@@ -598,7 +598,7 @@ public:
 	ITextHost* GetTextHost();
 	ITextServices* GetTextServices();
 	BOOL SetOleCallback(IRichEditOleCallback* pCallback);
-	CSize GetNaturalSize(LONG width, LONG height);
+	CUiSize GetNaturalSize(LONG width, LONG height);
 	void SetImmStatus(BOOL bOpen);
 	void SetTimer(UINT idTimer, UINT uTimeout);
 	void KillTimer(UINT idTimer);
@@ -608,7 +608,7 @@ public:
 	 * @param[in] szPos 要设置的滚动条位置信息
 	 * @return 无
 	 */
-    void SetScrollPos(CSize szPos);
+    void SetScrollPos(CUiSize szPos);
 
 	/**
 	 * @brief 向上一行
@@ -684,8 +684,8 @@ public:
 
 	virtual void DoInit() override;
 	virtual void SetEnabled(bool bEnable = true) override;
-	virtual CSize EstimateSize(CSize szAvailable) override;
-	virtual void SetPos(UiRect rc) override;
+	virtual CUiSize EstimateSize(CUiSize szAvailable) override;
+	virtual void SetPos(CUiRect rc) override;
 	virtual UINT GetControlFlags() const override;
 	virtual void HandleMessage(EventArgs& event) override;
 	void OnSetCursor(EventArgs& event);
@@ -697,9 +697,9 @@ public:
 	void OnImeEndComposition(EventArgs& event);
 	void OnMouseMessage(UINT uMsg, EventArgs& event);
 
-	virtual void Paint(IRenderContext* pRender, const UiRect& rcPaint) override;
-	virtual void PaintChild(IRenderContext* pRender, const UiRect& rcPaint) override;
-	virtual void SetAttribute(const std::wstring& pstrName, const std::wstring& pstrValue) override;
+	virtual void Paint(IRenderContext* pRender, const CUiRect& rcPaint) override;
+	virtual void PaintChild(IRenderContext* pRender, const CUiRect& rcPaint) override;
+	virtual void SetAttribute(const CUiString& pstrName, const CUiString& pstrValue) override;
 
 	/**
 	 * @brief 创建光标
@@ -755,7 +755,7 @@ public:
 	 * @param[in] rcPaint 绘制位置
 	 * @return 无
 	 */
-	void PaintCaret(IRenderContext* pRender, const UiRect& rcPaint);
+	void PaintCaret(IRenderContext* pRender, const CUiRect& rcPaint);
 
 	/**
 	 * @brief 设置是否显示提示文字
@@ -892,7 +892,7 @@ public:
 	 * @param[in] info 表示 link 的自定义属性
 	 * @return 返回 true 表示在 link 上
 	 */
-	bool HittestCustomLink(CPoint pt, std::wstring& info);
+	bool HittestCustomLink(CUiPoint pt, std::wstring& info);
 
 	/**
 	 * @brief 清理图片缓存

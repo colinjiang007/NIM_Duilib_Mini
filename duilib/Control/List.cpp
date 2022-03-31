@@ -116,7 +116,7 @@ bool ListBox::SelectItem(int iIndex, bool bTakeFocus, bool bTrigger)
 	pListItem->OptionTemplate<Box>::Selected(true, bTrigger);
 
 	if (GetItemAt(m_iCurSel)) {
-		UiRect rcItem = GetItemAt(m_iCurSel)->GetPos();
+		CUiRect rcItem = GetItemAt(m_iCurSel)->GetPos();
 		EnsureVisible(rcItem);
 	}
 
@@ -128,12 +128,12 @@ bool ListBox::SelectItem(int iIndex, bool bTakeFocus, bool bTrigger)
 	return true;
 }
 
-void ListBox::EnsureVisible(const UiRect& rcItem)
+void ListBox::EnsureVisible(const CUiRect& rcItem)
 {
-	UiRect rcNewItem = rcItem;
+	CUiRect rcNewItem = rcItem;
 	rcNewItem.Offset(-GetScrollPos().cx, -GetScrollPos().cy);
-	UiRect rcList = GetPos();
-	UiRect rcListInset = m_pLayout->GetPadding();
+	CUiRect rcList = GetPos();
+	CUiRect rcListInset = m_pLayout->GetPadding();
 
 	rcList.left += rcListInset.left;
 	rcList.top += rcListInset.top;
@@ -158,8 +158,8 @@ void ListBox::EnsureVisible(const UiRect& rcItem)
 	if (rcNewItem.top < rcList.top) dy = rcNewItem.top - rcList.top;
 	if (rcNewItem.bottom > rcList.bottom) dy = rcNewItem.bottom - rcList.bottom;
 
-	CSize sz = GetScrollPos();
-	SetScrollPos(CSize(sz.cx + dx, sz.cy + dy));
+	CUiSize sz = GetScrollPos();
+	SetScrollPos(CUiSize(sz.cx + dx, sz.cy + dy));
 }
 
 void ListBox::StopScroll()
@@ -180,7 +180,7 @@ bool ListBox::ScrollItemToTop(const std::wstring& strItemName)
 	for (auto it = m_items.begin(); it != m_items.end(); it++) {
 		if ((*it)->GetName() == strItemName) {
 			if (GetScrollRange().cy != 0) {
-				CSize scrollPos = GetScrollPos();
+				CUiSize scrollPos = GetScrollPos();
 				scrollPos.cy = (*it)->GetPos().top - m_pLayout->GetInternalPos().top;
 				if (scrollPos.cy >= 0) {
 					SetScrollPos(scrollPos);

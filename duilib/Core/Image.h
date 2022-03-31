@@ -27,16 +27,16 @@ public:
 	bool IsGif();
 	int GetInterval(int nIndex); //ºÁÃëÎªµ¥Î» 
 	 
-	static std::unique_ptr<ImageInfo> LoadImage(const std::wstring& strImageFullPath);
-	static std::unique_ptr<ImageInfo> LoadImage(HGLOBAL hGlobal, const std::wstring& imageFullPath);
+	static std::unique_ptr<ImageInfo> LoadImage(const CUiString& strImageFullPath);
+	static std::unique_ptr<ImageInfo> LoadImage(HGLOBAL hGlobal, const CUiString& imageFullPath);
 
 private:
-	static std::unique_ptr<ImageInfo> LoadImageByBitmap(std::unique_ptr<Gdiplus::Bitmap>& pGdiplusBitmap, const std::wstring& imageFullPath);
+	static std::unique_ptr<ImageInfo> LoadImageByBitmap(std::unique_ptr<Gdiplus::Bitmap>& pGdiplusBitmap, const CUiString& imageFullPath);
 
 public:
 	int nX;
 	int nY;
-	std::wstring sImageFullPath;
+	CUiString sImageFullPath;
 
 private:
 	bool m_bAlphaChannel;
@@ -51,14 +51,14 @@ public:
 	ImageAttribute();
 
 	void Init();
-	void SetImageString(const std::wstring& strImageString);
-	static void ModifyAttribute(ImageAttribute& imageAttribute, const std::wstring& strImageString);
+	void SetImageString(const CUiString& strImageString);
+	static void ModifyAttribute(ImageAttribute& imageAttribute, const CUiString& strImageString);
 
-	std::wstring simageString;
-	std::wstring sImageName;
-	UiRect rcDest;
-	UiRect rcSource;
-	UiRect rcCorner;
+	CUiString simageString;
+	CUiString sImageName;
+	CUiRect rcDest;
+	CUiRect rcSource;
+	CUiRect rcCorner;
 	BYTE bFade;
 	bool bTiledX;
 	bool bTiledY;
@@ -74,7 +74,7 @@ public:
 	bool IsPlaying() { return m_bPlaying; }
 	void SetPlaying(bool bPlaying) { m_bPlaying = bPlaying; }
 
-	void SetImageString(const std::wstring& strImageString);
+	void SetImageString(const CUiString& strImageString);
 	void ClearCache();
 
 	bool IncrementCurrentFrame();
@@ -103,7 +103,7 @@ public:
 	Image& operator[](ControlStateType stateType) {	return m_stateImageMap[stateType]; }
 
 	bool HasHotImage();
-	bool PaintStatusImage(IRenderContext* pRender, ControlStateType stateType, const std::wstring& sImageModify = L"");
+	bool PaintStatusImage(IRenderContext* pRender, ControlStateType stateType, const CUiString& sImageModify = _T(""));
 	Image* GetEstimateImage();
 	void ClearCache();
 
@@ -119,11 +119,11 @@ public:
 
 	void SetControl(Control* control);
 
-	void SetImage(StateImageType stateImageType, ControlStateType stateType, const std::wstring& strImagePath);
-	std::wstring GetImagePath(StateImageType stateImageType, ControlStateType stateType);
+	void SetImage(StateImageType stateImageType, ControlStateType stateType, const CUiString& strImagePath);
+	CUiString GetImagePath(StateImageType stateImageType, ControlStateType stateType);
 
 	bool HasHotImage();
-	bool PaintStatusImage(IRenderContext* pRender, StateImageType stateImageType, ControlStateType stateType, const std::wstring& sImageModify = L"");
+	bool PaintStatusImage(IRenderContext* pRender, StateImageType stateImageType, ControlStateType stateType, const CUiString& sImageModify = _T(""));
 	Image* GetEstimateImage(StateImageType stateImageType);
 
 	void ClearCache();
@@ -138,14 +138,14 @@ public:
 	StateColorMap();
 
 	void SetControl(Control* control);
-	std::wstring& operator[](ControlStateType stateType) { return m_stateColorMap[stateType]; }
+	CUiString& operator[](ControlStateType stateType) { return m_stateColorMap[stateType]; }
 
 	bool HasHotColor();
-	void PaintStatusColor(IRenderContext* pRender, UiRect rcPaint, ControlStateType stateType);
+	void PaintStatusColor(IRenderContext* pRender, CUiRect rcPaint, ControlStateType stateType);
 
 private:
 	Control* m_pControl;
-	std::map<ControlStateType, std::wstring> m_stateColorMap;
+	std::map<ControlStateType, CUiString> m_stateColorMap;
 };
 
 } // namespace ui

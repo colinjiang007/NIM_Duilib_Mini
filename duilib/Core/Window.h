@@ -27,7 +27,7 @@ class Box;
 typedef struct tagTFontInfo
 {
 	HFONT hFont;
-	std::wstring sFontName;
+	CUiString sFontName;
 	int iSize;
 	bool bBold;
 	bool bUnderline;
@@ -50,7 +50,7 @@ public:
 class IControlFromPointFinder
 {
 public:
-	virtual Control* FindControlFromPoint(const CPoint& pt) = 0;
+	virtual Control* FindControlFromPoint(const CUiPoint& pt) = 0;
 };
 /////////////////////////////////////////////////////////////////////////////////////
 //
@@ -89,13 +89,13 @@ public:
 	 * @brief 获取窗口类名称
 	 * @return 返回窗口类名称
 	 */
-	virtual std::wstring GetWindowClassName() const;
+	virtual CUiString GetWindowClassName() const;
 
 	/**
 	 * @brief 获取控件窗口类
 	 * @return 返回控件窗口类
 	 */
-	virtual std::wstring GetSuperClassName() const;
+	virtual CUiString GetSuperClassName() const;
 
 	/**
 	 * @brief 获取窗口类的样式，该方法由实例化的子类实现，https://docs.microsoft.com/en-us/windows/desktop/winmsg/window-class-styles
@@ -126,7 +126,7 @@ public:
 	 * @param[in] rc 窗口大小
 	 * @return 返回窗口句柄
 	 */
-	virtual HWND Create(HWND hwndParent, LPCTSTR pstrName, DWORD dwStyle, DWORD dwExStyle, bool isLayeredWindow = true, const UiRect& rc = UiRect(0, 0, 0, 0));
+	virtual HWND Create(HWND hwndParent, LPCTSTR pstrName, DWORD dwStyle, DWORD dwExStyle, bool isLayeredWindow = true, const CUiRect& rc = CUiRect(0, 0, 0, 0));
 
 	/**
 	 * @brief 关闭窗口
@@ -248,14 +248,14 @@ public:
 	 * @brief 获取窗口资源路径
 	 * @return 返回窗口资源路径
 	 */
-	std::wstring GetWindowResourcePath();
+	CUiString GetWindowResourcePath();
 
 	/**
 	 * @brief 设置窗口资源路径
 	 * @param[in] strPath 要设置的路径
 	 * @return 无
 	 */
-	void SetWindowResourcePath(const std::wstring& strPath);
+	void SetWindowResourcePath(const CUiString& strPath);
 
 	/**
 	 * @brief 获取默认字体信息
@@ -269,27 +269,27 @@ public:
 	 * @param[in] strControlAttrList 通用样式的 XML 转义格式数据
 	 * @return 无
 	 */
-	void AddClass(const std::wstring& strClassName, const std::wstring& strControlAttrList);
+	void AddClass(const CUiString& strClassName, const CUiString& strControlAttrList);
 
 	/**
 	 * @brief 获取所有通用样式
 	 * @return 返回所有通用样式的 map 数据
 	 */
-	const std::map<std::wstring, std::wstring>* GetClassMap();
+	const std::map<CUiString, CUiString>* GetClassMap();
 
 	/**
 	 * @brief 获取指定通用样式的内容
 	 * @param[in] strClassName 通用样式名称
 	 * @return 返回指定名称的通用样式内容，XML 转义格式数据
 	 */
-	std::wstring GetClassAttributes(const std::wstring& strClassName) const;
+	CUiString GetClassAttributes(const CUiString& strClassName) const;
 
 	/**
 	 * @brief 删除一个通用样式
 	 * @param[in] strClassName 要删除的通用样式名称
 	 * @return 返回 true 为成功，false 为失败或样式不存在
 	 */
-	bool RemoveClass(const std::wstring& strClassName);
+	bool RemoveClass(const CUiString& strClassName);
 
 	/**
 	 * @brief 删除所有通用样式
@@ -303,14 +303,14 @@ public:
 	 * @param[in] pControl 控件指针
 	 * @return 返回 true 表示添加成功，false 可能组已经存在
 	 */
-	bool AddOptionGroup(const std::wstring& strGroupName, Control* pControl);
+	bool AddOptionGroup(const CUiString& strGroupName, Control* pControl);
 
 	/**
 	 * @brief 获取指定选项组中控件列表
 	 * @param[in] strGroupName 指定组名称
 	 * @return 返回该组下的所有控件列表
 	 */
-	std::vector<Control*>* GetOptionGroup(const std::wstring& strGroupName);
+	std::vector<Control*>* GetOptionGroup(const CUiString& strGroupName);
 
 	/**
 	 * @brief 删除一个选项组
@@ -318,7 +318,7 @@ public:
 	 * @param[in] pControl 控件名称
 	 * @return 无
 	 */
-	void RemoveOptionGroup(const std::wstring& strGroupName, Control* pControl);
+	void RemoveOptionGroup(const CUiString& strGroupName, Control* pControl);
 
 	/**
 	 * @brief 删除所有选项组
@@ -343,33 +343,33 @@ public:
 	 * @brief 获取窗口四边可拉伸范围的大小
 	 * @return 返回窗口四边可拉伸范围的大小
 	 */
-	UiRect GetSizeBox();
+	CUiRect GetSizeBox();
 
 	/**
 	 * @brief 设置窗口四边可拉伸范围的大小
 	 * @param[in] rcSizeBox 要设置的大小
 	 * @return 无
 	 */
-	void SetSizeBox(const UiRect& rcSizeBox);
+	void SetSizeBox(const CUiRect& rcSizeBox);
 
 	/**
 	 * @brief 获取窗口标题栏区域（可拖动区域），对应 XML 中 caption 属性
 	 * @return 返回标题栏区域
 	 */
-	UiRect GetCaptionRect() const;
+	CUiRect GetCaptionRect() const;
 
 	/**
 	 * @brief 设置窗口标题栏区域
 	 * @param[in] rcCaption 要设置的区域范围
 	 * @return 无
 	 */
-	void SetCaptionRect(UiRect& rcCaption);
+	void SetCaptionRect(CUiRect& rcCaption);
 
 	/**
 	 * @brief 获取窗口圆角大小，对应 XML 中 roundcorner 属性
 	 * @return 返回圆角大小
 	 */
-	CSize GetRoundCorner() const;
+	CUiSize GetRoundCorner() const;
 
 	/**
 	 * @brief 设置窗口圆角大小
@@ -383,27 +383,27 @@ public:
 	 * @brief 获取窗口最大化信息
 	 * @return 返回窗口最大化信息
 	 */
-	UiRect GetMaximizeInfo() const;
+	CUiRect GetMaximizeInfo() const;
 
 	/**
 	 * @brief 设置窗口最大化信息
 	 * @param[in] rcMaximize 要设置的最大化数值
 	 * @return 无
 	 */
-	void SetMaximizeInfo(UiRect& rcMaximize);
+	void SetMaximizeInfo(CUiRect& rcMaximize);
 
 	/**
 	 * @brief 获取透明通道修补范围的的九宫格描述，对应 XML 中 alphafixcorner 属性
 	 * @return 返回修补范围
 	 */
-	UiRect GetAlphaFixCorner() const;
+	CUiRect GetAlphaFixCorner() const;
 
 	/**
 	 * @brief 设置透明通道修补范围的的九宫格描述
 	 * @param[in] rc 要设置的修补范围
 	 * @return 无
 	 */
-	void SetAlphaFixCorner(UiRect& rc);
+	void SetAlphaFixCorner(CUiRect& rc);
 
 	/**
 	 * @brief 获取窗口的初始高度占屏幕高度的百分比，对应 XML 中 heightpercent 属性
@@ -423,7 +423,7 @@ public:
 	 * @param[in] strTextId 语言 ID，该 ID 必须在语言文件中存在
 	 * @return 无
 	 */
-	void SetTextId(const std::wstring& strTextId);
+	void SetTextId(const CUiString& strTextId);
 
 	/// 阴影相关部分
 	/**
@@ -437,34 +437,34 @@ public:
 	 * @brief 获取阴影图片
 	 * @return 返回阴影图片位置
 	 */
-	std::wstring GetShadowImage() const;
+	CUiString GetShadowImage() const;
 
 	/**
 	 * @brief 设置窗口阴影图片
 	 * @param[in] strImage 图片位置
 	 * @return 无
 	 */
-	void SetShadowImage(const std::wstring &strImage);
+	void SetShadowImage(const CUiString &strImage);
 
 	/**
 	 * @brief 获取阴影的九宫格描述信息
 	 * @return 返回阴影的九宫格描述信息
 	 */
-	UiRect GetShadowCorner() const;
+	CUiRect GetShadowCorner() const;
 
 	/**
 	 * @brief 指定阴影素材的九宫格描述
 	 * @param[in] rect 九宫格描述信息
 	 * @return 无
 	 */
-	void SetShadowCorner(const UiRect rect);
+	void SetShadowCorner(const CUiRect rect);
 
 	/**
 	 * @brief 获取窗口位置信息
 	 * @param[in] bContainShadow 是否包含阴影，true 为包含，默认为 false 不包含
 	 * @return 返回窗口位置信息
 	 */
-	UiRect GetPos(bool bContainShadow = false) const;
+	CUiRect GetPos(bool bContainShadow = false) const;
 
 	/**
 	 * @brief 设置窗口位置（对 SetWindowPos 的一层封装）
@@ -475,28 +475,28 @@ public:
 	 * @param[in] bContainShadow 是否包含阴影范围，默认为 false
 	 * @return 无
 	 */
-	void SetPos(const UiRect& rc, bool bNeedDpiScale, UINT uFlags, HWND hWndInsertAfter = NULL, bool bContainShadow = false);
+	void SetPos(const CUiRect& rc, bool bNeedDpiScale, UINT uFlags, HWND hWndInsertAfter = NULL, bool bContainShadow = false);
 
 	/**
 	 * @brief 获取窗口最小范围，对应 XML 中 mininfo 属性
 	 * @param[in] bContainShadow 是否包含阴影范围，默认为 false
 	 * @return 返回指定大小
 	 */
-	CSize GetMinInfo(bool bContainShadow = false) const;
+	CUiSize GetMinInfo(bool bContainShadow = false) const;
 
 	/**
 	 * @brief 获取窗口最大范围，对应 XML 中 maxinfo 属性
 	 * @param[in] bContainShadow 是否包含阴影范围，默认为 false
 	 * @return 返回指定大小
 	 */
-	CSize GetMaxInfo(bool bContainShadow = false) const;
+	CUiSize GetMaxInfo(bool bContainShadow = false) const;
 
 	/**
 	 * @brief 获取窗口初始大小
 	 * @param[in] bContainShadow 是否包含阴影范围，默认为 false
 	 * @return 返回指定大小
 	 */
-	CSize GetInitSize(bool bContainShadow = false) const;
+	CUiSize GetInitSize(bool bContainShadow = false) const;
 
 	/**
 	 * @brief 设置窗口最小范围
@@ -731,7 +731,7 @@ public:
 	 * @param[in] strName 控件名称
 	 * @return 返回控件指针
 	 */
-	Control* FindControl(const std::wstring& strName) const;
+	Control* FindControl(const CUiString& strName) const;
 
 	/**
 	 * @brief 根据坐标查找子控件
@@ -747,7 +747,7 @@ public:
 	 * @param[in] strName 要查找的名称
 	 * @return 返回控件指针
 	 */
-	Control* FindSubControlByName(Control* pParent, const std::wstring& strName) const;
+	Control* FindSubControlByName(Control* pParent, const CUiString& strName) const;
 
 	/**
 	 * @brief 根据类名查找子控件
@@ -809,7 +809,7 @@ public:
 	 * @param[in] rcItem 重绘范围
 	 * @return 无
 	 */
-	void Invalidate(const UiRect& rcItem);
+	void Invalidate(const CUiRect& rcItem);
 
 	/**
 	 * @brief 绘制函数体
@@ -860,7 +860,7 @@ private:
 	 * @param[in] renderOffset 偏移值
 	 * @return 无
 	 */
-	void SetRenderOffset(CPoint renderOffset);
+	void SetRenderOffset(CUiPoint renderOffset);
 
 	/**
 	 * @brief 设置绘制偏移 x 坐标
@@ -885,21 +885,21 @@ protected:
 	EventMap OnEvent;
 
 protected:
-	CSize m_szMinWindow;
-	CSize m_szMaxWindow;
-	CSize m_szInitWindowSize;
-	UiRect m_rcMaximizeInfo;
-	UiRect m_rcSizeBox;
-	UiRect m_rcAlphaFix;
-	CSize m_szRoundCorner;
-	UiRect m_rcCaption;
+	CUiSize m_szMinWindow;
+	CUiSize m_szMaxWindow;
+	CUiSize m_szInitWindowSize;
+	CUiRect m_rcMaximizeInfo;
+	CUiRect m_rcSizeBox;
+	CUiRect m_rcAlphaFix;
+	CUiSize m_szRoundCorner;
+	CUiRect m_rcCaption;
 	double m_heightPercent;
 
 	HDC m_hDcPaint;
 	std::unique_ptr<IRenderContext> m_renderContext;
 	bool m_bIsLayeredWindow;
 	int m_nAlpha;
-	CPoint m_renderOffset;
+	CUiPoint m_renderOffset;
 	bool m_bFirstLayout;
 
 	HWND m_hwndTooltip;
@@ -910,10 +910,10 @@ protected:
 	Control* m_pEventHover;
 	Control* m_pEventClick;
 	Control* m_pEventKey;
-	CPoint m_ptLastMousePos;
+	CUiPoint m_ptLastMousePos;
 
 	Control* m_pEventTouch;
-	CPoint m_ptLastTouchPos;
+	CUiPoint m_ptLastTouchPos;
 	Control* m_pEventPointer;
 	bool m_bHandlePointer;
 
@@ -923,10 +923,10 @@ protected:
 	bool m_bMouseTracking;
 	bool m_bMouseCapture;
 
-	std::wstring m_strWindowResourcePath; //每个窗口的资源路径,等于GetSkinFolder()
+	CUiString m_strWindowResourcePath; //每个窗口的资源路径,等于GetSkinFolder()
 	TFontInfo m_defaultFontInfo;
-	std::map<std::wstring, std::wstring> m_defaultAttrHash;
-	std::map<std::wstring, std::vector<Control*>> m_mOptionGroup;
+	std::map<CUiString, CUiString> m_defaultAttrHash;
+	std::map<CUiString, std::vector<Control*>> m_mOptionGroup;
 
 	std::vector<IUIMessageFilter*> m_aPreMessageFilters;
 	std::vector<IUIMessageFilter*> m_aMessageFilters;
@@ -935,7 +935,7 @@ protected:
 
 	std::vector<Control*> m_aDelayedCleanup;
 	std::vector<Control*> m_aFoundControls;
-	std::map<std::wstring, Control*> m_mNameHash;
+	std::map<CUiString, Control*> m_mNameHash;
 
 	nbase::WeakCallbackFlag m_closeFlag;
 	
