@@ -21,14 +21,14 @@ TimerManager::TimerManager() : m_aTimers(),	m_timeFrequency(),	m_bMinPause(true)
 
 	HINSTANCE hinst = ::GetModuleHandle(NULL);
 
-	WNDCLASSEXW wc = {0};
+	WNDCLASSEX wc = {0};
 	wc.cbSize = sizeof(wc);
 	wc.lpfnWndProc = WndProcThunk;
 	wc.hInstance = hinst;
-	wc.lpszClassName = L"UI_ANIMATION_TIMERMANAGER_H_";
-	::RegisterClassExW(&wc);
+	wc.lpszClassName = _T("UI_ANIMATION_TIMERMANAGER_H_");
+	::RegisterClassEx(&wc);
 
-	m_hMessageWnd = ::CreateWindowW(L"UI_ANIMATION_TIMERMANAGER_H_", 0, 0, 0, 0, 0, 0, HWND_MESSAGE, 0, hinst, 0);
+	m_hMessageWnd = ::CreateWindow(_T("UI_ANIMATION_TIMERMANAGER_H_"), 0, 0, 0, 0, 0, 0, HWND_MESSAGE, 0, hinst, 0);
 }
 
 LRESULT TimerManager::WndProcThunk(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)

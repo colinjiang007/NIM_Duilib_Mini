@@ -389,8 +389,8 @@ Control* WindowBuilder::_Parse(CMarkupNode* pRoot, Control* pParent, Window* pMa
         else {
 			pControl = CreateControlByClass(strClass);
 			if (pControl == nullptr) {
-				if (strClass == L"Event" || strClass == L"BubbledEvent") {
-					bool bBubbled = (strClass == L"BubbledEvent");
+				if (strClass == _T("Event") || strClass == _T("BubbledEvent")) {
+					bool bBubbled = (strClass == _T("BubbledEvent"));
 					AttachXmlEvent(bBubbled, node, pParent);
 					continue;
 				}

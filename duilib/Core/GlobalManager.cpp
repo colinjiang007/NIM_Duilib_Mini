@@ -648,6 +648,8 @@ HGLOBAL GlobalManager::GetData(const CUiString& path)
 
 CUiString GlobalManager::GetZipFilePath(const CUiString& path)
 {
+	return ui::PathUtil::SimplifyFilePath(path);
+	/*
 	CUiString file_path = path;
 	file_path.Replace(_T("\\"), _T("/"));
 	file_path.Replace(_T("//"), _T("/"));
@@ -689,6 +691,7 @@ CUiString GlobalManager::GetZipFilePath(const CUiString& path)
 		i++;
 	}
 	return file_path;
+	*/
 }
 
 bool GlobalManager::ImageCacheKeyCompare::operator()(const CUiString& key1, const CUiString& key2) const

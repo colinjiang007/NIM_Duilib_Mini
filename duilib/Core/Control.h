@@ -581,7 +581,7 @@ public:
 	 * @param[in] nFade 控件的透明度，如果启用动画效果该值在绘制时是不断变化的
 	 * @return 成功返回 true，失败返回 false
 	 */
-	bool DrawImage(IRenderContext* pRender, Image& duiImage, const CUiString& strModify = L"", int nFade = DUI_NOSET_VALUE);
+	bool DrawImage(IRenderContext* pRender, Image& duiImage, const CUiString& strModify = _T(""), int nFade = DUI_NOSET_VALUE);
 
 	/**
 	* @brief 获取绘制上下文对象

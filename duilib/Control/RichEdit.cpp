@@ -1293,7 +1293,7 @@ void RichEdit::SetFont(const CUiString& pStrFontName, int nSize, bool bBold, boo
     if( m_pTwh ) {
         LOGFONT lf = { 0 };
         ::GetObject(::GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
-        _tcscpy(lf.lfFaceName, pStrFontName.c_str());
+        _tcscpy(lf.lfFaceName, pStrFontName.GetData());
         lf.lfCharSet = DEFAULT_CHARSET;
         lf.lfHeight = -nSize;
         if( bBold ) lf.lfWeight += FW_BOLD;
@@ -1436,7 +1436,7 @@ void RichEdit::SetTextId(const CUiString& strTextId)
 void RichEdit::SetUTF8Text( const std::string& strText )
 {
 	CUiString strOut;
-	StringHelper::MBCSToUnicode(strText, strOut, CP_UTF8);
+	StringHelper::Utf8ToCUiString(strText, strOut);
 	SetText(strOut);
 }
 
@@ -1486,10 +1486,10 @@ int RichEdit::SetSel(long nStartChar, long nEndChar)
 void RichEdit::ReplaceSel(const CUiString& lpszNewText, bool bCanUndo)
 {
 #ifdef _UNICODE		
-    TxSendMessage(EM_REPLACESEL, (WPARAM) bCanUndo, (LPARAM)lpszNewText.c_str(), 0); 
+    TxSendMessage(EM_REPLACESEL, (WPARAM) bCanUndo, (LPARAM)lpszNewText.GetData(), 0); 
 #else
-	CUiString strOut;
-	StringHelper::MBCSToUnicode(lpszNewText, strOut, CP_ACP);
+	std::wstring strOut;
+	StringHelper::CUiStringToUnicode(lpszNewText, strOut);
 	TxSendMessage(EM_REPLACESEL, (WPARAM) bCanUndo, (LPARAM)strOut.c_str(), 0); 
 #endif
 }
@@ -2129,7 +2129,7 @@ void RichEdit::DoInit()
 	cs.y = 0;
 	cs.cy = 0;
 	cs.cx = 0;
-	cs.lpszName = m_sText.c_str();
+	cs.lpszName = m_sText;
 	CreateHost(this, &cs, &m_pTwh);
 	if (m_pTwh) {
 		m_pTwh->SetTransparent(TRUE);
@@ -2464,19 +2464,21 @@ void RichEdit::OnKeyDown(EventArgs& event)
 	else if (m_bNumberOnly && event.wParam == 'V' && ::GetKeyState(VK_CONTROL) < 0) {
 		CUiString strClipText;
 		GetClipboardText(strClipText);
-		if (!strClipText.empty()) {
+		if (!strClipText.IsEmpty()) {
 			CUiString strNum;
-			for (auto it = strClipText.begin(); it != strClipText.end(); it++)
+			for (auto i = 0; i < strClipText.GetLength(); i++)
 			{
-				if ((*it) <= L'9' && (*it) >= L'0') {
-					strNum.push_back((*it));
+				TCHAR ic = strClipText.GetAt(i);
+				if (ic <= _T('9') && ic >= _T('0')) {
+					strNum += ic;
 				}
 			}
-			if (strNum.empty())
+			if (strNum.IsEmpty())
 				return;
 
 			SetClipBoardText(strNum); //修改剪切板内容为纯数字
-			nbase::ThreadManager::PostTask([strClipText]() { SetClipBoardText(strClipText); }); //粘贴完后又把剪切板内容改回来
+			//todo
+			//nbase::ThreadManager::PostTask([strClipText]() { SetClipBoardText(strClipText); }); //粘贴完后又把剪切板内容改回来
 		}
 	}
 
@@ -2698,44 +2700,44 @@ void RichEdit::SetAttribute(const CUiString& strName, const CUiString& strValue)
 		}
 	}
 	else if (strName == _T("align")) {
-		if (strValue.find(_T("left")) != CUiString::npos) {
+		if (strValue.Find(_T("left")) != -1) {
 			m_lTwhStyle &= ~(ES_CENTER | ES_RIGHT);
 			m_lTwhStyle |= ES_LEFT;
 		}
-		if (strValue.find(_T("hcenter")) != CUiString::npos) {
+		if (strValue.Find(_T("hcenter")) != -1) {
 			m_lTwhStyle &= ~(ES_LEFT | ES_RIGHT);
 			m_lTwhStyle |= ES_CENTER;
 		}
-		if (strValue.find(_T("right")) != CUiString::npos) {
+		if (strValue.Find(_T("right")) != -1) {
 			m_lTwhStyle &= ~(ES_LEFT | ES_CENTER);
 			m_lTwhStyle |= ES_RIGHT;
 		}
-		if (strValue.find(_T("top")) != CUiString::npos) {
+		if (strValue.Find(_T("top")) != -1) {
 			m_textVerAlignType = kVerAlignTop;
 		}
-		if (strValue.find(_T("vcenter")) != CUiString::npos) {
+		if (strValue.Find(_T("vcenter")) != -1) {
 			m_textVerAlignType = kVerAlignCenter;
 		}
-		if (strValue.find(_T("bottom")) != CUiString::npos) {
+		if (strValue.Find(_T("bottom")) != -1) {
 			m_textVerAlignType = kVerAlignBottom;
 		}
 	}
 	else if (strName == _T("normaltextcolor")) {
-		LPCTSTR pValue = strValue.c_str();
+		LPCTSTR pValue = strValue;
 		while (*pValue > _T('\0') && *pValue <= _T(' ')) pValue = ::CharNext(pValue);
 		m_sTextColor = pValue;
 		if (m_bEnabled)
 			SetTextColor(m_sTextColor);
 	}
-	else if (strName == _T("disabledtextcolor") {
-		LPCTSTR pValue = strValue.c_str();
+	else if (strName == _T("disabledtextcolor")) {
+		LPCTSTR pValue = strValue;
 		while (*pValue > _T('\0') && *pValue <= _T(' ')) pValue = ::CharNext(pValue);
 		m_sDisabledTextColor = pValue;
 		if (!m_bEnabled)
 			SetTextColor(m_sDisabledTextColor);
 	}
-	else if (strName == _T("caretcolor") {
-		LPCTSTR pValue = strValue.c_str();
+	else if (strName == _T("caretcolor")) {
+		LPCTSTR pValue = strValue;
 		while (*pValue > _T('\0') && *pValue <= _T(' ')) pValue = ::CharNext(pValue);
 		SetCaretColor(pValue);
 	}
@@ -2744,7 +2746,7 @@ void RichEdit::SetAttribute(const CUiString& strName, const CUiString& strValue)
 			m_bAllowPrompt = true;
 	}
 	else if (strName == _T("promptcolor")) {
-		LPCTSTR pValue = strValue.c_str();
+		LPCTSTR pValue = strValue;
 		while (*pValue > _T('\0') && *pValue <= _T(' ')) pValue = ::CharNext(pValue);
 		m_sPromptColor = pValue;
 	}
@@ -2752,8 +2754,8 @@ void RichEdit::SetAttribute(const CUiString& strName, const CUiString& strValue)
 	else if (strName == _T("prompttextid")) SetPromptTextId(strValue);
 	else if (strName == _T("focusedimage")) SetFocusedImage(strValue);
 	else if (strName == _T("font")) SetFont(strValue);
-	else if (strName == _T("text")) SetText(strValue.c_str());
-	else if (strName == _T("textid")) SetTextId(strValue.c_str());
+	else if (strName == _T("text")) SetText(strValue);
+	else if (strName == _T("textid")) SetTextId(strValue);
 	else if (strName == _T("wanttab")) SetWantTab(strValue == _T("true"));
 	else if (strName == _T("wantreturnmsg")) SetNeedReturnMsg(strValue == _T("true"));
 	else if (strName == _T("returnmsgwantctrl")) SetReturnMsgWantCtrl(strValue == _T("true"));
@@ -2805,7 +2807,7 @@ BOOL RichEdit::SetCaretPos(INT x, INT y)
 {
 	m_iCaretPosX = x;
 	m_iCaretPosY = y;
-	ShowCaret(GetSelText().empty());
+	ShowCaret(GetSelText().IsEmpty());
 
 	return true;
 }
@@ -2825,7 +2827,7 @@ void RichEdit::PaintCaret(IRenderContext* pRender, const CUiRect& rcPaint)
 		CUiRect rect(m_iCaretPosX, m_iCaretPosY, m_iCaretPosX, m_iCaretPosY + m_iCaretHeight);
 		DWORD dwClrColor = 0xff000000;
 
-		if (!m_sCaretColor.empty())
+		if (!m_sCaretColor.IsEmpty())
 			dwClrColor = GlobalManager::GetTextColor(m_sCaretColor);
 
 		pRender->DrawLine(rect, m_iCaretWidth, dwClrColor);
@@ -2843,7 +2845,7 @@ void RichEdit::SetPromptMode(bool bPrompt)
 CUiString RichEdit::GetPromptText() const
 {
 	CUiString strText = m_sPromptText;
-	if (strText.empty() && !m_sPromptTextId.empty()) {
+	if (strText.IsEmpty() && !m_sPromptTextId.IsEmpty()) {
 		strText = MutiLanSupport::GetInstance()->GetStringViaID(m_sPromptTextId);
 	}
 
@@ -2868,7 +2870,7 @@ void RichEdit::SetPromptText(const CUiString& strText)
 void RichEdit::SetUTF8PromptText(const std::string& strText)
 {
 	CUiString strOut;
-	StringHelper::MBCSToUnicode(strText, strOut, CP_UTF8);
+	StringHelper::Utf8ToCUiString(strText, strOut);
 	SetPromptText(strOut);
 }
 
@@ -2883,7 +2885,7 @@ void RichEdit::SetPromptTextId(const CUiString& strTextId)
 void RichEdit::SetUTF8PromptTextId(const std::string& strTextId)
 {
 	CUiString strOut;
-	StringHelper::MBCSToUnicode(strTextId, strOut, CP_UTF8);
+	StringHelper::Utf8ToCUiString(strTextId, strOut);
 	SetPromptTextId(strOut);
 }
 
@@ -2897,7 +2899,7 @@ void RichEdit::PaintPromptText(IRenderContext* pRender)
 		return;
 
 	CUiString strPrompt = GetPromptText();
-	if (strPrompt.empty() || m_sPromptColor.empty())
+	if (strPrompt.IsEmpty() || m_sPromptColor.IsEmpty())
 		return;
 
 	CUiRect rc;
@@ -2951,7 +2953,7 @@ void RichEdit::SetNoCaretReadonly()
 
 void RichEdit::AddColorText(const CUiString &str, const CUiString &color)
 {
-	if( !m_bRich || str.empty() || color.empty() ) {
+	if( !m_bRich || str.IsEmpty() || color.IsEmpty() ) {
 		ASSERT(FALSE);
 		return;
 	}
@@ -2966,7 +2968,7 @@ void RichEdit::AddColorText(const CUiString &str, const CUiString &color)
 
 	this->ReplaceSel(str, FALSE);
 	int len = GetTextLength();
-	this->SetSel(len - (int)str.size(), len);
+	this->SetSel(len - (int)str.GetLength(), len);
 	this->SetSelectionCharFormat(cf);
 
 	this->SetSelNone();
@@ -2976,7 +2978,7 @@ void RichEdit::AddColorText(const CUiString &str, const CUiString &color)
 
 void RichEdit::AddLinkColorText(const CUiString &str, const CUiString &color, const CUiString &linkInfo)
 {
-	if( !m_bRich || str.empty() || color.empty() ) {
+	if( !m_bRich || str.IsEmpty() || color.IsEmpty() ) {
 		ASSERT(FALSE);
 		return;
 	}
@@ -2990,7 +2992,7 @@ void RichEdit::AddLinkColorText(const CUiString &str, const CUiString &color, co
 
 	this->ReplaceSel(str, FALSE);
 	int len = GetTextLength();
-	this->SetSel(len - (int)str.size(), len);
+	this->SetSel(len - (int)str.GetLength(), len);
 	this->SetSelectionCharFormat(cf);
 	LinkInfo info;
 	info.info = linkInfo;
@@ -3003,7 +3005,7 @@ void RichEdit::AddLinkColorText(const CUiString &str, const CUiString &color, co
 }
 void  RichEdit::AddLinkColorTextEx(const CUiString& str, const CUiString &color, const CUiString &linkInfo, const CUiString& strFontId)
 {
-	if (!m_bRich || str.empty() || color.empty()) {
+	if (!m_bRich || str.IsEmpty() || color.IsEmpty()) {
 		ASSERT(FALSE);
 		return;
 	}
@@ -3011,16 +3013,16 @@ void  RichEdit::AddLinkColorTextEx(const CUiString& str, const CUiString &color,
 	std::string link;
 	std::string text;
 	std::string font_face;
-	StringHelper::UnicodeToMBCS(linkInfo, link);
-	StringHelper::UnicodeToMBCS(str, text);
+	StringHelper::CUiStringToGB2312(linkInfo, link);
+	StringHelper::CUiStringToGB2312(str, text);
 	auto hFont = GlobalManager::GetFont(strFontId);
 	if (hFont == NULL)
 		hFont = GlobalManager::GetFont(m_sFontId);
 	if (hFont == NULL)
-		hFont = GlobalManager::GetFont(_T("");
+		hFont = GlobalManager::GetFont(_T(""));
 	LOGFONT lf;
 	::GetObject(hFont, sizeof(LOGFONT), &lf);
-	StringHelper::UnicodeToMBCS(lf.lfFaceName, font_face);
+	StringHelper::UnicodeToGB2312(lf.lfFaceName, font_face);
 	DWORD dwTextColor = GlobalManager::GetTextColor(color);
 	static std::string font_format = "{\\fonttbl{\\f0\\fnil\\fcharset%d %s;}}";
 	static std::string color_format = "{\\colortbl ;\\red%d\\green%d\\blue%d;}";
@@ -3031,8 +3033,8 @@ void  RichEdit::AddLinkColorTextEx(const CUiString& str, const CUiString &color,
 	sprintf(scolor, color_format.c_str(), GetBValue(dwTextColor), GetGValue(dwTextColor), GetRValue(dwTextColor));
 	char slinke[1024];
 	sprintf(slinke, link_format.c_str(), sfont, scolor, ((int)(-lf.lfHeight *1.5))/2*2, link.c_str(), text.c_str());
-	CUiString temp;
-	StringHelper::MBCSToUnicode(slinke, temp);
+	//std::wstring temp;
+	//StringHelper::Gb2312ToUnicode(slinke, temp);
 	SETTEXTEX st;
 	st.codepage = ((UINT32)~((UINT32)0));
 	st.flags = ST_SELECTION | ST_KEEPUNDO;
@@ -3051,7 +3053,7 @@ void RichEdit::AddLinkInfo(const CHARRANGE cr, const CUiString &linkInfo)
 bool RichEdit::HittestCustomLink(CUiPoint pt, CUiString& info)
 {
 	bool bLink = false;
-	info.clear();
+	info.Empty();
 	if (m_linkInfo.size() > 0) {
 		pt.Offset(GetScrollOffset());
 		int nCharIndex = CharFromPos(pt);
@@ -3082,7 +3084,7 @@ bool IsAsciiChar(const wchar_t ch)
 
 int GetAsciiCharNumber(const CUiString &str)
 {
-	int len = (int)str.size(), sum = 0;
+	int len = (int)str.GetLength(), sum = 0;
 	for( int i = 0; i < len; i++ )
 	{
 		if( IsAsciiChar(str[i]) )
@@ -3095,7 +3097,7 @@ int GetAsciiCharNumber(const CUiString &str)
 
 void LimitAsciiNumber(CUiString &src, int limit)
 {
-	int len = (int)src.size(), sum = 0;
+	int len = (int)src.GetLength(), sum = 0;
 	for( int i = 0; i < len; i++ )
 	{
 		if( IsAsciiChar(src[i]) )
@@ -3103,7 +3105,7 @@ void LimitAsciiNumber(CUiString &src, int limit)
 		else
 			sum += 2;
 		if( sum > limit ) {
-			src.erase(i);
+			src = src.Left(i);
 			break;
 		}
 	}
@@ -3111,7 +3113,7 @@ void LimitAsciiNumber(CUiString &src, int limit)
 
 void GetClipboardText( CUiString &out )
 {
-	out.clear();
+	out.Empty();
 
 	BOOL ret = ::OpenClipboard(NULL);
 	if(ret) {
@@ -3120,8 +3122,8 @@ void GetClipboardText( CUiString &out )
 			if(h != INVALID_HANDLE_VALUE) {
 				wchar_t* buf = (wchar_t*)::GlobalLock(h);
 				if(buf != NULL)	{
-					CUiString str(buf, GlobalSize(h)/sizeof(wchar_t));
-					out = str;
+					std::wstring str(buf, GlobalSize(h)/sizeof(wchar_t));
+					StringHelper::UnicodeToCUiString(str, out);
 					::GlobalUnlock(h);
 				}
 			}
@@ -3132,7 +3134,7 @@ void GetClipboardText( CUiString &out )
 				char* buf = (char*)::GlobalLock(h);
 				if(buf != NULL)	{
 					std::string str(buf, GlobalSize(h));
-					StringHelper::MBCSToUnicode(str, out);
+					StringHelper::GB2312ToCUiString(str, out);
 
 					::GlobalUnlock(h);
 				}
@@ -3151,8 +3153,9 @@ void SetClipBoardText(const CUiString &str)
 		::CloseClipboard();
 		return;
 	}
-
-	size_t len = str.length();
+	std::wstring uicStr;
+	StringHelper::CUiStringToUnicode(str, uicStr);
+	size_t len = uicStr.size();
 	HGLOBAL hMem = ::GlobalAlloc(GMEM_MOVEABLE, (len + 1) * sizeof(wchar_t)); //分配全局内存  
 	if (!hMem) {
 		::CloseClipboard();
@@ -3160,7 +3163,7 @@ void SetClipBoardText(const CUiString &str)
 	}
 
 	wchar_t* lpStr = (wchar_t*)::GlobalLock(hMem); //锁住内存区 
-	::memcpy(lpStr, str.c_str(), len * sizeof(wchar_t)); //把数据拷贝考全局内存中
+	::memcpy(lpStr, uicStr.c_str(), len * sizeof(wchar_t)); //把数据拷贝考全局内存中
 	lpStr[len] = wchar_t(0); //字符串末尾设为'\0'
 	::GlobalUnlock(hMem); //释放锁 
 

@@ -14,7 +14,7 @@ ListBox::ListBox(Layout* pLayout) :
 
 }
 
-void ListBox::SetAttribute(const std::wstring& strName, const std::wstring& strValue)
+void ListBox::SetAttribute(const CUiString& strName, const CUiString& strValue)
 {
 	if( strName == _T("scrollselect") ) {
 		SetScrollSelect(strValue == _T("true"));
@@ -175,7 +175,7 @@ bool ListBox::ButtonDown(EventArgs& msg)
 	return ret;
 }
 
-bool ListBox::ScrollItemToTop(const std::wstring& strItemName)
+bool ListBox::ScrollItemToTop(const CUiString& strItemName)
 {
 	for (auto it = m_items.begin(); it != m_items.end(); it++) {
 		if ((*it)->GetName() == strItemName) {

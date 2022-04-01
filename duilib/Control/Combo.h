@@ -28,7 +28,7 @@ public:
 	 * @brief 获取当前选择项文本
 	 * @return 返回当前选择项文本
 	 */
-    std::wstring GetText() const;
+    CUiString GetText() const;
 
 	/**
 	 * @brief 获取当前所属的 List 对象
@@ -40,14 +40,14 @@ public:
 	 * @brief 获取下拉框属性信息
 	 * @return 返回字符串形式的属性信息
 	 */
-    std::wstring GetDropBoxAttributeList();
+    CUiString GetDropBoxAttributeList();
 
 	/**
 	 * @brief 设置下拉框的属性信息
 	 * @param[in] pstrList 转义后的 XML 格式属性列表
 	 * @return 无
 	 */
-    void SetDropBoxAttributeList(const std::wstring& pstrList);
+    void SetDropBoxAttributeList(const CUiString& pstrList);
 
 	/**
 	 * @brief 获取下拉框容器大小
@@ -122,7 +122,7 @@ protected:
     int m_iCurSel;  
 	ControlStateType m_uButtonState;
 	CUiSize m_szDropBox;
-	std::wstring m_sDropBoxAttributes;
+	CUiString m_sDropBoxAttributes;
 	bool m_bPopupTop;
 };
 

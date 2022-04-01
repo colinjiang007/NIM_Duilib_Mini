@@ -21,7 +21,7 @@ Shadow::Shadow() :
 	m_rcDefaultShadowCorner(14, 14, 14, 14),
 	m_bShadowAttached(true),
 	m_bUseDefaultImage(true),
-	m_strImage(L"file='../public/bk/bk_shadow.png' corner='30,30,30,30'"),
+	m_strImage(_T("file='../public/bk/bk_shadow.png' corner='30,30,30,30'")),
 	m_pRoot(nullptr)
 {
 	DpiManager::GetInstance()->ScaleRect(m_rcCurShadowCorner);

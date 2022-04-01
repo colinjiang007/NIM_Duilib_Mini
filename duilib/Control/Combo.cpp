@@ -7,7 +7,7 @@ class CComboWnd : public Window
 {
 public:
     void Init(Combo* pOwner);
-    virtual std::wstring GetWindowClassName() const override;
+    virtual CUiString GetWindowClassName() const override;
 	virtual void OnFinalMessage(HWND hWnd) override;
 	virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 
@@ -68,7 +68,7 @@ void CComboWnd::Init(Combo* pOwner)
     ::SendMessage(hWndParent, WM_NCACTIVATE, TRUE, 0L);
 }
 
-std::wstring CComboWnd::GetWindowClassName() const
+CUiString CComboWnd::GetWindowClassName() const
 {
     return _T("ComboWnd");
 }
@@ -192,7 +192,7 @@ void Combo::Activate()
     Invalidate();
 }
 
-void Combo::SetAttribute(const std::wstring& strName, const std::wstring& strValue)
+void Combo::SetAttribute(const CUiString& strName, const CUiString& strValue)
 {
 	if (strName == _T("dropbox")) SetDropBoxAttributeList(strValue);
 	else if (strName == _T("vscrollbar")) {}
@@ -200,7 +200,7 @@ void Combo::SetAttribute(const std::wstring& strName, const std::wstring& strVal
 	{
 		CUiSize szDropBoxSize;
 		LPTSTR pstr = NULL;
-		szDropBoxSize.cx = _tcstol(strValue.c_str(), &pstr, 10); ASSERT(pstr);
+		szDropBoxSize.cx = _tcstol(strValue, &pstr, 10); ASSERT(pstr);
 		szDropBoxSize.cy = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
 		SetDropBoxSize(szDropBoxSize);
 	}
@@ -222,7 +222,7 @@ void Combo::PaintText(IRenderContext* pRender)
 		rcText.bottom -= rcTextPadding.bottom;
 
 		if (pElement != NULL) {
-			if (GetText().empty())
+			if (GetText().IsEmpty())
 				return;
 
 			if (pElement->GetOwner() == NULL)
@@ -242,19 +242,19 @@ void Combo::PaintText(IRenderContext* pRender)
 	}
 }
 
-std::wstring Combo::GetText() const
+CUiString Combo::GetText() const
 {
     if( m_iCurSel < 0 ) return _T("");
 	ListContainerElement* pControl = static_cast<ListContainerElement*>(m_pLayout->GetItemAt(m_iCurSel));
     return pControl->GetText();
 }
 
-std::wstring Combo::GetDropBoxAttributeList()
+CUiString Combo::GetDropBoxAttributeList()
 {
     return m_sDropBoxAttributes;
 }
 
-void Combo::SetDropBoxAttributeList(const std::wstring& pstrList)
+void Combo::SetDropBoxAttributeList(const CUiString& pstrList)
 {
     m_sDropBoxAttributes = pstrList;
     m_pLayout->ApplyAttributeList(pstrList);

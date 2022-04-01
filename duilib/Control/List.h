@@ -55,7 +55,7 @@ public:
 	 * @param[in] strItemName 子项名称
 	 * @return 成功返回 true，否则为 false，可能控件不存在
 	 */
-	virtual bool ScrollItemToTop(const std::wstring& strItemName);
+	virtual bool ScrollItemToTop(const CUiString& strItemName);
 
 	/**
 	 * @brief 获取当前位置第一个子项

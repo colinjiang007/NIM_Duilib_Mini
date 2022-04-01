@@ -63,13 +63,15 @@ int ImageInfo::GetInterval(int nIndex)
 	return interval;
 }
 
-std::unique_ptr<ImageInfo> ImageInfo::LoadImage(const std::wstring& strImageFullPath)
+std::unique_ptr<ImageInfo> ImageInfo::LoadImage(const CUiString& strImageFullPath)
 {
-	std::unique_ptr<Gdiplus::Bitmap> gdiplusBitmap(Gdiplus::Bitmap::FromFile(strImageFullPath.c_str()));
+	std::wstring uncStr;
+	StringHelper::CUiStringToUnicode(strImageFullPath, uncStr);
+	std::unique_ptr<Gdiplus::Bitmap> gdiplusBitmap(Gdiplus::Bitmap::FromFile(uncStr.c_str()));
 	return LoadImageByBitmap(gdiplusBitmap, strImageFullPath);
 }
 
-std::unique_ptr<ImageInfo> ImageInfo::LoadImage(HGLOBAL hGlobal, const std::wstring& imageFullPath)
+std::unique_ptr<ImageInfo> ImageInfo::LoadImage(HGLOBAL hGlobal, const CUiString& imageFullPath)
 {
 	if (hGlobal == NULL)
 	{
@@ -89,7 +91,7 @@ std::unique_ptr<ImageInfo> ImageInfo::LoadImage(HGLOBAL hGlobal, const std::wstr
 	return LoadImageByBitmap(gdiplusBitmap, imageFullPath);
 }
 
-std::unique_ptr<ImageInfo> ImageInfo::LoadImageByBitmap(std::unique_ptr<Gdiplus::Bitmap>& pGdiplusBitmap, const std::wstring& strImageFullPath)
+std::unique_ptr<ImageInfo> ImageInfo::LoadImageByBitmap(std::unique_ptr<Gdiplus::Bitmap>& pGdiplusBitmap, const CUiString& strImageFullPath)
 {
 	Gdiplus::Status status;
 	status = pGdiplusBitmap->GetLastStatus();
@@ -180,8 +182,8 @@ ImageAttribute::ImageAttribute()
 
 void ImageAttribute::Init()
 {
-	simageString.clear();
-	sImageName.clear();
+	simageString.Empty();
+	sImageName.Empty();
 	bFade = 0xFF;
 	bTiledX = false;
 	bTiledY = false;
@@ -191,7 +193,7 @@ void ImageAttribute::Init()
 	nPlayCount = -1;
 }
 
-void ImageAttribute::SetImageString(const std::wstring& strImageString)
+void ImageAttribute::SetImageString(const CUiString& strImageString)
 {
 	Init();
 	simageString = strImageString;
@@ -199,17 +201,17 @@ void ImageAttribute::SetImageString(const std::wstring& strImageString)
 	ModifyAttribute(*this, strImageString);
 }
 
-void ImageAttribute::ModifyAttribute(ImageAttribute& imageAttribute, const std::wstring& strImageString)
+void ImageAttribute::ModifyAttribute(ImageAttribute& imageAttribute, const CUiString& strImageString)
 {
-	std::wstring sItem;
-	std::wstring sValue;
+	CUiString sItem;
+	CUiString sValue;
 	LPTSTR pstr = NULL;
 	bool bScaleDest = true;
 
-	LPCTSTR pStrImage = strImageString.c_str();
+	LPCTSTR pStrImage = strImageString;
 	while (*pStrImage != _T('\0')) {
-		sItem.clear();
-		sValue.clear();
+		sItem.Empty();
+		sValue.Empty();
 		while (*pStrImage > _T('\0') && *pStrImage <= _T(' ')) pStrImage = ::CharNext(pStrImage);
 		while (*pStrImage != _T('\0') && *pStrImage != _T('=') && *pStrImage > _T(' ')) {
 			LPTSTR pstrTemp = ::CharNext(pStrImage);
@@ -228,15 +230,15 @@ void ImageAttribute::ModifyAttribute(ImageAttribute& imageAttribute, const std::
 			}
 		}
 		if (*pStrImage++ != _T('\'')) break;
-		if (!sValue.empty()) {
+		if (!sValue.IsEmpty()) {
 			if (sItem == _T("file") || sItem == _T("res")) {
 				imageAttribute.sImageName = sValue;
 			}
 			else if (sItem == _T("destscale")) {
-				bScaleDest = (_tcscmp(sValue.c_str(), _T("true")) == 0);
+				bScaleDest = (_tcscmp(sValue, _T("true")) == 0);
 			}
 			else if (sItem == _T("dest")) {
-				imageAttribute.rcDest.left = _tcstol(sValue.c_str(), &pstr, 10);  ASSERT(pstr);
+				imageAttribute.rcDest.left = _tcstol(sValue, &pstr, 10);  ASSERT(pstr);
 				imageAttribute.rcDest.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);
 				imageAttribute.rcDest.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);
 				imageAttribute.rcDest.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
@@ -245,29 +247,29 @@ void ImageAttribute::ModifyAttribute(ImageAttribute& imageAttribute, const std::
 					DpiManager::GetInstance()->ScaleRect(imageAttribute.rcDest);
 			}
 			else if (sItem == _T("source")) {
-				imageAttribute.rcSource.left = _tcstol(sValue.c_str(), &pstr, 10);  ASSERT(pstr);
+				imageAttribute.rcSource.left = _tcstol(sValue, &pstr, 10);  ASSERT(pstr);
 				imageAttribute.rcSource.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);
 				imageAttribute.rcSource.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);
 				imageAttribute.rcSource.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
 			}
 			else if (sItem == _T("corner")) {
-				imageAttribute.rcCorner.left = _tcstol(sValue.c_str(), &pstr, 10);  ASSERT(pstr);
+				imageAttribute.rcCorner.left = _tcstol(sValue, &pstr, 10);  ASSERT(pstr);
 				imageAttribute.rcCorner.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);
 				imageAttribute.rcCorner.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);
 				imageAttribute.rcCorner.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
 			}
 			else if (sItem == _T("fade")) {
-				imageAttribute.bFade = (BYTE)_tcstoul(sValue.c_str(), &pstr, 10);
+				imageAttribute.bFade = (BYTE)_tcstoul(sValue, &pstr, 10);
 			}
 			else if (sItem == _T("xtiled")) {
-				imageAttribute.bTiledX = (_tcscmp(sValue.c_str(), _T("true")) == 0);
+				imageAttribute.bTiledX = (_tcscmp(sValue, _T("true")) == 0);
 			}
 			else if (sItem == _T("ytiled")) {
-				imageAttribute.bTiledY = (_tcscmp(sValue.c_str(), _T("true")) == 0);
+				imageAttribute.bTiledY = (_tcscmp(sValue, _T("true")) == 0);
 			}
 			else if (sItem == _T("playcount"))
 			{
-				imageAttribute.nPlayCount = _tcstol(sValue.c_str(), &pstr, 10);  ASSERT(pstr);
+				imageAttribute.nPlayCount = _tcstol(sValue, &pstr, 10);  ASSERT(pstr);
 			}
 		}
 		if (*pStrImage++ != _T(' ')) break;
@@ -285,7 +287,7 @@ Image::Image() :
 
 }
 
-void Image::SetImageString(const std::wstring& strImageString)
+void Image::SetImageString(const CUiString& strImageString)
 {
 	ClearCache();
 	imageAttribute.SetImageString(strImageString);
@@ -362,20 +364,20 @@ StateImage::StateImage() :
 
 bool StateImage::HasHotImage()
 {
-	return !m_stateImageMap[kControlStateHot].imageAttribute.simageString.empty();
+	return !m_stateImageMap[kControlStateHot].imageAttribute.simageString.IsEmpty();
 }
 
-bool StateImage::PaintStatusImage(IRenderContext* pRender, ControlStateType stateType, const std::wstring& sImageModify /*= L""*/)
+bool StateImage::PaintStatusImage(IRenderContext* pRender, ControlStateType stateType, const CUiString& sImageModify /*= _T("")*/)
 {
 	if (m_pControl) {
 		bool bFadeHot = m_pControl->GetAnimationManager().GetAnimationPlayer(kAnimationHot) != nullptr;
 		int nHotAlpha = m_pControl->GetHotAlpha();
 		if (bFadeHot) {
 			if (stateType == kControlStateNormal || stateType == kControlStateHot) {
-				std::wstring strNormalImagePath = m_stateImageMap[kControlStateNormal].imageAttribute.sImageName;
-				std::wstring strHotImagePath = m_stateImageMap[kControlStateHot].imageAttribute.sImageName;
+				CUiString strNormalImagePath = m_stateImageMap[kControlStateNormal].imageAttribute.sImageName;
+				CUiString strHotImagePath = m_stateImageMap[kControlStateHot].imageAttribute.sImageName;
 
-				if (strNormalImagePath.empty() || strHotImagePath.empty()
+				if (strNormalImagePath.IsEmpty() || strHotImagePath.IsEmpty()
 					|| strNormalImagePath != strHotImagePath
 					|| !m_stateImageMap[kControlStateNormal].imageAttribute.rcSource.Equal(m_stateImageMap[kControlStateHot].imageAttribute.rcSource)) {
 
@@ -394,14 +396,14 @@ bool StateImage::PaintStatusImage(IRenderContext* pRender, ControlStateType stat
 		}
 	}
 
-	if (stateType == kControlStatePushed && m_stateImageMap[kControlStatePushed].imageAttribute.simageString.empty()) {
+	if (stateType == kControlStatePushed && m_stateImageMap[kControlStatePushed].imageAttribute.simageString.IsEmpty()) {
 		stateType = kControlStateHot;
 		m_stateImageMap[kControlStateHot].imageAttribute.bFade = 255;
 	}
-	if (stateType == kControlStateHot && m_stateImageMap[kControlStateHot].imageAttribute.simageString.empty()) {
+	if (stateType == kControlStateHot && m_stateImageMap[kControlStateHot].imageAttribute.simageString.IsEmpty()) {
 		stateType = kControlStateNormal;
 	}
-	if (stateType == kControlStateDisabled && m_stateImageMap[kControlStateDisabled].imageAttribute.simageString.empty()) {
+	if (stateType == kControlStateDisabled && m_stateImageMap[kControlStateDisabled].imageAttribute.simageString.IsEmpty()) {
 		stateType = kControlStateNormal;
 	}
 
@@ -411,16 +413,16 @@ bool StateImage::PaintStatusImage(IRenderContext* pRender, ControlStateType stat
 Image* StateImage::GetEstimateImage()
 {
 	Image* pEstimateImage = nullptr;
-	if (!m_stateImageMap[kControlStateNormal].imageAttribute.sImageName.empty()){
+	if (!m_stateImageMap[kControlStateNormal].imageAttribute.sImageName.IsEmpty()){
 		pEstimateImage = &m_stateImageMap[kControlStateNormal];
 	}
-	else if (!m_stateImageMap[kControlStateHot].imageAttribute.sImageName.empty()) {
+	else if (!m_stateImageMap[kControlStateHot].imageAttribute.sImageName.IsEmpty()) {
 		pEstimateImage = &m_stateImageMap[kControlStateHot];
 	}
-	else if (!m_stateImageMap[kControlStatePushed].imageAttribute.sImageName.empty()) {
+	else if (!m_stateImageMap[kControlStatePushed].imageAttribute.sImageName.IsEmpty()) {
 		pEstimateImage = &m_stateImageMap[kControlStatePushed];
 	}
-	else if (!m_stateImageMap[kControlStateDisabled].imageAttribute.sImageName.empty()) {
+	else if (!m_stateImageMap[kControlStateDisabled].imageAttribute.sImageName.IsEmpty()) {
 		pEstimateImage = &m_stateImageMap[kControlStateDisabled];
 	}
 
@@ -460,12 +462,12 @@ void StateImageMap::SetControl(Control* control)
 	m_stateImageMap[kStateImageSelectedFore].SetControl(control);
 }
 
-void StateImageMap::SetImage(StateImageType stateImageType, ControlStateType stateType, const std::wstring& strImagePath)
+void StateImageMap::SetImage(StateImageType stateImageType, ControlStateType stateType, const CUiString& strImagePath)
 {
 	m_stateImageMap[stateImageType][stateType].SetImageString(strImagePath);
 }
 
-std::wstring StateImageMap::GetImagePath(StateImageType stateImageType, ControlStateType stateType)
+CUiString StateImageMap::GetImagePath(StateImageType stateImageType, ControlStateType stateType)
 {
 	return m_stateImageMap[stateImageType][stateType].imageAttribute.simageString;
 }
@@ -480,7 +482,7 @@ bool StateImageMap::HasHotImage()
 	return false;
 }
 
-bool StateImageMap::PaintStatusImage(IRenderContext* pRender, StateImageType stateImageType, ControlStateType stateType, const std::wstring& sImageModify /*= L""*/)
+bool StateImageMap::PaintStatusImage(IRenderContext* pRender, StateImageType stateImageType, ControlStateType stateType, const CUiString& sImageModify /*= _T("")*/)
 {
 	auto it = m_stateImageMap.find(stateImageType);
 	if (it != m_stateImageMap.end()) {
@@ -520,7 +522,7 @@ void StateColorMap::SetControl(Control* control)
 
 bool StateColorMap::HasHotColor()
 {
-	return !m_stateColorMap[kControlStateHot].empty();
+	return !m_stateColorMap[kControlStateHot].IsEmpty();
 }
 
 void StateColorMap::PaintStatusColor(IRenderContext* pRender, CUiRect rcPaint, ControlStateType stateType)
@@ -530,7 +532,7 @@ void StateColorMap::PaintStatusColor(IRenderContext* pRender, CUiRect rcPaint, C
 		int nHotAlpha = m_pControl->GetHotAlpha();
 		if (bFadeHot) {
 			if ((stateType == kControlStateNormal || stateType == kControlStateHot)
-				&& !m_stateColorMap[kControlStateHot].empty()) {
+				&& !m_stateColorMap[kControlStateHot].IsEmpty()) {
 
 				pRender->DrawColor(rcPaint, m_stateColorMap[kControlStateNormal]);
 				if (nHotAlpha > 0) {
@@ -541,13 +543,13 @@ void StateColorMap::PaintStatusColor(IRenderContext* pRender, CUiRect rcPaint, C
 		}
 	}
 
-	if (stateType == kControlStatePushed && m_stateColorMap[kControlStatePushed].empty()) {
+	if (stateType == kControlStatePushed && m_stateColorMap[kControlStatePushed].IsEmpty()) {
 		stateType = kControlStateHot;
 	}
-	if (stateType == kControlStateHot && m_stateColorMap[kControlStateHot].empty()) {
+	if (stateType == kControlStateHot && m_stateColorMap[kControlStateHot].IsEmpty()) {
 		stateType = kControlStateNormal;
 	}
-	if (stateType == kControlStateDisabled && m_stateColorMap[kControlStateDisabled].empty()) {
+	if (stateType == kControlStateDisabled && m_stateColorMap[kControlStateDisabled].IsEmpty()) {
 		stateType = kControlStateNormal;
 	}
 

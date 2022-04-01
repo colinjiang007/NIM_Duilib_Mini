@@ -30,7 +30,7 @@ OnScreenKeyboardManager::OnScreenKeyboardManager()
 
 bool OnScreenKeyboardManager::IsVisible()
 {
-	auto hwnd = FindWindow(L"IPTip_Main_Window", NULL);
+	auto hwnd = FindWindow(_T("IPTip_Main_Window"), NULL);
 	if (hwnd) {
 		auto style = GetWindowLong(hwnd, GWL_STYLE);
 		return (style & WS_DISABLED) == 0 && (style & WS_VISIBLE) != 0;
@@ -71,7 +71,7 @@ void OnScreenKeyboardManager::TimerCallback()
 			}
 		}
 		else {
-			if (auto hwnd = FindWindow(L"IPTip_Main_Window", NULL))
+			if (auto hwnd = FindWindow(_T("IPTip_Main_Window"), NULL))
 				PostMessage(hwnd, WM_SYSCOMMAND, (int)SC_CLOSE, 0);
 		}
 	}
@@ -79,12 +79,12 @@ void OnScreenKeyboardManager::TimerCallback()
 
 void OnScreenKeyboardManager::StartTabTip() 
 {
-	DWORD bufferSize = GetEnvironmentVariable(L"CommonProgramW6432", nullptr, 0);
+	DWORD bufferSize = GetEnvironmentVariable(_T("CommonProgramW6432"), nullptr, 0);
 
 	std::wstring tabTipPath;
 	if (bufferSize) {
 		tabTipPath.resize(bufferSize);
-		GetEnvironmentVariable(L"CommonProgramW6432", &tabTipPath[0], bufferSize);
+		GetEnvironmentVariable(_T("CommonProgramW6432"), &tabTipPath[0], bufferSize);
 
 		if (!tabTipPath.empty()) {
 			if (tabTipPath[tabTipPath.length() - 1] == '\0') {
@@ -98,7 +98,7 @@ void OnScreenKeyboardManager::StartTabTip()
 		tabTipPath = LR"(C:\\Program Files\Common Files\microsoft shared\ink\TabTip.exe)";
 	}
 
-	ShellExecute(NULL, L"open", tabTipPath.c_str(), NULL, NULL, SW_SHOWDEFAULT);
+	ShellExecute(NULL, _T("open"), tabTipPath.c_str(), NULL, NULL, SW_SHOWDEFAULT);
 }
 
 }

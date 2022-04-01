@@ -18,16 +18,16 @@ Progress::Progress() :
 	SetFixedHeight(12);
 }
 
-void Progress::SetAttribute(const std::wstring& srName, const std::wstring& strValue)
+void Progress::SetAttribute(const CUiString& srName, const CUiString& strValue)
 {
 	if (srName == _T("hor")) SetHorizontal(strValue == _T("true"));
-	else if (srName == _T("min")) SetMinValue(_ttoi(strValue.c_str()));
-	else if (srName == _T("max")) SetMaxValue(_ttoi(strValue.c_str()));
-	else if (srName == _T("value")) SetValue(_ttoi(strValue.c_str()));
+	else if (srName == _T("min")) SetMinValue(_ttoi(strValue));
+	else if (srName == _T("max")) SetMaxValue(_ttoi(strValue));
+	else if (srName == _T("value")) SetValue(_ttoi(strValue));
 	else if (srName == _T("progressimage")) SetProgressImage(strValue);
 	else if (srName == _T("isstretchfore")) SetStretchForeImage(strValue == _T("true"));
 	else if (srName == _T("progresscolor")) {
-		LPCTSTR pValue = strValue.c_str();
+		LPCTSTR pValue = strValue;
 		while (*pValue > _T('\0') && *pValue <= _T(' ')) pValue = ::CharNext(pValue);
 		SetProgressColor(pValue);
 	}
@@ -41,7 +41,7 @@ void Progress::PaintStatusImage(IRenderContext* pRender)
 	if (m_nValue < m_nMin) m_nValue = m_nMin;
 
 	CUiRect rc = GetProgressPos();
-	if (!m_sProgressColor.empty()) {
+	if (!m_sProgressColor.IsEmpty()) {
 		DWORD dwProgressColor = GlobalManager::GetTextColor(m_sProgressColor);
 		if (dwProgressColor != 0) {
 			CUiRect rcProgressColor = m_rcItem;
@@ -55,12 +55,12 @@ void Progress::PaintStatusImage(IRenderContext* pRender)
 		}
 	}
 
-	if (!m_progressImage.imageAttribute.simageString.empty()) {
-		m_sProgressImageModify.clear();
+	if (!m_progressImage.imageAttribute.simageString.IsEmpty()) {
+		m_sProgressImageModify.Empty();
 		if (m_bStretchForeImage)
-			m_sProgressImageModify = StringHelper::Printf(_T("destscale='false' dest='%d,%d,%d,%d'"), rc.left, rc.top, rc.right, rc.bottom);
+			m_sProgressImageModify.Format(_T("destscale='false' dest='%d,%d,%d,%d'"), rc.left, rc.top, rc.right, rc.bottom);
 		else
-			m_sProgressImageModify = StringHelper::Printf(_T("destscale='false' dest='%d,%d,%d,%d' source='%d,%d,%d,%d'")
+			m_sProgressImageModify.Format(_T("destscale='false' dest='%d,%d,%d,%d' source='%d,%d,%d,%d'")
 				, rc.left, rc.top, rc.right, rc.bottom
 				, rc.left, rc.top, rc.right, rc.bottom);
 
@@ -132,23 +132,23 @@ void Progress::SetStretchForeImage(bool bStretchForeImage /*= true*/)
 	Invalidate();
 }
 
-std::wstring Progress::GetProgressImage() const
+CUiString Progress::GetProgressImage() const
 {
 	return m_progressImage.imageAttribute.simageString;
 }
 
-void Progress::SetProgressImage(const std::wstring& strImage)
+void Progress::SetProgressImage(const CUiString& strImage)
 {
 	m_progressImage.SetImageString(strImage);
 	Invalidate();
 }
 
-std::wstring Progress::GetProgressColor() const
+CUiString Progress::GetProgressColor() const
 {
 	return m_sProgressColor;
 }
 
-void Progress::SetProgressColor(const std::wstring& strProgressColor)
+void Progress::SetProgressColor(const CUiString& strProgressColor)
 {
 	ASSERT(GlobalManager::GetTextColor(strProgressColor) != 0);
 	if( m_sProgressColor == strProgressColor ) return;

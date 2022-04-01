@@ -232,7 +232,7 @@ public:
 class UILIB_API CUiString
 {
 public:
-	enum { MAX_LOCAL_STRING_LEN = 127 };
+	enum { MAX_LOCAL_STRING_LEN = 63 };
 
 	CUiString();
 	CUiString(const TCHAR ch);
@@ -276,6 +276,9 @@ public:
 	bool operator >= (LPCTSTR str) const;
 	bool operator >  (LPCTSTR str) const;
 
+	//template<typename T = LPCTSTR, typename P = CUiString>
+	//friend bool operator == (T str ,const P& str2);
+
 	int Compare(LPCTSTR pstr) const;
 	int CompareNoCase(LPCTSTR pstr) const;
 
@@ -286,9 +289,9 @@ public:
 	CUiString Mid(int iPos, int nLength = -1) const;
 	CUiString Right(int nLength) const;
 
-	void Trim();
-	void TrimLeft();
-	void TrimRight();
+	void Trim(){};
+	void TrimLeft(){};
+	void TrimRight(){};
 
 	int Find(TCHAR ch, int iPos = 0) const;
 	int Find(LPCTSTR pstr, int iPos = 0) const;
@@ -297,6 +300,9 @@ public:
 
 	int __cdecl Format(LPCTSTR pstrFormat, ...);
 	int __cdecl SmallFormat(LPCTSTR pstrFormat, ...);
+
+protected:
+	int __cdecl InnerFormat(LPCTSTR pstrFormat, va_list Args);
 
 protected:
 	LPTSTR m_pstr;
@@ -350,17 +356,8 @@ public:
 class PathUtil
 {
 public:
-	static CUiString GetCurrentModuleDir()
-	{
-		TCHAR tszModule[MAX_PATH + 1] = { 0 };
-		::GetModuleFileName(NULL, tszModule, MAX_PATH);
-		CUiString sInstancePath = tszModule;
-		int pos = sInstancePath.ReverseFind(_T('\\'));
-		if (pos >= 0) {
-			sInstancePath = sInstancePath.Left(pos + 1);
-		}
-		return sInstancePath;
-	}
+	static CUiString GetCurrentModuleDir();
+	static CUiString SimplifyFilePath(LPCTSTR szPath);
 };
 
 }// namespace ui

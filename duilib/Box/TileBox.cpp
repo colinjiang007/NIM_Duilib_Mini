@@ -138,19 +138,19 @@ CUiSize TileLayout::AjustSizeByChild(const std::vector<Control*>& items, CUiSize
 	return size;
 }
 
-bool TileLayout::SetAttribute(const std::wstring& strName, const std::wstring& strValue)
+bool TileLayout::SetAttribute(const CUiString& strName, const CUiString& strValue)
 {
 	bool hasAttribute = true;
 	if( strName == _T("itemsize") ) {
 		CUiSize szItem;
 		LPTSTR pstr = NULL;
-		szItem.cx = _tcstol(strValue.c_str(), &pstr, 10);  ASSERT(pstr);    
+		szItem.cx = _tcstol(strValue, &pstr, 10);  ASSERT(pstr);    
 		szItem.cy = _tcstol(pstr + 1, &pstr, 10);   ASSERT(pstr);     
 		SetItemSize(szItem);
 	}
 	else if( strName == _T("columns")) 
 	{
-		SetColumns(_ttoi(strValue.c_str()));
+		SetColumns(_ttoi(strValue));
 	}
 	else 
 	{

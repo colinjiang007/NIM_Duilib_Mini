@@ -1223,7 +1223,7 @@ void Control::GetImage(Image& duiImage) const
 	}
 }
 
-bool Control::DrawImage(IRenderContext* pRender, Image& duiImage, const CUiString& strModify /*= L""*/, int nFade /*= DUI_NOSET_VALUE*/)
+bool Control::DrawImage(IRenderContext* pRender, Image& duiImage, const CUiString& strModify /*= _T("")*/, int nFade /*= DUI_NOSET_VALUE*/)
 {
 	if (duiImage.imageAttribute.sImageName.IsEmpty()) {
 		return false;

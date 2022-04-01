@@ -457,7 +457,7 @@ void ScrollBar::HandleMessage(EventArgs& event)
 	if (m_pOwner != NULL) m_pOwner->HandleMessageTemplate(event);
 }
 
-void ScrollBar::SetAttribute(const std::wstring& strName, const std::wstring& strValue)
+void ScrollBar::SetAttribute(const CUiString& strName, const CUiString& strValue)
 {
 	if (strName == _T("button1normalimage")) SetButton1StateImage(kControlStateNormal, strValue);
 	else if (strName == _T("button1hotimage")) SetButton1StateImage(kControlStateHot, strValue);
@@ -480,10 +480,10 @@ void ScrollBar::SetAttribute(const std::wstring& strName, const std::wstring& st
 	else if (strName == _T("bkpushedimage")) SetBkStateImage(kControlStatePushed, strValue);
 	else if (strName == _T("bkdisabledimage")) SetBkStateImage(kControlStateDisabled, strValue);
 	else if (strName == _T("hor")) SetHorizontal(strValue == _T("true"));
-	else if (strName == _T("linesize")) SetLineSize(_ttoi(strValue.c_str()));
-	else if (strName == _T("thumbminlength")) SetThumbMinLength(_ttoi(strValue.c_str()));
-	else if (strName == _T("range")) SetScrollRange(_ttoi(strValue.c_str()));
-	else if (strName == _T("value")) SetScrollPos(_ttoi(strValue.c_str()));
+	else if (strName == _T("linesize")) SetLineSize(_ttoi(strValue));
+	else if (strName == _T("thumbminlength")) SetThumbMinLength(_ttoi(strValue));
+	else if (strName == _T("range")) SetScrollRange(_ttoi(strValue));
+	else if (strName == _T("value")) SetScrollPos(_ttoi(strValue));
 	else if (strName == _T("showbutton1")) SetShowButton1(strValue == _T("true"));
 	else if (strName == _T("showbutton2")) SetShowButton2(strValue == _T("true"));
 	else if (strName == _T("autohidescroll")) SetAutoHideScroll(strValue == _T("true"));
@@ -609,12 +609,12 @@ void ScrollBar::SetShowButton1(bool bShow)
 	SetPos(m_rcItem);
 }
 
-std::wstring ScrollBar::GetButton1StateImage(ControlStateType stateType)
+CUiString ScrollBar::GetButton1StateImage(ControlStateType stateType)
 {
 	return m_button1StateImage[stateType].imageAttribute.simageString;
 }
 
-void ScrollBar::SetButton1StateImage(ControlStateType stateType, const std::wstring& pStrImage)
+void ScrollBar::SetButton1StateImage(ControlStateType stateType, const CUiString& pStrImage)
 {
 	m_button1StateImage[stateType].SetImageString(pStrImage);
 	Invalidate();
@@ -631,45 +631,45 @@ void ScrollBar::SetShowButton2(bool bShow)
 	SetPos(m_rcItem);
 }
 
-std::wstring ScrollBar::GetButton2StateImage(ControlStateType stateType)
+CUiString ScrollBar::GetButton2StateImage(ControlStateType stateType)
 {
 	return m_button2StateImage[stateType].imageAttribute.simageString;
 }
 
-void ScrollBar::SetButton2StateImage(ControlStateType stateType, const std::wstring& pStrImage)
+void ScrollBar::SetButton2StateImage(ControlStateType stateType, const CUiString& pStrImage)
 {
 	m_button2StateImage[stateType].SetImageString(pStrImage);
 	Invalidate();
 }
 
-std::wstring ScrollBar::GetThumbStateImage(ControlStateType stateType)
+CUiString ScrollBar::GetThumbStateImage(ControlStateType stateType)
 {
 	return m_thumbStateImage[stateType].imageAttribute.simageString;
 }
 
-void ScrollBar::SetThumbStateImage(ControlStateType stateType, const std::wstring& pStrImage)
+void ScrollBar::SetThumbStateImage(ControlStateType stateType, const CUiString& pStrImage)
 {
 	m_thumbStateImage[stateType].SetImageString(pStrImage);
 	Invalidate();
 }
 
-std::wstring ScrollBar::GetRailStateImage(ControlStateType stateType)
+CUiString ScrollBar::GetRailStateImage(ControlStateType stateType)
 {
 	return m_railStateImage[stateType].imageAttribute.simageString;
 }
 
-void ScrollBar::SetRailStateImage(ControlStateType stateType, const std::wstring& pStrImage)
+void ScrollBar::SetRailStateImage(ControlStateType stateType, const CUiString& pStrImage)
 {
 	m_railStateImage[stateType].SetImageString(pStrImage);
 	Invalidate();
 }
 
-std::wstring ScrollBar::GetBkStateImage(ControlStateType stateType)
+CUiString ScrollBar::GetBkStateImage(ControlStateType stateType)
 {
 	return m_bkStateImage[stateType].imageAttribute.simageString;
 }
 
-void ScrollBar::SetBkStateImage(ControlStateType stateType, const std::wstring& pStrImage)
+void ScrollBar::SetBkStateImage(ControlStateType stateType, const CUiString& pStrImage)
 {
 	m_bkStateImage[stateType].SetImageString(pStrImage);
 	Invalidate();
@@ -757,8 +757,8 @@ void ScrollBar::PaintButton1(IRenderContext* pRender)
 {
 	if (!m_bShowButton1) return;
 
-	m_sImageModify.clear();
-	m_sImageModify = StringHelper::Printf(_T("destscale='false' dest='%d,%d,%d,%d'"), m_rcButton1.left - m_rcItem.left, \
+	m_sImageModify.Empty();
+	m_sImageModify.Format(_T("destscale='false' dest='%d,%d,%d,%d'"), m_rcButton1.left - m_rcItem.left, \
 		m_rcButton1.top - m_rcItem.top, m_rcButton1.right - m_rcItem.left, m_rcButton1.bottom - m_rcItem.top);
 
 	if (m_uButton1State == kControlStateDisabled) {
@@ -795,8 +795,8 @@ void ScrollBar::PaintButton2(IRenderContext* pRender)
 {
 	if (!m_bShowButton2) return;
 
-	m_sImageModify.clear();
-	m_sImageModify = StringHelper::Printf(_T("destscale='false' dest='%d,%d,%d,%d'"), m_rcButton2.left - m_rcItem.left, \
+	m_sImageModify.Empty();
+	m_sImageModify.Format(_T("destscale='false' dest='%d,%d,%d,%d'"), m_rcButton2.left - m_rcItem.left, \
 		m_rcButton2.top - m_rcItem.top, m_rcButton2.right - m_rcItem.left, m_rcButton2.bottom - m_rcItem.top);
 
 	if (m_uButton2State == kControlStateDisabled) {
@@ -833,8 +833,8 @@ void ScrollBar::PaintThumb(IRenderContext* pRender)
 {
 	if (m_rcThumb.left == 0 && m_rcThumb.top == 0 && m_rcThumb.right == 0 && m_rcThumb.bottom == 0) return;
 
-	m_sImageModify.clear();
-	m_sImageModify = StringHelper::Printf(_T("destscale='false' dest='%d,%d,%d,%d'"), m_rcThumb.left - m_rcItem.left, \
+	m_sImageModify.Empty();
+	m_sImageModify.Format(_T("destscale='false' dest='%d,%d,%d,%d'"), m_rcThumb.left - m_rcItem.left, \
 		m_rcThumb.top - m_rcItem.top, m_rcThumb.right - m_rcItem.left, m_rcThumb.bottom - m_rcItem.top);
 
 	m_thumbStateImage.PaintStatusImage(pRender, m_uThumbState, m_sImageModify);
@@ -844,15 +844,15 @@ void ScrollBar::PaintRail(IRenderContext* pRender)
 {
 	if (m_rcThumb.left == 0 && m_rcThumb.top == 0 && m_rcThumb.right == 0 && m_rcThumb.bottom == 0) return;
 
-	m_sImageModify.clear();
+	m_sImageModify.Empty();
 	if (!m_bHorizontal) {
-		m_sImageModify = StringHelper::Printf(_T("destscale='false' dest='%d,%d,%d,%d'"), m_rcThumb.left - m_rcItem.left, \
+		m_sImageModify.Format(_T("destscale='false' dest='%d,%d,%d,%d'"), m_rcThumb.left - m_rcItem.left, \
 			(m_rcThumb.top + m_rcThumb.bottom) / 2 - m_rcItem.top - m_cxyFixed.cx / 2, \
 			m_rcThumb.right - m_rcItem.left, \
 			(m_rcThumb.top + m_rcThumb.bottom) / 2 - m_rcItem.top + m_cxyFixed.cx - m_cxyFixed.cx / 2);
 	}
 	else {
-		m_sImageModify = StringHelper::Printf(_T("destscale='false' dest='%d,%d,%d,%d'"), \
+		m_sImageModify.Format(_T("destscale='false' dest='%d,%d,%d,%d'"), \
 			(m_rcThumb.left + m_rcThumb.right) / 2 - m_rcItem.left - m_cxyFixed.cy / 2, \
 			m_rcThumb.top - m_rcItem.top, \
 			(m_rcThumb.left + m_rcThumb.right) / 2 - m_rcItem.left + m_cxyFixed.cy - m_cxyFixed.cy / 2, \

@@ -85,27 +85,27 @@ public:
 	 * @brief 获取滚动条背景图片
 	 * @return 返回背景图片位置
 	 */
-	std::wstring GetProgressImage() const;
+	CUiString GetProgressImage() const;
 
 	/**
 	 * @brief 设置进度条背景图片
 	 * @param[in] strImage 图片地址
 	 * @return 无
 	 */
-	void SetProgressImage(const std::wstring& strImage);
+	void SetProgressImage(const CUiString& strImage);
 
 	/**
 	 * @brief 获取进度条背景颜色
 	 * @return 返回背景颜色的字符串值，对应 global.xml 中的指定色值
 	 */
-	std::wstring GetProgressColor() const;
+	CUiString GetProgressColor() const;
 
 	/**
 	 * @brief 设置进度条背景颜色
 	 * @param[in] 要设置的背景颜色字符串，该字符串必须在 global.xml 中存在
 	 * @return 无
 	 */
-	void SetProgressColor(const std::wstring& strProgressColor);
+	void SetProgressColor(const CUiString& strProgressColor);
 
 	/**
 	 * @brief 获取进度条位置
@@ -120,8 +120,8 @@ protected:
 	int m_nMin;
 	double m_nValue;
 	Image m_progressImage;
-	std::wstring m_sProgressColor;
-	std::wstring m_sProgressImageModify;
+	CUiString m_sProgressColor;
+	CUiString m_sProgressImageModify;
 };
 
 } // namespace ui

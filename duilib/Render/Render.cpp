@@ -434,7 +434,7 @@ void RenderContext_GdiPlus::DrawColor(const CUiRect& rc, DWORD dwColor, BYTE uFa
 
 void RenderContext_GdiPlus::DrawColor(const CUiRect& rc, const CUiString& colorStr, BYTE uFade)
 {
-	if (colorStr.empty()) {
+	if (colorStr.IsEmpty()) {
 		return;
 	}
 
@@ -498,7 +498,7 @@ void RenderContext_GdiPlus::DrawRoundRect(const CUiRect& rc, const CUiSize& roun
 void RenderContext_GdiPlus::DrawText(const CUiRect& rc, const CUiString& strText, DWORD dwTextColor, const CUiString& strFontId, UINT uStyle, BYTE uFade /*= 255*/, bool bLineLimit /*= false*/)
 {
 	ASSERT(::GetObjectType(m_hDC) == OBJ_DC || ::GetObjectType(m_hDC) == OBJ_MEMDC);
-	if (strText.empty()) return;
+	if (strText.IsEmpty()) return;
 
 	Gdiplus::Graphics graphics(m_hDC);
 	Gdiplus::Font font(m_hDC, GlobalManager::GetFont(strFontId));
@@ -545,7 +545,7 @@ void RenderContext_GdiPlus::DrawText(const CUiRect& rc, const CUiString& strText
 	}
 	else if ((uStyle & DT_VCENTER) != 0) {
 		TFontInfo* fontInfo = GlobalManager::GetTFontInfo(strFontId);
-		if (fontInfo->sFontName == L"新宋体") {
+		if (fontInfo->sFontName == _T("新宋体")) {
 			if (rcPaint.Height >= fontInfo->iSize + 2) {
 				rcPaint.Offset(0, 1);
 			}
@@ -558,8 +558,9 @@ void RenderContext_GdiPlus::DrawText(const CUiRect& rc, const CUiString& strText
 	else {
 		stringFormat.SetLineAlignment(Gdiplus::StringAlignmentNear);
 	}
-
-	graphics.DrawString(strText.c_str(), (int)strText.length(), &font, rcPaint, &stringFormat, &tBrush);
+	std::wstring uncText;
+	StringHelper::CUiStringToUnicode(strText, uncText);
+	graphics.DrawString(uncText.c_str(), (int)uncText.length(), &font, rcPaint, &stringFormat, &tBrush);
 }
 
 void RenderContext_GdiPlus::DrawEllipse(const CUiRect& rc, int nSize, DWORD dwColor)
@@ -606,17 +607,21 @@ ui::CUiRect RenderContext_GdiPlus::MeasureText(const CUiString& strText, const C
 	stringFormat.SetFormatFlags(formatFlags);
 
 	if (width == DUI_NOSET_VALUE) {
-		graphics.MeasureString(strText.c_str(), (int)strText.length(), &font, Gdiplus::PointF(), &stringFormat, &bounds);
+		std::wstring uncText;
+		StringHelper::CUiStringToUnicode(strText, uncText);
+		graphics.MeasureString(uncText.c_str(), (int)uncText.length(), &font, Gdiplus::PointF(), &stringFormat, &bounds);
 	}
 	else {
 		Gdiplus::REAL height = 0;
 		if ((uStyle & DT_SINGLELINE) != 0) {
 			Gdiplus::RectF rcEmpty((Gdiplus::REAL)0, (Gdiplus::REAL)0, (Gdiplus::REAL)0, (Gdiplus::REAL)0);
-			graphics.MeasureString(L"测试", 2, &font, rcEmpty, &stringFormat, &bounds);
+			graphics.MeasureString(_T("测试"), 2, &font, rcEmpty, &stringFormat, &bounds);
 			height = bounds.Height;
 		}
 		Gdiplus::RectF rcText((Gdiplus::REAL)0, (Gdiplus::REAL)0, (Gdiplus::REAL)width, height);
-		graphics.MeasureString(strText.c_str(), (int)strText.length(), &font, rcText, &stringFormat, &bounds);
+		std::wstring uncText;
+		StringHelper::CUiStringToUnicode(strText, uncText);
+		graphics.MeasureString(uncText.c_str(), (int)uncText.length(), &font, rcText, &stringFormat, &bounds);
 	}
 
 	CUiRect rc(int(bounds.GetLeft()), int(bounds.GetTop()), int(bounds.GetRight() + 1), int(bounds.GetBottom() + 1));

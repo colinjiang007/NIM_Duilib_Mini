@@ -296,7 +296,7 @@ LRESULT WindowImplBase::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	auto callback = nbase::Bind(&WindowImplBase::CreateControl, this, std::placeholders::_1);
 	auto pRoot = (Box*)builder.Create(strSkinFile.GetData(), callback, this);
 
-	ASSERT(pRoot && L"Faield to load xml file.");
+	ASSERT(pRoot && _T("Faield to load xml file."));
 	if (pRoot == NULL) {
 		TCHAR szErrMsg[MAX_PATH] = { 0 };
 		_stprintf_s(szErrMsg, _T("Failed to load xml file %s"), strSkinFile.GetData());
@@ -319,28 +319,28 @@ LRESULT WindowImplBase::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 		::MoveWindow(m_hWnd, 0, 0, needSize.cx, needSize.cy, FALSE);
 	}
 
-	Control *pControl = (Control*)FindControl(L"closebtn");
+	Control *pControl = (Control*)FindControl(_T("closebtn"));
 	if (pControl) {
 		Button *pCloseBtn = dynamic_cast<Button*>(pControl);
 		ASSERT(pCloseBtn);
 		pCloseBtn->AttachClick(nbase::Bind(&WindowImplBase::OnButtonClick, this, std::placeholders::_1));
 	}
 
-	pControl = (Control*)FindControl(L"minbtn");
+	pControl = (Control*)FindControl(_T("minbtn"));
 	if (pControl)	{
 		Button* pMinBtn = dynamic_cast<Button*>(pControl);
 		ASSERT(pMinBtn);
 		pMinBtn->AttachClick(nbase::Bind(&WindowImplBase::OnButtonClick, this, std::placeholders::_1));
 	}
 
-	pControl = (Control*)FindControl(L"maxbtn");
+	pControl = (Control*)FindControl(_T("maxbtn"));
 	if (pControl)	{
 		Button* pMaxBtn = dynamic_cast<Button*>(pControl);
 		ASSERT(pMaxBtn);
 		pMaxBtn->AttachClick(nbase::Bind(&WindowImplBase::OnButtonClick, this, std::placeholders::_1));
 	}
 
-	pControl = (Control*)FindControl(L"restorebtn");
+	pControl = (Control*)FindControl(_T("restorebtn"));
 	if (pControl)	{
 		Button* pRestoreBtn = dynamic_cast<Button*>(pControl);
 		ASSERT(pRestoreBtn);
@@ -432,8 +432,8 @@ bool WindowImplBase::OnButtonClick(EventArgs* msg)
 		SendMessage(WM_SYSCOMMAND, SC_MINIMIZE, 0); 
 	}
 	else if( sCtrlName == _T("maxbtn"))	{
-		Control* pMaxButton = (Control*)FindControl(L"maxbtn");
-		Control* pRestoreButton = (Control*)FindControl(L"restorebtn");
+		Control* pMaxButton = (Control*)FindControl(_T("maxbtn"));
+		Control* pRestoreButton = (Control*)FindControl(_T("restorebtn"));
 		if (pMaxButton && pRestoreButton) {
 			pMaxButton->SetVisible(false);
 			pRestoreButton->SetVisible(true);
@@ -441,8 +441,8 @@ bool WindowImplBase::OnButtonClick(EventArgs* msg)
 		SendMessage(WM_SYSCOMMAND, SC_MAXIMIZE, 0);
 	}
 	else if( sCtrlName == _T("restorebtn"))	{
-		Control* pMaxButton = (Control*)FindControl(L"maxbtn");
-		Control* pRestoreButton = (Control*)FindControl(L"restorebtn");
+		Control* pMaxButton = (Control*)FindControl(_T("maxbtn"));
+		Control* pRestoreButton = (Control*)FindControl(_T("restorebtn"));
 		if (pMaxButton && pRestoreButton) {
 			pMaxButton->SetVisible(true);
 			pRestoreButton->SetVisible(false);

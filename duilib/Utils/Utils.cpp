@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Utils.h"
+#include "shlwapi.h"
 namespace ui
 {
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -146,9 +147,10 @@ namespace ui
 		{
 			ASSERT(!::IsBadStringPtrA(lpStr, -1));
 			int cchStr = (int)strlen(lpStr) + 1;
-			LPWSTR pwstr = (LPWSTR)_alloca(cchStr);
+			LPWSTR pwstr = (LPWSTR)malloc(cchStr * 3);
 			if (pwstr != NULL) ::MultiByteToWideChar(::GetACP(), 0, lpStr, -1, pwstr, cchStr);
 			Assign(pwstr);
+			if (NULL != pwstr) free(pwstr);
 		}
 		else
 		{
@@ -163,9 +165,10 @@ namespace ui
 		{
 			ASSERT(!::IsBadStringPtrA(lpStr, -1));
 			int cchStr = (int)strlen(lpStr) + 1;
-			LPWSTR pwstr = (LPWSTR)_alloca(cchStr);
+			LPWSTR pwstr = (LPWSTR)malloc(cchStr * 3);
 			if (pwstr != NULL) ::MultiByteToWideChar(::GetACP(), 0, lpStr, -1, pwstr, cchStr);
 			Append(pwstr);
+			if (NULL != pwstr) free(pwstr);
 		}
 
 		return *this;
@@ -179,9 +182,10 @@ namespace ui
 		{
 			ASSERT(!::IsBadStringPtrW(lpwStr, -1));
 			int cchStr = ((int)wcslen(lpwStr) * 2) + 1;
-			LPSTR pstr = (LPSTR)_alloca(cchStr);
+			LPSTR pstr = (LPSTR)malloc(cchStr);
 			if (pstr != NULL) ::WideCharToMultiByte(::GetACP(), 0, lpwStr, -1, pstr, cchStr, NULL, NULL);
 			Assign(pstr);
+			if (NULL != pwstr) free(pstr);
 		}
 		else
 		{
@@ -197,9 +201,10 @@ namespace ui
 		{
 			ASSERT(!::IsBadStringPtrW(lpwStr, -1));
 			int cchStr = ((int)wcslen(lpwStr) * 2) + 1;
-			LPSTR pstr = (LPSTR)_alloca(cchStr);
+			LPSTR pstr = (LPSTR)malloc(cchStr);
 			if (pstr != NULL) ::WideCharToMultiByte(::GetACP(), 0, lpwStr, -1, pstr, cchStr, NULL, NULL);
 			Append(pstr);
+			if (NULL != pwstr) free(pstr);
 		}
 
 		return *this;
@@ -265,6 +270,13 @@ namespace ui
 	bool CUiString::operator <  (LPCTSTR str) const { return (Compare(str) < 0); };
 	bool CUiString::operator >= (LPCTSTR str) const { return (Compare(str) >= 0); };
 	bool CUiString::operator >  (LPCTSTR str) const { return (Compare(str) > 0); };
+
+	//template<typename T = LPCTSTR, typename P = CUiString>
+	//bool operator == (T str, const P& str2)
+	//{
+	//	return (str2.Compare(str) == 0);
+	//}
+
 
 	void CUiString::SetAt(int nIndex, TCHAR ch)
 	{
@@ -364,18 +376,15 @@ namespace ui
 
 	int CUiString::Format(LPCTSTR pstrFormat, ...)
 	{
-		LPTSTR szSprintf = NULL;
-		va_list argList;
-		int nLen;
-		va_start(argList, pstrFormat);
-		nLen = _vsntprintf(NULL, 0, pstrFormat, argList);
-		szSprintf = (TCHAR*)malloc((nLen + 1) * sizeof(TCHAR));
-		ZeroMemory(szSprintf, (nLen + 1) * sizeof(TCHAR));
-		int iRet = _vsntprintf(szSprintf, nLen + 1, pstrFormat, argList);
-		va_end(argList);
-		Assign(szSprintf);
-		free(szSprintf);
-		return iRet;
+		int nRet;
+		va_list Args;
+
+		va_start(Args, pstrFormat);
+		nRet = InnerFormat(pstrFormat, Args);
+		va_end(Args);
+
+		return nRet;
+
 	}
 
 	int CUiString::SmallFormat(LPCTSTR pstrFormat, ...)
@@ -384,11 +393,78 @@ namespace ui
 		TCHAR szBuffer[64] = { 0 };
 		va_list argList;
 		va_start(argList, pstrFormat);
-		int iRet = ::wvsprintf(szBuffer, sFormat, argList);
+		int iRet = ::_vsntprintf(szBuffer, sizeof(szBuffer), sFormat, argList);
 		va_end(argList);
 		Assign(szBuffer);
 		return iRet;
 	}
 
+	int CUiString::InnerFormat(LPCTSTR pstrFormat, va_list Args)
+	{
+#if _MSC_VER <= 1400
+		TCHAR *szBuffer = NULL;
+		int size = 512, nLen, counts;
+		szBuffer = (TCHAR*)malloc(size);
+		ZeroMemory(szBuffer, size);
+		while (TRUE){
+			counts = size / sizeof(TCHAR);
+			nLen = _vsntprintf(szBuffer, counts, pstrFormat, Args);
+			if (nLen != -1 && nLen < counts){
+				break;
+			}
+			if (nLen == -1){
+				size *= 2;
+			}
+			else{
+				size += 1 * sizeof(TCHAR);
+			}
 
+			if ((szBuffer = (TCHAR*)realloc(szBuffer, size)) != NULL){
+				ZeroMemory(szBuffer, size);
+			}
+			else{
+				break;
+			}
+		}
+
+		Assign(szBuffer);
+		free(szBuffer);
+		return nLen;
+#else
+		int nLen, totalLen;
+		TCHAR *szBuffer;
+		nLen = _vsntprintf(NULL, 0, pstrFormat, Args);
+		totalLen = (nLen + 1)*sizeof(TCHAR);
+		szBuffer = (TCHAR*)malloc(totalLen);
+		ZeroMemory(szBuffer, totalLen);
+		nLen = _vsntprintf(szBuffer, nLen + 1, pstrFormat, Args);
+		Assign(szBuffer);
+		free(szBuffer);
+		return nLen;
+
+#endif
+	}
+
+	CUiString PathUtil::SimplifyFilePath(LPCTSTR szPath)
+	{
+		if (szPath == nullptr) {
+			return CUiString();
+		}
+
+		TCHAR simPath[MAX_PATH];
+		PathCombine(simPath, szPath, NULL);
+		return simPath;
+	}
+
+	CUiString PathUtil::GetCurrentModuleDir()
+	{
+		TCHAR tszModule[MAX_PATH + 1] = { 0 };
+		::GetModuleFileName(NULL, tszModule, MAX_PATH);
+		CUiString sInstancePath = tszModule;
+		int pos = sInstancePath.ReverseFind(_T('\\'));
+		if (pos >= 0) {
+			sInstancePath = sInstancePath.Left(pos + 1);
+		}
+		return SimplifyFilePath(sInstancePath);
+	}
 }// namespace ui

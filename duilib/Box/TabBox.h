@@ -44,7 +44,7 @@ public:
 	 * @param[in] pControlName 要选择的控件名称
 	 * @return 成功返回 true，否则返回 false
 	 */
-	bool SelectItem(const std::wstring& pControlName);
+	bool SelectItem(const CUiString& pControlName);
 
 	/**
 	 * @brief 设置是否显示动画效果

@@ -49,7 +49,7 @@ public:
 	 * @param[in] stateType 要获取的状态标识，参考 ControlStateType 枚举
 	 * @return 返回图片路径
 	 */
-	std::wstring GetThumbStateImage(ControlStateType stateType);
+	CUiString GetThumbStateImage(ControlStateType stateType);
 
 	/**
 	 * @brief 设置指定状态下滑块的图片
@@ -57,7 +57,7 @@ public:
 	 * @param[in] pStrImage 要设置的图片位置
 	 * @return 无
 	 */
-	void SetThumbStateImage(ControlStateType stateType, const std::wstring& pStrImage);
+	void SetThumbStateImage(ControlStateType stateType, const CUiString& pStrImage);
 
 	/**
 	 * @brief 获取进度条内边距
@@ -85,7 +85,7 @@ protected:
 	StateImage m_thumbStateImage;
 	CUiRect	m_rcProgressBarPadding;
 	ControlStateType m_uButtonState;
-	std::wstring m_sImageModify;
+	CUiString m_sImageModify;
 };
 
 }

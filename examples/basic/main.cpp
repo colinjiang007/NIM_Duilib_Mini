@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "main.h"
-#include "basic_form.h"
 
 enum ThreadId
 {
@@ -18,15 +17,22 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
+	int a = 1;
+	ui::CUiString adb = _T("abc");
+	if (_T("abc") == adb) {
+		a = 2;
+	}
+
+	/*
 	// 创建主线程
 	MainThread thread;
 
 	// 执行主线程循环
 	thread.RunOnCurrentThreadWithLoop(nbase::MessageLoop::kUIMessageLoop);
-
+	*/
 	return 0;
 }
-
+/*
 void MainThread::Init()
 {
 	nbase::ThreadManager::RegisterThread(kThreadUI);
@@ -62,3 +68,4 @@ void MainThread::Cleanup()
 	SetThreadWasQuitProperly(true);
 	nbase::ThreadManager::UnregisterThread();
 }
+*/

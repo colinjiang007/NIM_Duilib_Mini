@@ -206,10 +206,10 @@ TreeView::TreeView() :
 	m_rootNode->SetTreeView(this);
 }
 
-void TreeView::SetAttribute(const std::wstring& strName, const std::wstring& strValue)
+void TreeView::SetAttribute(const CUiString& strName, const CUiString& strValue)
 {
 	if( strName == _T("indent") ) {
-		SetIndent(_ttoi(strValue.c_str()));
+		SetIndent(_ttoi(strValue));
 	}
 	else {
 		ListBox::SetAttribute(strName, strValue);
