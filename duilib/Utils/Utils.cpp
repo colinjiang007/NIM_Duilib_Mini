@@ -31,6 +31,23 @@ namespace ui
 		Assign(src.m_pstr);
 	}
 
+#if _MSC_VER >= 1600
+	CUiString::CUiString(CUiString&& src) : m_pstr(m_szBuffer)
+	{
+		m_szBuffer[0] = _T('\0');
+		if (src.m_pstr == src.m_szBuffer)
+		{
+			_tcscpy(this->m_szBuffer, src.m_szBuffer);
+		}
+		else {
+			this->m_pstr = src.m_pstr;
+			src.m_pstr = src.m_szBuffer;
+		}
+		//empty src
+		src.m_szBuffer[0] = _T('\0');
+	}
+#endif
+
 	CUiString::~CUiString()
 	{
 		if (m_pstr != m_szBuffer) free(m_pstr);
@@ -264,19 +281,12 @@ namespace ui
 		return *this;
 	}
 
-	bool CUiString::operator == (LPCTSTR str) const { return (Compare(str) == 0); };
-	bool CUiString::operator != (LPCTSTR str) const { return (Compare(str) != 0); };
+	//bool CUiString::operator == (LPCTSTR str) const { return (Compare(str) == 0); };
+	//bool CUiString::operator != (LPCTSTR str) const { return (Compare(str) != 0); };
 	bool CUiString::operator <= (LPCTSTR str) const { return (Compare(str) <= 0); };
 	bool CUiString::operator <  (LPCTSTR str) const { return (Compare(str) < 0); };
 	bool CUiString::operator >= (LPCTSTR str) const { return (Compare(str) >= 0); };
 	bool CUiString::operator >  (LPCTSTR str) const { return (Compare(str) > 0); };
-
-	//template<typename T = LPCTSTR, typename P = CUiString>
-	//bool operator == (T str, const P& str2)
-	//{
-	//	return (str2.Compare(str) == 0);
-	//}
-
 
 	void CUiString::SetAt(int nIndex, TCHAR ch)
 	{
@@ -293,6 +303,42 @@ namespace ui
 	{
 		return _tcsicmp(m_pstr, lpsz);
 	}
+
+	bool operator ==(const CUiString& str1, const CUiString& str2)
+	{
+		return (str1.Compare(str2) == 0);
+	}
+
+	bool operator ==(const CUiString& str1, LPCTSTR str2)
+	{
+		ASSERT(str2);
+		return (str1.Compare(str2) == 0);
+
+	}
+
+	bool operator ==(LPCTSTR str1, const CUiString& str2)
+	{
+		ASSERT(str1);
+		return (str2.Compare(str1) == 0);
+	}
+
+	bool operator !=(const CUiString& str1, const CUiString& str2)
+	{
+		return (str1.Compare(str2) != 0);
+	}
+
+	bool operator !=(const CUiString& str1, LPCTSTR str2)
+	{
+		ASSERT(str2);
+		return (str1.Compare(str2) != 0);
+	}
+
+	bool operator !=(LPCTSTR str1, const CUiString& str2)
+	{
+		ASSERT(str1);
+		return (str2.Compare(str1) != 0);
+	}
+
 
 	void CUiString::MakeUpper()
 	{

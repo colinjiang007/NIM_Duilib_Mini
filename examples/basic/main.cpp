@@ -9,6 +9,14 @@ enum ThreadId
 	kThreadUI
 };
 
+ui::CUiString testmove() {
+	ui::CUiString adb = _T("ddddddddddddddddddddseeeeeeeeeeeeeeevvvvvvvvvvvvvvvvvvvvvv");
+	ui::CUiString dddf = _T("9999999seeeeeeeeeeeeeeevvvvvvvvvvvvvvvvvvvvvv");
+
+	adb = dddf.Left(12);
+	return adb;
+}
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
@@ -16,13 +24,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
+	
+	{
+		int a = 1;
+		ui::CUiString adb = _T("abc");
+		if (_T("abc") == adb) {
+			a = 2;
+		}
+		adb = _T("ddddddddddddddddddddseeeeeeeeeeeeeeevvvvvvvvvvvvvvvvvvvvvv");
+		ui::CUiString ccc = testmove();
+		LPCTSTR pddd = ccc;
+		LPCTSTR peee = adb;
 
-	int a = 1;
-	ui::CUiString adb = _T("abc");
-	if (_T("abc") == adb) {
-		a = 2;
 	}
-
 	/*
 	// 创建主线程
 	MainThread thread;

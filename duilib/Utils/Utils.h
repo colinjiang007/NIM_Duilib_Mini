@@ -232,12 +232,15 @@ public:
 class UILIB_API CUiString
 {
 public:
-	enum { MAX_LOCAL_STRING_LEN = 63 };
+	enum { MAX_LOCAL_STRING_LEN = 10 };
 
 	CUiString();
 	CUiString(const TCHAR ch);
 	CUiString(const CUiString& src);
 	CUiString(LPCTSTR lpsz, int nLen = -1);
+#if _MSC_VER >= 1600
+	CUiString(CUiString&& src);
+#endif
 	~CUiString();
 	CUiString ToString();
 
@@ -248,7 +251,7 @@ public:
 	void Append(LPCTSTR pstr);
 	void Assign(LPCTSTR pstr, int nLength = -1);
 	LPCTSTR GetData() const;
-
+	 
 	void SetAt(int nIndex, TCHAR ch);
 	operator LPCTSTR() const;
 
@@ -269,15 +272,20 @@ public:
 	const CUiString& operator+=(LPCTSTR pstr);
 	const CUiString& operator+=(const TCHAR ch);
 
-	bool operator == (LPCTSTR str) const;
-	bool operator != (LPCTSTR str) const;
+	//bool operator == (LPCTSTR str) const;
+	//bool operator != (LPCTSTR str) const;
 	bool operator <= (LPCTSTR str) const;
 	bool operator <  (LPCTSTR str) const;
 	bool operator >= (LPCTSTR str) const;
 	bool operator >  (LPCTSTR str) const;
 
-	//template<typename T = LPCTSTR, typename P = CUiString>
-	//friend bool operator == (T str ,const P& str2);
+	friend bool operator ==(LPCTSTR str1, const CUiString& str2);
+	friend bool operator ==(const CUiString& str1, LPCTSTR str2);
+	friend bool operator ==(const CUiString& str1, const CUiString& str2);
+
+	friend bool operator !=(LPCTSTR str1, const CUiString& str2);
+	friend bool operator !=(const CUiString& str1, LPCTSTR str2);
+	friend bool operator !=(const CUiString& str1, const CUiString& str2);
 
 	int Compare(LPCTSTR pstr) const;
 	int CompareNoCase(LPCTSTR pstr) const;
