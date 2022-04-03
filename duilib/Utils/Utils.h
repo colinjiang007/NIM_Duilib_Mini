@@ -228,11 +228,13 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////////////
 //
-
+//History: // 历史修改记录
+//<author> <time> <version > <desc>
+//Colin 2022.04.3 ver1.0 improvement
 class UILIB_API CUiString
 {
 public:
-	enum { MAX_LOCAL_STRING_LEN = 10 };
+	enum { MAX_LOCAL_STRING_LEN = 63 };
 
 	CUiString();
 	CUiString(const TCHAR ch);
@@ -251,6 +253,8 @@ public:
 	void Append(LPCTSTR pstr);
 	void Assign(LPCTSTR pstr, int nLength = -1);
 	LPCTSTR GetData() const;
+
+	int Delete(int nIndex, int nCount = 1);
 	 
 	void SetAt(int nIndex, TCHAR ch);
 	operator LPCTSTR() const;
@@ -297,9 +301,9 @@ public:
 	CUiString Mid(int iPos, int nLength = -1) const;
 	CUiString Right(int nLength) const;
 
-	void Trim(){};
-	void TrimLeft(){};
-	void TrimRight(){};
+	void Trim();
+	void TrimLeft();
+	void TrimRight();
 
 	int Find(TCHAR ch, int iPos = 0) const;
 	int Find(LPCTSTR pstr, int iPos = 0) const;

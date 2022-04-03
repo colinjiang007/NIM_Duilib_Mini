@@ -350,6 +350,121 @@ namespace ui
 		_tcslwr(m_pstr);
 	}
 
+	int CUiString::Delete(int nIndex, int nCount)
+	{
+		int nLength = GetLength();
+		ASSERT(nIndex >= 0 && nIndex <= nLength);
+		if ((nIndex < 0 || nIndex >= nLength)) return nLength;
+		ASSERT(nCount >= 0);
+		if (nCount <= 0) return nLength;
+
+		int nDelCount = nCount;
+		if (nIndex + nCount > nLength)
+		{
+			nDelCount = nLength - nIndex;
+		}
+
+		int nNewLength = nLength - nDelCount;
+		if (m_pstr == m_szBuffer)
+		{
+			if (nNewLength == 0)
+			{
+				m_szBuffer[0] = _T('\0');
+			}
+			else
+			{
+				_tcscpy(m_pstr + nIndex, m_pstr + nIndex + nDelCount);
+			}
+		}
+		else {
+			if (nNewLength >= MAX_LOCAL_STRING_LEN) {
+				_tcscpy(m_pstr + nIndex, m_pstr + nIndex + nDelCount);
+			}
+			else {
+				if (nNewLength == 0)
+				{
+					m_szBuffer[0] = _T('\0');
+				}
+				else
+				{
+					m_pstr[nIndex] = _T('\0');
+					_tcscpy(m_szBuffer, m_pstr);
+					_tcscat(m_szBuffer, m_pstr + nIndex + nDelCount);
+				}
+
+				free(m_pstr);
+				m_pstr = m_szBuffer;
+			}
+		}
+
+		return nNewLength;
+	}
+
+	void CUiString::Trim()
+	{
+		TrimLeft();
+		TrimRight();
+	}
+
+	void CUiString::TrimLeft() {
+		int nSpaceCount = 0;
+		TCHAR* it = m_pstr;
+		TCHAR ch = 0;
+		do
+		{
+			ch = *it;
+			if (ch == _T('\0')) {
+				break;
+			}
+
+			if (_istspace(ch))
+			{
+				nSpaceCount++;
+			}
+			else
+			{
+				break;
+			}
+			it++;
+		} while (ch != _T('\0'));
+		if (nSpaceCount > 0)
+		{
+			Delete(0, nSpaceCount);
+		}
+
+	}
+
+	void CUiString::TrimRight() {
+		int nLength = GetLength();
+		if (nLength == 0)
+		{
+			return;
+		}
+		int nSpaceCount = 0;
+		TCHAR* it = m_pstr+ nLength -1;
+		TCHAR ch = 0;
+		do
+		{
+			ch = *it;
+			if (_istspace(ch))
+			{
+				nSpaceCount++;
+			}
+			else
+			{
+				break;
+			}
+			if (it == m_pstr) {
+				break;
+			}
+			it--;
+		} while (true);
+		if (nSpaceCount > 0)
+		{
+			Delete(nLength-nSpaceCount, nSpaceCount);
+		}
+	}
+
 	CUiString CUiString::Left(int iLength) const
 	{
 		if (iLength < 0) iLength = 0;
