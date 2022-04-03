@@ -513,7 +513,7 @@ void StringHelper::Utf8ToCUiString(const std::string& src, CUiString& ret)
 #endif // _UNICODE
 }
 
-void StringHelper::SplitCUiString(const CUiString& strSource, const CUiString& token, std::vector<CUiString>& ret)
+void StringHelper::SplitCUiString(const CUiString& strSource, const CUiString& token, std::vector<CUiString>& ret,bool isTrim)
 {
 	ret.clear();
 	TCHAR* nowtk = nullptr;
@@ -527,13 +527,16 @@ void StringHelper::SplitCUiString(const CUiString& strSource, const CUiString& t
 			break;
 		}
 		strItem = nowtk;
-		strItem.TrimLeft();
+		if (isTrim)
+		{
+			strItem.Trim();
+		}
 		ret.push_back(strItem);
 		nowtk = _tcstok_s(NULL, token, &nexttk);//(LPSTR)(LPCTSTR)将CString转char*
 	} while (true);
 }
 
-bool StringHelper::SplitCUiStringKeyValue(const CUiString& strSource, const CUiString& token, CUiString& key, CUiString& value)
+bool StringHelper::SplitCUiStringKeyValue(const CUiString& strSource, const CUiString& token, CUiString& key, CUiString& value,bool isTrim)
 {
 	if (strSource.GetLength() <= token.GetLength()) {
 		return false;
@@ -549,8 +552,14 @@ bool StringHelper::SplitCUiStringKeyValue(const CUiString& strSource, const CUiS
 	if (key.IsEmpty() || value.IsEmpty()) {
 		return false;
 	}
+	if (isTrim)
+	{
+		key.Trim();
+		value.Trim();
+	}
 	return true;
 }
+
 
 std::string StringHelper::TrimLeft(const char *input)
 {
@@ -566,7 +575,7 @@ std::string StringHelper::TrimRight(const char *input)
 	return output;
 }
 
-std::string StringHelper::Trim(const char *input) /* both left and right */
+std::string StringHelper::Trim(const char *input) 
 {
 	std::string output = input;
 	Trim(output);
@@ -585,7 +594,7 @@ std::string& StringHelper::TrimRight(std::string &input)
 	return input;
 }
 
-std::string& StringHelper::Trim(std::string &input) /* both left and right */
+std::string& StringHelper::Trim(std::string &input) 
 {
 	StringTrimT<char>(input);
 	return input;
@@ -605,7 +614,7 @@ std::wstring StringHelper::TrimRight(const wchar_t *input)
 	return output;
 }
 
-std::wstring StringHelper::Trim(const wchar_t *input) /* both left and right */
+std::wstring StringHelper::Trim(const wchar_t *input) 
 {
 	std::wstring output = input;
 	Trim(output);
@@ -624,7 +633,7 @@ std::wstring& StringHelper::TrimRight(std::wstring &input)
 	return input;
 }
 
-std::wstring& StringHelper::Trim(std::wstring &input) /* both left and right */
+std::wstring& StringHelper::Trim(std::wstring &input) 
 {
 	StringTrimT<wchar_t>(input);
 	return input;

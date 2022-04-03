@@ -256,7 +256,7 @@ Box* WindowBuilder::Create(CreateControlCallback pCallback, Window* pManager, Bo
 						}
 					}
 					if( !strClassName.IsEmpty() ) {
-						StringHelper::TrimLeft(strAttribute);
+						strAttribute.Trim();
 						GlobalManager::AddClass(strClassName, strAttribute);
 					}
 				}
@@ -310,7 +310,7 @@ Box* WindowBuilder::Create(CreateControlCallback pCallback, Window* pManager, Bo
 					}
 					if( !strClassName.IsEmpty() ) {
 						ASSERT( GlobalManager::GetClassAttributes(strClassName).IsEmpty() );	//窗口中的Class不能与全局的重名
-						StringHelper::TrimLeft(strAttribute);
+						strAttribute.Trim();
 						pManager->AddClass(strClassName, strAttribute);
 					}
 				}

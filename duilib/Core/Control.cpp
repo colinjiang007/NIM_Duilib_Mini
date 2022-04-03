@@ -940,6 +940,11 @@ bool Control::ButtonUp(EventArgs& msg)
 
 void Control::SetAttribute(const CUiString& strName, const CUiString& strValue)
 {
+	if (strName == _T(" width")) {
+		int ad = 2;
+		ad++;
+	}
+
 	if ( strName == _T("class") ) {
 		SetClass(strValue);
 	}
@@ -1179,6 +1184,8 @@ void Control::ApplyAttributeList(const CUiString& strList)
         }
         ASSERT( *pstrList == _T('\"') );
         if( *pstrList++ != _T('\"') ) return;
+		sItem.Trim();
+		sValue.Trim();
         SetAttribute(sItem, sValue);
         if( *pstrList++ != _T(' ') ) return;
     }

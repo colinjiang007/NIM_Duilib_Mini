@@ -34,8 +34,9 @@ public:
 	static int UnicodeToUtf8(const std::wstring& unicode, std::string& utf8);
 	static int UnicodeToGB2312(const std::wstring& unicode, std::string& gb);
 	static int Gb2312ToUnicode(const std::string& gb, std::wstring& unicode);
-	static void SplitCUiString(const CUiString& strSource, const CUiString& token, std::vector<CUiString>& ret);
-	static bool SplitCUiStringKeyValue(const CUiString& strSource, const CUiString& token, CUiString& key, CUiString& value);
+	static void SplitCUiString(const CUiString& strSource, const CUiString& token, std::vector<CUiString>& ret, bool isTrim=true);
+	static bool SplitCUiStringKeyValue(const CUiString& strSource, const CUiString& token, CUiString& key, CUiString& value, bool isTrim = true);
+	
 	
 	// trimming, removing extra spaces
 	static std::string TrimLeft(const char *input);
@@ -50,7 +51,7 @@ public:
 	static std::wstring& TrimLeft(std::wstring &input);
 	static std::wstring& TrimRight(std::wstring &input);
 	static std::wstring& Trim(std::wstring &input); /* both left and right */
-
+	
 	// find all tokens splitted by one of the characters in 'delimitor'
 	static std::list<std::string> Split(const std::string& input, const std::string& delimitor);
 	static std::list<std::wstring> Split(const std::wstring& input, const std::wstring& delimitor);
