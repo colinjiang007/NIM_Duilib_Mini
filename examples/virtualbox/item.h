@@ -1,5 +1,5 @@
 #pragma once
-
+using ui::CUiString;
 // 从 ui::ListContainerElement 中继承所有可用功能
 class Item : public ui::ListContainerElement
 {
@@ -8,7 +8,7 @@ public:
 	~Item();
 
 	// 提供外部调用来初始化 item 数据
-	void InitSubControls(const std::wstring& img, const std::wstring& title, int nDataIndex);
+	void InitSubControls(const CUiString& img, const CUiString& title, int nDataIndex);
 private:
 	bool OnRemove(ui::EventArgs* args);
 

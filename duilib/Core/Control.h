@@ -924,9 +924,9 @@ protected:
 	Image m_bkImage;
 	StateImageMap m_imageMap;
 	CUiString m_strBorderColor;
-	nbase::WeakCallbackFlag m_gifWeakFlag;
+	ui::WeakCallbackFlag m_gifWeakFlag;
 	AnimationManager m_animationManager;
-	nbase::WeakCallbackFlag m_loadBkImageWeakFlag;
+	ui::WeakCallbackFlag m_loadBkImageWeakFlag;
 	static const int m_nVirtualEventGifStop;
 };
 

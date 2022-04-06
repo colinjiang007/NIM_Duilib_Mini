@@ -7,7 +7,7 @@
 
 typedef std::function<void(void)> StdClosure;
 
-namespace nbase
+namespace ui
 {
 
 class WeakFlag
@@ -139,7 +139,7 @@ auto Bind(R(C::*f)(DArgs...) const, P && p, Args && ... args)
 {
 	std::weak_ptr<WeakFlag> weak_flag = ((SupportWeakCallback*)p)->GetWeakFlag();
 	auto bind_obj = std::bind(f, p, args...);
-	static_assert(std::is_base_of<nbase::SupportWeakCallback, C>::value, "nbase::SupportWeakCallback should be base of C");
+	static_assert(std::is_base_of<ui::SupportWeakCallback, C>::value, "ui::SupportWeakCallback should be base of C");
 	WeakCallback<decltype(bind_obj)> weak_callback(weak_flag, std::move(bind_obj));
 	return weak_callback;
 }
@@ -151,7 +151,7 @@ auto Bind(R(C::*f)(DArgs...), P && p, Args && ... args)
 {
 	std::weak_ptr<WeakFlag> weak_flag = ((SupportWeakCallback*)p)->GetWeakFlag();
 	auto bind_obj = std::bind(f, p, args...);
-	static_assert(std::is_base_of<nbase::SupportWeakCallback, C>::value, "nbase::SupportWeakCallback should be base of C");
+	static_assert(std::is_base_of<ui::SupportWeakCallback, C>::value, "ui::SupportWeakCallback should be base of C");
 	WeakCallback<decltype(bind_obj)> weak_callback(weak_flag, std::move(bind_obj));
 	return weak_callback;
 }

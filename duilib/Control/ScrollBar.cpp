@@ -316,7 +316,7 @@ void ScrollBar::HandleMessage(EventArgs& event)
 		m_nLastScrollOffset = 0;
 		m_nScrollRepeatDelay = 0;
 
-		auto callback = nbase::Bind(&ScrollBar::ScrollTimeHandle, this);
+		auto callback = ui::Bind(&ScrollBar::ScrollTimeHandle, this);
 		TimerManager::GetInstance()->AddCancelableTimer(m_weakFlagOwner.GetWeakFlag(), callback, 50, TimerManager::REPEAT_FOREVER);
 
 		if (::PtInRect(&m_rcButton1, event.ptMouse)) {

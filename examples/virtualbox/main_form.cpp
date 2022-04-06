@@ -2,7 +2,7 @@
 #include "main_form.h"
 #include "provider.h"
 
-const std::wstring MainForm::kClassName = L"VirtualBoxDemo";
+const CUiString MainForm::kClassName = _T("VirtualBoxDemo");
 
 
 MainForm::MainForm()
@@ -12,17 +12,17 @@ MainForm::MainForm()
 MainForm::~MainForm()
 = default;
 
-std::wstring MainForm::GetSkinFolder()
+CUiString MainForm::GetSkinFolder()
 {
-	return L"virtualbox";
+	return _T("virtualbox");
 }
 
-std::wstring MainForm::GetSkinFile()
+CUiString MainForm::GetSkinFile()
 {
-	return L"main.xml";
+	return _T("main.xml");
 }
 
-std::wstring MainForm::GetWindowClassName() const
+CUiString MainForm::GetWindowClassName() const
 {
 	return kClassName;
 }
@@ -30,17 +30,17 @@ std::wstring MainForm::GetWindowClassName() const
 void MainForm::InitWindow()
 {
 
-	m_EditColumn = dynamic_cast<ui::RichEdit*>(FindControl(L"edit_column"));
-	m_CheckBoxItemCenter = dynamic_cast<ui::CheckBox*>(FindControl(L"checkbox_item_center"));
-	m_EditTotal = dynamic_cast<ui::RichEdit*>(FindControl(L"edit_total"));
-	m_pTileList = dynamic_cast<VirtualTileBox*>(FindControl(L"list"));
-	m_OptionColumnFix = dynamic_cast<ui::Option*>(FindControl(L"option_column_fix"));
-	m_EditUpdate = dynamic_cast<ui::RichEdit*>(FindControl(L"edit_update"));
-	m_EditTaskName = dynamic_cast<ui::RichEdit*>(FindControl(L"edit_task_name"));
-	m_EditDelete = dynamic_cast<ui::RichEdit*>(FindControl(L"edit_delete"));
-	m_EditChildMargin = dynamic_cast<ui::RichEdit*>(FindControl(L"edit_child_margin"));
+	m_EditColumn = dynamic_cast<ui::RichEdit*>(FindControl(_T("edit_column")));
+	m_CheckBoxItemCenter = dynamic_cast<ui::CheckBox*>(FindControl(_T("checkbox_item_center")));
+	m_EditTotal = dynamic_cast<ui::RichEdit*>(FindControl(_T("edit_total")));
+	m_pTileList = dynamic_cast<VirtualTileBox*>(FindControl(_T("list")));
+	m_OptionColumnFix = dynamic_cast<ui::Option*>(FindControl(_T("option_column_fix")));
+	m_EditUpdate = dynamic_cast<ui::RichEdit*>(FindControl(_T("edit_update")));
+	m_EditTaskName = dynamic_cast<ui::RichEdit*>(FindControl(_T("edit_task_name")));
+	m_EditDelete = dynamic_cast<ui::RichEdit*>(FindControl(_T("edit_delete")));
+	m_EditChildMargin = dynamic_cast<ui::RichEdit*>(FindControl(_T("edit_child_margin")));
 
-	m_pRoot->AttachBubbledEvent(ui::kEventClick, nbase::Bind(&MainForm::OnClicked, this, std::placeholders::_1));
+	m_pRoot->AttachBubbledEvent(ui::kEventClick, ui::Bind(&MainForm::OnClicked, this, std::placeholders::_1));
 
 	// 设置提供者
 	m_DataProvider = new Provider;
@@ -60,45 +60,45 @@ LRESULT MainForm::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandle
 bool MainForm::OnClicked(ui::EventArgs* args)
 {
 	auto sName = args->pSender->GetName();
-	if (sName == L"btn_set_total")
+	if (sName == _T("btn_set_total"))
 	{
-		if (!m_EditChildMargin->GetText().empty())
+		if (!m_EditChildMargin->GetText().IsEmpty())
 		{
-			m_pTileList->SetAttribute(L"childmargin", m_EditChildMargin->GetText());
+			m_pTileList->SetAttribute(_T("childmargin"), m_EditChildMargin->GetText());
 		}
 		if (m_OptionColumnFix->IsSelected())
 		{
-			m_pTileList->SetAttribute(L"column", m_EditColumn->GetText());
+			m_pTileList->SetAttribute(_T("column"), m_EditColumn->GetText());
 			if (m_CheckBoxItemCenter->IsSelected())
 			{
-				m_pTileList->SetAttribute(L"width", L"auto");
-				m_pTileList->SetAttribute(L"halign", L"center");
+				m_pTileList->SetAttribute(_T("width"), _T("auto"));
+				m_pTileList->SetAttribute(_T("halign"), _T("center"));
 			}
 			else {
-				m_pTileList->SetAttribute(L"width", L"stretch");
+				m_pTileList->SetAttribute(_T("width"), _T("stretch"));
 
 			}		
 		}
 		else {
-			m_pTileList->SetAttribute(L"width", L"stretch");
-			m_pTileList->SetAttribute(L"column", L"-1");
+			m_pTileList->SetAttribute(_T("width"), _T("stretch"));
+			m_pTileList->SetAttribute(_T("column"), _T("-1"));
 
 		}
 
 
-		int nTotal = _ttoi(m_EditTotal->GetText().c_str());
+		int nTotal = _ttoi(m_EditTotal->GetText());
 		if (nTotal > 0) {
 			m_DataProvider->SetTotal(nTotal);
 		}
 	}
-	else if (sName == L"btn_update")
+	else if (sName == _T("btn_update"))
 	{
-		m_DataProvider->ChangeTaskName(_ttoi(m_EditUpdate->GetText().c_str())-1, 
+		m_DataProvider->ChangeTaskName(_ttoi(m_EditUpdate->GetText())-1, 
 			m_EditTaskName->GetText());
 	}
-	else if (sName == L"btn_delete")
+	else if (sName == _T("btn_delete"))
 	{
-		m_DataProvider->RemoveTask(_ttoi(m_EditDelete->GetText().c_str()) - 1); 
+		m_DataProvider->RemoveTask(_ttoi(m_EditDelete->GetText()) - 1); 
 	}
 
 	return true;

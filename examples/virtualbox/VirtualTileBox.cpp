@@ -35,9 +35,9 @@ VirtualTileLayout::VirtualTileLayout()
 	m_nColumns = -1;
 }
 
-ui::CSize VirtualTileLayout::ArrangeChild(const std::vector<ui::Control*>& items, ui::UiRect rc)
+ui::CUiSize VirtualTileLayout::ArrangeChild(const std::vector<ui::Control*>& items, ui::CUiRect rc)
 {
-	ui::CSize sz(rc.GetWidth(), rc.GetHeight());
+	ui::CUiSize sz(rc.GetWidth(), rc.GetHeight());
 
 	VirtualTileBox *pList = dynamic_cast<VirtualTileBox*>(m_pOwner);
 	ASSERT(pList);
@@ -49,12 +49,12 @@ ui::CSize VirtualTileLayout::ArrangeChild(const std::vector<ui::Control*>& items
 	return sz;
 }
 
-ui::CSize VirtualTileLayout::AjustSizeByChild(const std::vector<ui::Control*>& items, ui::CSize szAvailable)
+ui::CUiSize VirtualTileLayout::AjustSizeByChild(const std::vector<ui::Control*>& items, ui::CUiSize szAvailable)
 {
 	VirtualTileBox *pList = dynamic_cast<VirtualTileBox*>(m_pOwner);
 	ASSERT(pList);
 
-	ui::CSize size = m_pOwner->Control::EstimateSize(szAvailable);
+	ui::CUiSize size = m_pOwner->Control::EstimateSize(szAvailable);
 	if (size.cx == DUI_LENGTH_AUTO || size.cx == 0)
 	{
 		size.cx = m_szItem.cx * m_nColumns + m_iChildMargin * (m_nColumns - 1);
@@ -63,11 +63,11 @@ ui::CSize VirtualTileLayout::AjustSizeByChild(const std::vector<ui::Control*>& i
 }
 
 
-bool VirtualTileLayout::SetAttribute(const std::wstring& strName, const std::wstring& strValue)
+bool VirtualTileLayout::SetAttribute(const CUiString& strName, const CUiString& strValue)
 {
-	if (strName == L"column")
+	if (strName == _T("column"))
 	{
-		int iValue = _ttoi(strValue.c_str());
+		int iValue = _ttoi(strValue);
 		if (iValue > 0)
 		{
 			SetColumns(iValue);
@@ -121,7 +121,7 @@ void VirtualTileLayout::LazyArrangeChild()
 	ASSERT(m_nColumns);
 
 	// 获取VirtualTileBox的Rect
-	ui::UiRect rc = pList->GetPaddingPos();
+	ui::CUiRect rc = pList->GetPaddingPos();
 
 	// 子项的左边起始位置 
 	int iPosLeft = rc.left;
@@ -129,7 +129,7 @@ void VirtualTileLayout::LazyArrangeChild()
 	// 子项的顶部起始位置 
 	int iPosTop = rc.top + pList->GetScrollPos().cy;
 
-	ui::CPoint ptTile(iPosLeft, iPosTop);
+	ui::CUiPoint ptTile(iPosLeft, iPosTop);
 
 	// 顶部index
 	int nTopBottom = 0;
@@ -140,7 +140,7 @@ void VirtualTileLayout::LazyArrangeChild()
 	for (auto pControl : pList->m_items)
 	{
 		// Determine size
-		ui::UiRect rcTile(ptTile.x, ptTile.y, ptTile.x + m_szItem.cx, ptTile.y + m_szItem.cy);
+		ui::CUiRect rcTile(ptTile.x, ptTile.y, ptTile.x + m_szItem.cx, ptTile.y + m_szItem.cy);
 		pControl->SetPos(rcTile);
 
 		// 填充数据
@@ -166,7 +166,7 @@ void VirtualTileLayout::LazyArrangeChild()
 
 int VirtualTileLayout::AjustMaxItem()
 {
-	ui::UiRect rc = m_pOwner->GetPaddingPos();
+	ui::CUiRect rc = m_pOwner->GetPaddingPos();
 
 	if (m_bAutoCalcColumn)
 	{
@@ -198,8 +198,8 @@ void VirtualTileBox::SetDataProvider(VirtualTileInterface *pProvider)
 
 	// 注册模型数据变动通知回调
 	pProvider->RegNotifys(
-		nbase::Bind(&VirtualTileBox::OnModelDataChanged, this, std::placeholders::_1, std::placeholders::_2),
-		nbase::Bind(&VirtualTileBox::OnModelCountChanged, this));
+		ui::Bind(&VirtualTileBox::OnModelDataChanged, this, std::placeholders::_1, std::placeholders::_2),
+		ui::Bind(&VirtualTileBox::OnModelCountChanged, this));
 }
 
 
@@ -273,7 +273,7 @@ void VirtualTileBox::GetDisplayCollection(std::vector<int>& collection)
 		return;
 
 	// 获取Box的Rect
-	ui::UiRect rcThis = this->GetPaddingPos();
+	ui::CUiRect rcThis = this->GetPaddingPos();
 
 	int nEleHeight = GetRealElementHeight();
 
@@ -321,11 +321,11 @@ void VirtualTileBox::EnsureVisible(int iIndex, bool bToTop /*= false*/)
 			nNewPos = CalcElementsHeight(iIndex);
 		}
 	}
-	ui::CSize sz(0, nNewPos);
+	ui::CUiSize sz(0, nNewPos);
 	SetScrollPos(sz);
 }
 
-void VirtualTileBox::SetScrollPos(ui::CSize szPos)
+void VirtualTileBox::SetScrollPos(ui::CUiSize szPos)
 {
 	m_nOldYScrollPos = GetScrollPos().cy;
 	ListBox::SetScrollPos(szPos);
@@ -380,7 +380,7 @@ void VirtualTileBox::HandleMessage(ui::EventArgs& event)
     __super::HandleMessage(event);
 }
 
-void VirtualTileBox::SetPos(ui::UiRect rc)
+void VirtualTileBox::SetPos(ui::CUiRect rc)
 {
 	bool bChange = false;
 	if (!m_rcItem.Equal(rc))
@@ -476,12 +476,12 @@ bool VirtualTileBox::NeedReArrange(ScrollDirection &direction)
 		return false;
 
 
-	ui::UiRect rcThis = this->GetPos();
+	ui::CUiRect rcThis = this->GetPos();
 	if (rcThis.GetWidth() <= 0)
 		return false;
 
 	int nPos = GetScrollPos().cy;
-	ui::UiRect rcItem;
+	ui::CUiRect rcItem;
 
 	rcItem = m_items[0]->GetPos();
 

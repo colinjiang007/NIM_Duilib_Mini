@@ -6,7 +6,7 @@
 namespace ui 
 {
 
-class UILIB_API PlaceHolder : public virtual nbase::SupportWeakCallback
+class UILIB_API PlaceHolder : public virtual ui::SupportWeakCallback
 {
 public:
 	PlaceHolder();

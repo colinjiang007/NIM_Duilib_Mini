@@ -2478,7 +2478,7 @@ void RichEdit::OnKeyDown(EventArgs& event)
 
 			SetClipBoardText(strNum); //修改剪切板内容为纯数字
 			//todo
-			//nbase::ThreadManager::PostTask([strClipText]() { SetClipBoardText(strClipText); }); //粘贴完后又把剪切板内容改回来
+			//ui::ThreadManager::PostTask([strClipText]() { SetClipBoardText(strClipText); }); //粘贴完后又把剪切板内容改回来
 		}
 	}
 
@@ -2775,7 +2775,7 @@ BOOL RichEdit::ShowCaret(BOOL fShow)
 	if (fShow) {
 		m_bIsCaretVisiable = true;
 		m_drawCaretFlag.Cancel();
-		std::function<void()> closure = nbase::Bind(&RichEdit::ChangeCaretVisiable, this);
+		std::function<void()> closure = ui::Bind(&RichEdit::ChangeCaretVisiable, this);
 		TimerManager::GetInstance()->AddCancelableTimer(m_drawCaretFlag.GetWeakFlag(), closure, 500, TimerManager::REPEAT_FOREVER);
 	}
 	else {

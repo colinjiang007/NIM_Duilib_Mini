@@ -18,33 +18,18 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	// 创建主线程
-	MainThread thread;
+	// 获取资源路径，初始化全局参数
+	ui::CUiString theme_dir = ui::PathUtil::GetCurrentModuleDir();
+	ui::GlobalManager::Startup(theme_dir + _T("resources\\"), ui::CreateControlCallback(), false);
 
-	// 执行主线程循环
-	thread.RunOnCurrentThreadWithLoop(nbase::MessageLoop::kUIMessageLoop);
+	// 创建一个默认带有阴影的居中窗口
+	RichlistForm* window = new RichlistForm();
+	window->Create(NULL, RichlistForm::kClassName, WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX, 0);
+	window->CenterWindow();
+	window->ShowModal();
+
+	ui::GlobalManager::Shutdown();
 
 	return 0;
 }
 
-void MainThread::Init()
-{
-	nbase::ThreadManager::RegisterThread(kThreadUI);
-
-	// 获取资源路径，初始化全局参数
-	std::wstring theme_dir = nbase::win32::GetCurrentModuleDirectory();
-	ui::GlobalManager::Startup(theme_dir + L"resources\\", ui::CreateControlCallback(), false);
-
-	// 创建一个默认带有阴影的居中窗口
-	RichlistForm* window = new RichlistForm();
-	window->Create(NULL, RichlistForm::kClassName.c_str(), WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX, 0);
-	window->CenterWindow();
-	window->ShowWindow();
-}
-
-void MainThread::Cleanup()
-{
-	ui::GlobalManager::Shutdown();
-	SetThreadWasQuitProperly(true);
-	nbase::ThreadManager::UnregisterThread();
-}

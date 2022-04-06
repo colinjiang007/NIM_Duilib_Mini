@@ -2,7 +2,7 @@
 #include "richlist_form.h"
 #include "item.h"
 
-const std::wstring RichlistForm::kClassName = L"Basic";
+const CUiString RichlistForm::kClassName = _T("Basic");
 
 RichlistForm::RichlistForm()
 {
@@ -13,39 +13,40 @@ RichlistForm::~RichlistForm()
 {
 }
 
-std::wstring RichlistForm::GetSkinFolder()
+CUiString RichlistForm::GetSkinFolder()
 {
-	return L"richlist";
+	return _T("richlist");
 }
 
-std::wstring RichlistForm::GetSkinFile()
+CUiString RichlistForm::GetSkinFile()
 {
-	return L"richlist.xml";
+	return _T("richlist.xml");
 }
 
-std::wstring RichlistForm::GetWindowClassName() const
+CUiString RichlistForm::GetWindowClassName() const
 {
 	return kClassName;
 }
 
 void RichlistForm::InitWindow()
 {
-	list_ = dynamic_cast<ui::ListBox*>(FindControl(L"list"));
+	list_ = dynamic_cast<ui::ListBox*>(FindControl(_T("list")));
 
 	for (auto i = 0; i < 100; i++)
 	{
 		Item* item = new Item;
-		ui::GlobalManager::FillBoxWithCache(item, L"richlist/item.xml");
+		ui::GlobalManager::FillBoxWithCache(item, _T("richlist/item.xml"));
 
-		std::wstring img = L"icon.png";
-		std::wstring title = nbase::StringPrintf(L"下载任务 [%02d]", i + 1);
+		CUiString img = _T("icon.png");
+		CUiString title;
+		title.Format(_T("下载任务 [%02d]"), i + 1);
 
 		item->InitSubControls(img, title);
 		list_->Add(item);
 	}
 
 	// 监听列表中点击选择子项的事件
-	list_->AttachSelect(nbase::Bind(&RichlistForm::OnSelected, this, std::placeholders::_1));
+	list_->AttachSelect(ui::Bind(&RichlistForm::OnSelected, this, std::placeholders::_1));
 }
 
 
@@ -55,8 +56,9 @@ bool RichlistForm::OnSelected(ui::EventArgs* args)
 	int old = args->lParam;
 
 
-	auto message = nbase::StringPrintf(L"您选择了索引为 %d 的子项，上一次选择子项索引为 %d", current, old);
-	nim_comp::ShowMsgBox(GetHWND(), nim_comp::MsgboxCallback(), message, false, L"提示", false);
+	CUiString message;
+	message.Format(_T("您选择了索引为 %d 的子项，上一次选择子项索引为 %d"), current, old);
+	MessageBox(GetHWND(), message, _T("提示"), MB_OK);
 
 	return true;
 }

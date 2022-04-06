@@ -1,9 +1,10 @@
 #pragma once
+using ui::CUiString;
 
 class LayoutsForm : public ui::WindowImplBase
 {
 public:
-	LayoutsForm(const std::wstring& class_name, const std::wstring& theme_directory, const std::wstring& layout_xml);
+	LayoutsForm(const CUiString& class_name, const CUiString& theme_directory, const CUiString& layout_xml);
 	~LayoutsForm();
 
 	/**
@@ -12,9 +13,9 @@ public:
 	 * GetSkinFile			接口设置你要绘制的窗口的 xml 描述文件
 	 * GetWindowClassName	接口设置窗口唯一的类名称
 	 */
-	virtual std::wstring GetSkinFolder() override;
-	virtual std::wstring GetSkinFile() override;
-	virtual std::wstring GetWindowClassName() const override;
+	virtual CUiString GetSkinFolder() override;
+	virtual CUiString GetSkinFile() override;
+	virtual CUiString GetWindowClassName() const override;
 
 	/**
 	 * 收到 WM_CREATE 消息时该函数会被调用，通常做一些控件初始化的操作
@@ -28,11 +29,11 @@ public:
 
 
 public:
-	static void ShowCustomWindow(const std::wstring& class_name, const std::wstring& theme_directory, const std::wstring& layout_xml);
+	static void ShowCustomWindow(const CUiString& class_name, const CUiString& theme_directory, const CUiString& layout_xml);
 
 private:
-	std::wstring class_name_;
-	std::wstring theme_directory_;
-	std::wstring layout_xml_;
+	CUiString class_name_;
+	CUiString theme_directory_;
+	CUiString layout_xml_;
 };
 

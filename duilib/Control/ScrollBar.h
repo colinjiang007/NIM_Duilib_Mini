@@ -260,7 +260,7 @@ protected:
 	StateImage m_button2StateImage;
 	StateImage m_thumbStateImage;
 	StateImage m_railStateImage;
-	nbase::WeakCallbackFlag m_weakFlagOwner;
+	ui::WeakCallbackFlag m_weakFlagOwner;
 };
 
 }

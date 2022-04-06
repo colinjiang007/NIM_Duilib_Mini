@@ -2,8 +2,8 @@
 
 typedef std::function<void(int nStartIndex, int nEndIndex)> DataChangedNotify;
 typedef std::function<void()> CountChangedNotify;
-
-class UILIB_API VirtualTileInterface: public nbase::SupportWeakCallback
+using ui::CUiString;
+class UILIB_API VirtualTileInterface: public ui::SupportWeakCallback
 {
 public:
 	VirtualTileInterface();
@@ -42,9 +42,9 @@ class UILIB_API VirtualTileLayout : public ui::TileLayout
 {
 public:
 	VirtualTileLayout();
-	virtual ui::CSize ArrangeChild(const std::vector<ui::Control*>& items, ui::UiRect rc) override;
-	virtual ui::CSize AjustSizeByChild(const std::vector<ui::Control*>& items, ui::CSize szAvailable) override;
-	virtual bool SetAttribute(const std::wstring& strName, const std::wstring& strValue) override;
+	virtual ui::CUiSize ArrangeChild(const std::vector<ui::Control*>& items, ui::CUiRect rc) override;
+	virtual ui::CUiSize AjustSizeByChild(const std::vector<ui::Control*>& items, ui::CUiSize szAvailable) override;
+	virtual bool SetAttribute(const CUiString& strName, const CUiString& strValue) override;
 	virtual int GetElementsHeight(int nCount);
 	virtual void LazyArrangeChild();
 	virtual int AjustMaxItem();
@@ -104,9 +104,9 @@ public:
 
 protected:
 	/// 重写父类接口，提供个性化功能
-	virtual void SetScrollPos(ui::CSize szPos) override;
+	virtual void SetScrollPos(ui::CUiSize szPos) override;
 	virtual void HandleMessage(ui::EventArgs& event) override;
-	virtual void SetPos(ui::UiRect rc) override;
+	virtual void SetPos(ui::CUiRect rc) override;
 
 	/**
 	* @brief 重新布局子项

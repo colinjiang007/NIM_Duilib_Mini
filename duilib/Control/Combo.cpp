@@ -148,7 +148,7 @@ Combo::Combo() :
 	m_pLayout->SetAutoDestroy(false);
 	m_pLayout->EnableScrollBar();
 	m_pLayout->ApplyAttributeList(GetDropBoxAttributeList());
-	m_pLayout->AttachSelect(nbase::Bind(&Combo::OnSelectItem, this, std::placeholders::_1));
+	m_pLayout->AttachSelect(ui::Bind(&Combo::OnSelectItem, this, std::placeholders::_1));
 }
 
 bool Combo::Add(Control* pControl)

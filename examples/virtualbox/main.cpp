@@ -6,14 +6,10 @@
 #include "main_form.h"
 #include "VirtualTileBox.h"
 
-enum ThreadId
-{
-	kThreadUI
-};
 
-ui::Control* MyCreateControlCallback(const std::wstring& sName)
+ui::Control* MyCreateControlCallback(const ui::CUiString& sName)
 {
-	if (sName == L"VirtualTileBox")
+	if (sName == _T("VirtualTileBox"))
 	{
 		return new VirtualTileBox();
 	}
@@ -28,33 +24,21 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	// 创建主线程
-	MainThread thread;
 
-	// 执行主线程循环
-	thread.RunOnCurrentThreadWithLoop(nbase::MessageLoop::kUIMessageLoop);
+	// 获取资源路径，初始化全局参数
+	ui::CUiString theme_dir = ui::PathUtil::GetCurrentModuleDir();
+	ui::GlobalManager::Startup(theme_dir + _T("resources\\"), MyCreateControlCallback, false);
+
+	// 创建一个默认带有阴影的居中窗口
+	MainForm* window = new MainForm();
+	window->Create(NULL, MainForm::kClassName, WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX, 0);
+	window->CenterWindow();
+	window->ShowModal();
+	ui::GlobalManager::Shutdown();
 
 	return 0;
 }
 
-void MainThread::Init()
-{
-	nbase::ThreadManager::RegisterThread(kThreadUI);
 
-	// 获取资源路径，初始化全局参数
-	std::wstring theme_dir = nbase::win32::GetCurrentModuleDirectory();
-	ui::GlobalManager::Startup(theme_dir + L"resources\\", MyCreateControlCallback, false);
 
-	// 创建一个默认带有阴影的居中窗口
-	MainForm* window = new MainForm();
-	window->Create(NULL, MainForm::kClassName.c_str(), WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX, 0);
-	window->CenterWindow();
-	window->ShowWindow();
-}
 
-void MainThread::Cleanup()
-{
-	ui::GlobalManager::Shutdown();
-	SetThreadWasQuitProperly(true);
-	nbase::ThreadManager::UnregisterThread();
-}

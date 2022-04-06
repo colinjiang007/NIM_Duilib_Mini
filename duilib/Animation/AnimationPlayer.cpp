@@ -84,7 +84,7 @@ void AnimationPlayerBase::StartTimer()
 	}
 
 	Play();
-	auto playCallback = nbase::Bind(&AnimationPlayerBase::Play, this);
+	auto playCallback = ui::Bind(&AnimationPlayerBase::Play, this);
 	TimerManager::GetInstance()->AddCancelableTimer(m_weakFlagOwner.GetWeakFlag(), playCallback, m_elapseMillSeconds, TimerManager::REPEAT_FOREVER);
 }
 

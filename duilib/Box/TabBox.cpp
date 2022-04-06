@@ -172,7 +172,7 @@ bool TabBox::SelectItem(int iIndex)
 					player->SetStartValue(startValue);
 					player->SetEndValue(endValue);
 					player->SetSpeedUpfactorA(0.015);
-					CompleteCallback compelteCallback = nbase::Bind(&TabBox::HideTabItem, this, it);
+					CompleteCallback compelteCallback = ui::Bind(&TabBox::HideTabItem, this, it);
 					player->SetCompleteCallback(compelteCallback);
 					player->Start();
 				}

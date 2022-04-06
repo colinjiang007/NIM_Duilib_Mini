@@ -1,4 +1,5 @@
 #pragma once
+using ui::CUiString;
 
 class RichlistForm : public ui::WindowImplBase
 {
@@ -12,9 +13,9 @@ public:
 	 * GetSkinFile			接口设置你要绘制的窗口的 xml 描述文件
 	 * GetWindowClassName	接口设置窗口唯一的类名称
 	 */
-	virtual std::wstring GetSkinFolder() override;
-	virtual std::wstring GetSkinFile() override;
-	virtual std::wstring GetWindowClassName() const override;
+	virtual CUiString GetSkinFolder() override;
+	virtual CUiString GetSkinFile() override;
+	virtual CUiString GetWindowClassName() const override;
 
 	/**
 	 * 收到 WM_CREATE 消息时该函数会被调用，通常做一些控件初始化的操作
@@ -26,7 +27,7 @@ public:
 	 */
 	virtual LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
-	static const std::wstring kClassName;
+	static const CUiString kClassName;
 
 private:
 	bool OnSelected(ui::EventArgs* args);

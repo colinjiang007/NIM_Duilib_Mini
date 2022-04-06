@@ -979,8 +979,8 @@ protected:
 	CUiString m_sText;
 	CUiString m_sPromptText;
 	CUiString m_sPromptTextId;
-	nbase::WeakCallbackFlag m_drawCaretFlag;
-	std::weak_ptr<nbase::WeakFlag> m_windowFlag; //记录所属窗体的flag
+	ui::WeakCallbackFlag m_drawCaretFlag;
+	std::weak_ptr<ui::WeakFlag> m_windowFlag; //记录所属窗体的flag
 	FunGetNaturalSize m_cbGetNaturalSize;
 
 protected:
@@ -989,7 +989,7 @@ protected:
 		CHARRANGE cr;
 		CUiString info;
 	};
-	std::map<UINT, nbase::WeakCallbackFlag> m_timeFlagMap;
+	std::map<UINT, ui::WeakCallbackFlag> m_timeFlagMap;
 	std::vector<LinkInfo> m_linkInfo;
 	Image m_sFocusedImage;
 };

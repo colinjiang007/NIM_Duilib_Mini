@@ -2,11 +2,12 @@
 
 #include "VirtualTileBox.h"
 #include <map>
+#include <mutex>
 
 struct DownloadTask
 {
 	int nId;
-	std::wstring sName;
+	CUiString sName;
 };
 
 class Provider : public VirtualTileInterface
@@ -34,11 +35,11 @@ public:
 public:
 	void SetTotal(int nTotal);
 	void RemoveTask(int nIndex);
-	void ChangeTaskName(int nIndex, const std::wstring& sName);
+	void ChangeTaskName(int nIndex, const CUiString& sName);
 
 private:
 	int m_nTotal;
 	std::vector<DownloadTask> m_vTasks;
-	nbase::NLock  lock_;
+	std::mutex  lock_;
 };
 

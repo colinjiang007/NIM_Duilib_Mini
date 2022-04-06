@@ -544,7 +544,7 @@ void WindowBuilder::AttachXmlEvent(bool bBubbled, CMarkupNode& node, Control* pP
 	for (auto itType = typeList.begin(); itType != typeList.end(); itType++) {
 		for (auto itReceiver = receiverList.begin(); itReceiver != receiverList.end(); itReceiver++) {
 			EventType eventType = StringToEnum(*itType);
-			auto callback = nbase::Bind(&Control::OnApplyAttributeList, pParent, *itReceiver, strApplyAttribute, std::placeholders::_1);
+			auto callback = ui::Bind(&Control::OnApplyAttributeList, pParent, *itReceiver, strApplyAttribute, std::placeholders::_1);
 			if (bBubbled == false) {
 				pParent->AttachXmlEvent(eventType, callback);
 			}

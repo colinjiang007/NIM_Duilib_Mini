@@ -258,7 +258,7 @@ void Box::HandleMessageTemplate(EventArgs& msg)
 	}
 
 	bool bRet = true;
-	std::weak_ptr<nbase::WeakFlag> weakflag = GetWeakFlag();
+	std::weak_ptr<ui::WeakFlag> weakflag = GetWeakFlag();
 	if (this == msg.pSender) {
 		auto callback = OnEvent.find(msg.Type);
 		if (callback != OnEvent.end()) {
@@ -1218,7 +1218,7 @@ void ScrollableBox::LineUp(int deltaValue, bool withAnimation)
 		m_scrollAnimation.SetSpeedDownfactorA(-0.012);
 		m_scrollAnimation.SetSpeedDownRatio(0.5);
 		m_scrollAnimation.SetTotalMillSeconds(DUI_NOSET_VALUE);
-		m_scrollAnimation.SetCallback(nbase::Bind(&ScrollableBox::SetScrollPosY, this, std::placeholders::_1));
+		m_scrollAnimation.SetCallback(ui::Bind(&ScrollableBox::SetScrollPosY, this, std::placeholders::_1));
 		m_scrollAnimation.Start();
 	}
 }
@@ -1263,7 +1263,7 @@ void ScrollableBox::LineDown(int deltaValue, bool withAnimation)
 		m_scrollAnimation.SetSpeedDownfactorA(-0.012);
 		m_scrollAnimation.SetSpeedDownRatio(0.5);
 		m_scrollAnimation.SetTotalMillSeconds(DUI_NOSET_VALUE);
-		m_scrollAnimation.SetCallback(nbase::Bind(&ScrollableBox::SetScrollPosY, this, std::placeholders::_1));
+		m_scrollAnimation.SetCallback(ui::Bind(&ScrollableBox::SetScrollPosY, this, std::placeholders::_1));
 		m_scrollAnimation.Start();
 	}
 }
@@ -1303,7 +1303,7 @@ void ScrollableBox::LineLeft(int detaValue)
     m_scrollAnimation.SetSpeedDownfactorA(-0.012);
     m_scrollAnimation.SetSpeedDownRatio(0.5);
     m_scrollAnimation.SetTotalMillSeconds(DUI_NOSET_VALUE);
-    m_scrollAnimation.SetCallback(nbase::Bind(&ScrollableBox::SetScrollPosX, this, std::placeholders::_1));
+    m_scrollAnimation.SetCallback(ui::Bind(&ScrollableBox::SetScrollPosX, this, std::placeholders::_1));
     m_scrollAnimation.Start();*/
 
 }
@@ -1344,7 +1344,7 @@ void ScrollableBox::LineRight(int detaValue)
     //m_scrollAnimation.SetSpeedDownfactorA(-0.012);
     //m_scrollAnimation.SetSpeedDownRatio(0.5);
     //m_scrollAnimation.SetTotalMillSeconds(DUI_NOSET_VALUE);
-    //m_scrollAnimation.SetCallback(nbase::Bind(&ScrollableBox::SetScrollPosX, this, std::placeholders::_1));
+    //m_scrollAnimation.SetCallback(ui::Bind(&ScrollableBox::SetScrollPosX, this, std::placeholders::_1));
     //m_scrollAnimation.Start();
 }
 void ScrollableBox::PageUp()
@@ -1623,7 +1623,7 @@ void ScrollableBox::PlayRenderOffsetYAnimation(int nRenderY)
 	m_renderOffsetYAnimation.SetSpeedDownRatio(0.7);
 	m_renderOffsetYAnimation.SetTotalMillSeconds(DUI_NOSET_VALUE);
 	m_renderOffsetYAnimation.SetMaxTotalMillSeconds(650);
-	std::function<void(int)> playCallback = nbase::Bind(&ScrollableBox::SetRenderOffsetY, this, std::placeholders::_1);
+	std::function<void(int)> playCallback = ui::Bind(&ScrollableBox::SetRenderOffsetY, this, std::placeholders::_1);
 	m_renderOffsetYAnimation.SetCallback(playCallback);
 	m_renderOffsetYAnimation.Start();
 }

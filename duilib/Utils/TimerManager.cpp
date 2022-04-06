@@ -46,7 +46,7 @@ void TimerManager::TimeCallback(UINT uTimerID, UINT uMsg, DWORD_PTR dwUser, DWOR
 	::PostMessage(m_hMessageWnd, WM_USER_DEFINED_TIMER, 0, 0);
 }
 
-bool TimerManager::AddCancelableTimer(const std::weak_ptr<nbase::WeakFlag>& weakFlag, const TIMERINFO::TimerCallback& callback, UINT uElapse, int iRepeatTime)
+bool TimerManager::AddCancelableTimer(const std::weak_ptr<ui::WeakFlag>& weakFlag, const TIMERINFO::TimerCallback& callback, UINT uElapse, int iRepeatTime)
 {
 	ASSERT(uElapse > 0);
 

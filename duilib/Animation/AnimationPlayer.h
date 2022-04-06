@@ -9,7 +9,7 @@ namespace ui
 typedef std::function<void (int)> PlayCallback;
 typedef std::function<void (void)> CompleteCallback;
 
-class UILIB_API AnimationPlayerBase : public nbase::SupportWeakCallback
+class UILIB_API AnimationPlayerBase : public ui::SupportWeakCallback
 {
 public:
 	AnimationPlayerBase();
@@ -64,7 +64,7 @@ protected:
 	LARGE_INTEGER m_currentTime;
 	LARGE_INTEGER m_timeFrequency;
 	
-	nbase::WeakCallbackFlag m_weakFlagOwner;
+	ui::WeakCallbackFlag m_weakFlagOwner;
 };
 
 

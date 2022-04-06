@@ -24,7 +24,7 @@ struct TIMERINFO
 	LONGLONG uPause;	//定时器间隔
 	int iRepeatTime;	//重复次数
 	LARGE_INTEGER dwTimeEnd;	//定时器结束时间（单位1ms）
-	std::weak_ptr<nbase::WeakFlag> weakFlag;	//重复次数	
+	std::weak_ptr<ui::WeakFlag> weakFlag;	//重复次数	
 };
 
 class TimerManager
@@ -34,7 +34,7 @@ public:
 
 	static TimerManager* GetInstance();
 
-	bool AddCancelableTimer(const std::weak_ptr<nbase::WeakFlag>& weakFlag, const TIMERINFO::TimerCallback& callback, UINT uElapse, int iRepeatTime);
+	bool AddCancelableTimer(const std::weak_ptr<ui::WeakFlag>& weakFlag, const TIMERINFO::TimerCallback& callback, UINT uElapse, int iRepeatTime);
 
 private:
 	TimerManager();

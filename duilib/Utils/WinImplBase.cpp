@@ -293,7 +293,7 @@ LRESULT WindowImplBase::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	WindowBuilder builder;
 	CUiString strSkinFile = GetWindowResourcePath() + GetSkinFile();
 
-	auto callback = nbase::Bind(&WindowImplBase::CreateControl, this, std::placeholders::_1);
+	auto callback = ui::Bind(&WindowImplBase::CreateControl, this, std::placeholders::_1);
 	auto pRoot = (Box*)builder.Create(strSkinFile.GetData(), callback, this);
 
 	ASSERT(pRoot && _T("Faield to load xml file."));
@@ -323,28 +323,28 @@ LRESULT WindowImplBase::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	if (pControl) {
 		Button *pCloseBtn = dynamic_cast<Button*>(pControl);
 		ASSERT(pCloseBtn);
-		pCloseBtn->AttachClick(nbase::Bind(&WindowImplBase::OnButtonClick, this, std::placeholders::_1));
+		pCloseBtn->AttachClick(ui::Bind(&WindowImplBase::OnButtonClick, this, std::placeholders::_1));
 	}
 
 	pControl = (Control*)FindControl(_T("minbtn"));
 	if (pControl)	{
 		Button* pMinBtn = dynamic_cast<Button*>(pControl);
 		ASSERT(pMinBtn);
-		pMinBtn->AttachClick(nbase::Bind(&WindowImplBase::OnButtonClick, this, std::placeholders::_1));
+		pMinBtn->AttachClick(ui::Bind(&WindowImplBase::OnButtonClick, this, std::placeholders::_1));
 	}
 
 	pControl = (Control*)FindControl(_T("maxbtn"));
 	if (pControl)	{
 		Button* pMaxBtn = dynamic_cast<Button*>(pControl);
 		ASSERT(pMaxBtn);
-		pMaxBtn->AttachClick(nbase::Bind(&WindowImplBase::OnButtonClick, this, std::placeholders::_1));
+		pMaxBtn->AttachClick(ui::Bind(&WindowImplBase::OnButtonClick, this, std::placeholders::_1));
 	}
 
 	pControl = (Control*)FindControl(_T("restorebtn"));
 	if (pControl)	{
 		Button* pRestoreBtn = dynamic_cast<Button*>(pControl);
 		ASSERT(pRestoreBtn);
-		pRestoreBtn->AttachClick(nbase::Bind(&WindowImplBase::OnButtonClick, this, std::placeholders::_1));
+		pRestoreBtn->AttachClick(ui::Bind(&WindowImplBase::OnButtonClick, this, std::placeholders::_1));
 	}
 
 	return 0;

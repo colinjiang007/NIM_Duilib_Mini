@@ -61,7 +61,7 @@ public:
 /////////////////////////////////////////////////////////////////////////////////////
 //
 
-class UILIB_API Window : public virtual nbase::SupportWeakCallback
+class UILIB_API Window : public virtual ui::SupportWeakCallback
 {
 public:
     Window();
@@ -949,7 +949,7 @@ protected:
 	std::vector<Control*> m_aFoundControls;
 	std::map<CUiString, Control*> m_mNameHash;
 
-	nbase::WeakCallbackFlag m_closeFlag;
+	ui::WeakCallbackFlag m_closeFlag;
 	
 	Shadow m_shadow;
 

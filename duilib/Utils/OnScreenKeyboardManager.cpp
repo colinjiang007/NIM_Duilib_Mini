@@ -44,7 +44,7 @@ void OnScreenKeyboardManager::ShowOSK(bool show)
 	static bool bNeedOsk = IsWindows8OrGreater();
 	if (bNeedOsk) {
 		m_bShow = show;
-		auto callback = nbase::Bind(&OnScreenKeyboardManager::TimerCallback, this);
+		auto callback = ui::Bind(&OnScreenKeyboardManager::TimerCallback, this);
 		TimerManager::GetInstance()->AddCancelableTimer(this->GetWeakFlag(), callback, 10, 1);
 	}
 }

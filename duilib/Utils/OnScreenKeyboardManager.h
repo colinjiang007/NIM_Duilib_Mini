@@ -11,7 +11,7 @@ namespace ui
   * @author Redrain
   * @date 2018/08/28
   */
-class UILIB_API OnScreenKeyboardManager : public virtual nbase::SupportWeakCallback
+class UILIB_API OnScreenKeyboardManager : public virtual ui::SupportWeakCallback
 {
 public:
 	static OnScreenKeyboardManager* GetInstance();

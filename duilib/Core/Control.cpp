@@ -730,7 +730,7 @@ void Control::HandleMessageTemplate(EventArgs& msg)
 	bool bRet = true;
 
 	if (this == msg.pSender) {
-		std::weak_ptr<nbase::WeakFlag> weakflag = GetWeakFlag();
+		std::weak_ptr<ui::WeakFlag> weakflag = GetWeakFlag();
 		auto callback = OnEvent.find(msg.Type);
 		if (callback != OnEvent.end()) {
 			bRet = callback->second(&msg);
@@ -1542,7 +1542,7 @@ void Control::GifPlay()
 		if (lPause == 0)
 			return;
 		m_bkImage.SetPlaying(true);
-		auto gifPlayCallback = nbase::Bind(&Control::GifPlay, this);
+		auto gifPlayCallback = ui::Bind(&Control::GifPlay, this);
 		TimerManager::GetInstance()->AddCancelableTimer(m_gifWeakFlag.GetWeakFlag(), gifPlayCallback,
 			lPause, TimerManager::REPEAT_FOREVER);
 	}
@@ -1564,7 +1564,7 @@ void Control::GifPlay()
 
 			if (lPrePause != lPause) {
 				m_gifWeakFlag.Cancel();
-				auto gifPlayCallback = nbase::Bind(&Control::GifPlay, this);
+				auto gifPlayCallback = ui::Bind(&Control::GifPlay, this);
 				TimerManager::GetInstance()->AddCancelableTimer(m_gifWeakFlag.GetWeakFlag(), gifPlayCallback,
 					lPause, TimerManager::REPEAT_FOREVER);
 			}
@@ -1610,7 +1610,7 @@ void Control::StartGifPlayForUI(GifStopType frame, int playcount)
 		m_bkImage.SetPlaying(true);
 		m_bkImage.imageAttribute.nPlayCount = playcount;
 		m_bkImage.ClearCycledCount();
-		auto gifPlayCallback = nbase::Bind(&Control::GifPlay, this);
+		auto gifPlayCallback = ui::Bind(&Control::GifPlay, this);
 		TimerManager::GetInstance()->AddCancelableTimer(m_gifWeakFlag.GetWeakFlag(), gifPlayCallback,
 			lPause, TimerManager::REPEAT_FOREVER);
 		Invalidate();

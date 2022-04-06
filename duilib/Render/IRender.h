@@ -6,7 +6,7 @@
 namespace ui 
 {
 
-class UILIB_API IClip : public nbase::SupportWeakCallback
+class UILIB_API IClip : public ui::SupportWeakCallback
 {
 public:
 	virtual void CreateClip(HDC hDC, CUiRect rc) = 0;
@@ -15,7 +15,7 @@ public:
 };
 
 class IRenderContext;
-class UILIB_API AutoClip : public nbase::SupportWeakCallback
+class UILIB_API AutoClip : public ui::SupportWeakCallback
 {
 public:
 	AutoClip(IRenderContext* pRender, const CUiRect& rc, bool bClip = true);
@@ -27,7 +27,7 @@ private:
 	bool			m_bClip;
 };
 
-class UILIB_API IBitmap : public nbase::SupportWeakCallback
+class UILIB_API IBitmap : public ui::SupportWeakCallback
 {
 	virtual bool Init(HDC hSrcDC, int width, int height, bool flipBItmap) = 0;
 	virtual void Clear() = 0;
@@ -42,7 +42,7 @@ class UILIB_API IBitmap : public nbase::SupportWeakCallback
 	virtual void RestoreAlpha(const CUiRect& rcDirty, const CUiRect& rcShadowPadding, int alpha) = 0;
 };
 
-class UILIB_API IPen : public nbase::SupportWeakCallback
+class UILIB_API IPen : public ui::SupportWeakCallback
 {
 public:
 	IPen(DWORD color, int width = 1) : color_(color) {};
@@ -96,7 +96,7 @@ protected:
 	DWORD color_ = 0;
 };
 
-class UILIB_API IBrush : public nbase::SupportWeakCallback
+class UILIB_API IBrush : public ui::SupportWeakCallback
 {
 public:
 	IBrush(DWORD color) : color_(color){};
@@ -114,7 +114,7 @@ protected:
 	std::unique_ptr<IBitmap> bitmap_;
 };
 
-class UILIB_API IMatrix : public nbase::SupportWeakCallback
+class UILIB_API IMatrix : public ui::SupportWeakCallback
 {
 public:
 	virtual void Translate(int offsetX, int offsetY) = 0;
@@ -123,7 +123,7 @@ public:
 	virtual void RotateAt(float angle, const CUiPoint& center) = 0;
 };
 
-class UILIB_API IPath : public nbase::SupportWeakCallback
+class UILIB_API IPath : public ui::SupportWeakCallback
 {
 public:
 	IPath(){};
@@ -163,7 +163,7 @@ public:
 	virtual void Transform(const IMatrix* matrix) = 0;
 };
 
-class UILIB_API IRenderContext : public nbase::SupportWeakCallback
+class UILIB_API IRenderContext : public ui::SupportWeakCallback
 {
 public:
 	virtual HDC GetDC() = 0;

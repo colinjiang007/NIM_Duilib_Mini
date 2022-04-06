@@ -1966,7 +1966,7 @@ void Window::OnInitLayout()
 	if (m_pRoot && IsWindowsVistaOrGreater()) {
 		AnimationPlayer* animationArgs = m_pRoot->GetAnimationManager().SetFadeAlpha(true);
 		m_nAlpha = 0;
-		std::function<void(int)> playCallback = nbase::Bind(&Window::SetAlpha, this, std::placeholders::_1);
+		std::function<void(int)> playCallback = ui::Bind(&Window::SetAlpha, this, std::placeholders::_1);
 		animationArgs->SetCallback(playCallback);
 		m_pRoot->SetVisible(true);
 	}
@@ -1989,7 +1989,7 @@ void Window::OnInitLayout()
 	//	fadeInoutXPlayer = m_pRoot->GetAnimationManager().SetFadeInOutX(true, true);
 	//}
 	//if (fadeInoutXPlayer) {
-	//	std::function<void(int)> playCallback = nbase::Bind(&Window::SetRenderOffsetX, this, std::placeholders::_1);
+	//	std::function<void(int)> playCallback = ui::Bind(&Window::SetRenderOffsetX, this, std::placeholders::_1);
 	//	fadeInoutXPlayer->SetCallback(playCallback);
 	//	fadeInoutXPlayer->SetMaxTotalMillSeconds(250);
 	//	m_pRoot->SetVisible(true);

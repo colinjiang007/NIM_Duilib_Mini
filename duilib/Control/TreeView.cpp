@@ -82,7 +82,7 @@ bool TreeNode::AddChildNodeAt(TreeNode* pTreeNode, std::size_t iIndex)
 	pTreeNode->SetParentNode(this);
 	pTreeNode->SetTreeView(m_pTreeView);
 	if( m_pWindow != NULL ) m_pWindow->InitControls(pTreeNode, NULL);
-	pTreeNode->OnEvent[kEventClick] += nbase::Bind(&TreeNode::OnClickItem, this, std::placeholders::_1);
+	pTreeNode->OnEvent[kEventClick] += ui::Bind(&TreeNode::OnClickItem, this, std::placeholders::_1);
 
 	CUiRect padding = m_pLayout->GetPadding();
 	int nodeIndex = -1;
