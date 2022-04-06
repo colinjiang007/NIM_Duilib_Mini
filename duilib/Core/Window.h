@@ -144,7 +144,19 @@ public:
 	virtual void ShowWindow(bool bShow = true, bool bTakeFocus = true);
 	
 	/**
-	 * @brief 显示模态对话框（推荐）
+	* @brief 显示模态对话框（推荐）
+	* @return 最后一个消息的wParam
+	*/
+	UINT ShowModal();
+
+	/**
+	* @brief 标准windows循环消息派送（推荐）
+	* @return 最后一个消息的wParam
+	*/
+	UINT DispatchMessageLoop();
+
+	/**
+	 * @brief 显示模态对话框(抛弃)
 	 * @param[in] parent_hwnd 父窗口句柄
 	 * @return 无
 	 */

@@ -37,14 +37,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	BasicForm* window = new BasicForm();
 	window->Create(NULL, BasicForm::kClassName, WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX, 0);
 	window->CenterWindow();
-	window->ShowWindow();
+	window->ShowModal();
 
-	MSG msg;
-	while (GetMessage(&msg, NULL, 0, 0))
-	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-	}
+	//window->ShowWindow();
+	//window->DispatchMessageLoop();
 
 	ui::GlobalManager::Shutdown();
 

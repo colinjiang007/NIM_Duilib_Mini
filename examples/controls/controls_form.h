@@ -1,11 +1,6 @@
 #pragma once
-
-enum ThreadId
-{
-	kThreadUI,
-	kThreadGlobalMisc
-};
-
+using ui::CUiString;
+#define WM_ID_INTERVAL_TIMER 107
 class ControlForm : public ui::WindowImplBase
 {
 public:
@@ -18,9 +13,9 @@ public:
 	 * GetSkinFile			接口设置你要绘制的窗口的 xml 描述文件
 	 * GetWindowClassName	接口设置窗口唯一的类名称
 	 */
-	virtual std::wstring GetSkinFolder() override;
-	virtual std::wstring GetSkinFile() override;
-	virtual std::wstring GetWindowClassName() const override;
+	virtual CUiString GetSkinFolder() override;
+	virtual CUiString GetSkinFile() override;
+	virtual CUiString GetWindowClassName() const override;
 
 	/**
 	 * 收到 WM_CREATE 消息时该函数会被调用，通常做一些控件初始化的操作
@@ -35,17 +30,21 @@ public:
 	/**
 	 * 标识窗口 class name
 	 */
-	static const std::wstring kClassName;
-
+	static const CUiString kClassName;
+protected:
+	LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 private:
 	/**
 	 * 用于在杂事线程读取 xml 完成后更新 UI 内容的接口
 	 */
-	void OnLoadedResourceFile(const std::wstring& xml);
+	void OnLoadedResourceFile(const CUiString& xml);
 
 	/**
 	 * 动态更新进度条接口
 	 */
 	void OnProgressValueChagned(float value);
+
+	std::string ReadFile2String(LPCTSTR sz_path);
+
 };
 

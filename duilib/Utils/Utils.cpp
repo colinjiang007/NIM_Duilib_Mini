@@ -20,7 +20,7 @@ namespace ui
 
 	CUiString::CUiString(LPCTSTR lpsz, int nLen) : m_pstr(m_szBuffer)
 	{
-		ASSERT(!::IsBadStringPtr(lpsz, -1) || lpsz == NULL);
+		ASSERT(!::IsBadStringPtr(lpsz, (UINT_PTR)-1) || lpsz == NULL);
 		m_szBuffer[0] = _T('\0');
 		Assign(lpsz, nLen);
 	}
@@ -146,7 +146,7 @@ namespace ui
 	{
 		if (lpStr)
 		{
-			ASSERT(!::IsBadStringPtr(lpStr, -1));
+			ASSERT(!::IsBadStringPtr(lpStr, (UINT_PTR)-1));
 			Assign(lpStr);
 		}
 		else
@@ -162,7 +162,7 @@ namespace ui
 	{
 		if (lpStr)
 		{
-			ASSERT(!::IsBadStringPtrA(lpStr, -1));
+			ASSERT(!::IsBadStringPtrA(lpStr, (UINT_PTR)-1));
 			int cchStr = (int)strlen(lpStr) + 1;
 			LPWSTR pwstr = (LPWSTR)malloc(cchStr * 3);
 			if (pwstr != NULL) ::MultiByteToWideChar(::GetACP(), 0, lpStr, -1, pwstr, cchStr);
@@ -180,7 +180,7 @@ namespace ui
 	{
 		if (lpStr)
 		{
-			ASSERT(!::IsBadStringPtrA(lpStr, -1));
+			ASSERT(!::IsBadStringPtrA(lpStr, (UINT_PTR)-1));
 			int cchStr = (int)strlen(lpStr) + 1;
 			LPWSTR pwstr = (LPWSTR)malloc(cchStr * 3);
 			if (pwstr != NULL) ::MultiByteToWideChar(::GetACP(), 0, lpStr, -1, pwstr, cchStr);
@@ -248,7 +248,7 @@ namespace ui
 	{
 		if (lpStr)
 		{
-			ASSERT(!::IsBadStringPtr(lpStr, -1));
+			ASSERT(!::IsBadStringPtr(lpStr, (UINT_PTR)-1));
 			CUiString sTemp = *this;
 			sTemp.Append(lpStr);
 			return sTemp;
@@ -267,7 +267,7 @@ namespace ui
 	{
 		if (lpStr)
 		{
-			ASSERT(!::IsBadStringPtr(lpStr, -1));
+			ASSERT(!::IsBadStringPtr(lpStr, (UINT_PTR)-1));
 			Append(lpStr);
 		}
 
@@ -501,7 +501,7 @@ namespace ui
 
 	int CUiString::Find(LPCTSTR pstrSub, int iPos /*= 0*/) const
 	{
-		ASSERT(!::IsBadStringPtr(pstrSub, -1));
+		ASSERT(!::IsBadStringPtr(pstrSub, (UINT_PTR)-1));
 		ASSERT(iPos >= 0 && iPos <= GetLength());
 		if (iPos != 0 && (iPos < 0 || iPos > GetLength())) return -1;
 		LPCTSTR p = _tcsstr(m_pstr + iPos, pstrSub);

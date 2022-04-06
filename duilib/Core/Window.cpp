@@ -239,6 +239,52 @@ void Window::ShowWindow(bool bShow /*= true*/, bool bTakeFocus /*= false*/)
     ::ShowWindow(m_hWnd, bShow ? (bTakeFocus ? SW_SHOWNORMAL : SW_SHOWNOACTIVATE) : SW_HIDE);
 }
 
+UINT Window::ShowModal()
+{
+	ASSERT(::IsWindow(m_hWnd));
+	UINT nRet = 0;
+	HWND hWndParent = GetWindowOwner(m_hWnd);
+	::ShowWindow(m_hWnd, SW_SHOWNORMAL);
+	::EnableWindow(hWndParent, FALSE);
+	MSG msg = { 0 };
+	while (::IsWindow(m_hWnd) && ::GetMessage(&msg, NULL, 0, 0)) {
+		if (msg.message == WM_CLOSE && msg.hwnd == m_hWnd) {
+			nRet = msg.wParam;
+			::EnableWindow(hWndParent, TRUE);
+			::SetFocus(hWndParent);
+		}
+		//if (!CPaintManagerUI::TranslateMessage(&msg)) {
+		::TranslateMessage(&msg);
+		::DispatchMessage(&msg);
+		//}
+		if (msg.message == WM_QUIT) break;
+	}
+	::EnableWindow(hWndParent, TRUE);
+	::SetFocus(hWndParent);
+	if (msg.message == WM_QUIT) ::PostQuitMessage(msg.wParam);
+	return nRet;
+}
+
+UINT Window::DispatchMessageLoop()
+{
+	//todo
+	//HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_WINDOWSPROJECT1));
+
+	MSG msg;
+
+	// 主消息循环:
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		//if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+		//{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		//}
+	}
+
+	return (int)msg.wParam;
+}
+
 void Window::ShowModalFake(HWND parent_hwnd)
 {
 	ASSERT(::IsWindow(m_hWnd));
