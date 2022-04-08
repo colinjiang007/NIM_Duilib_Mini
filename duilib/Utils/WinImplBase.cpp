@@ -39,7 +39,7 @@ CUiString WindowImplBase::GetResourceID() const
 	return _T("");
 }
 
-Control* WindowImplBase::CreateControl(const CUiString& pstrClass)
+Control* WindowImplBase::CreateControl(LPCTSTR pstrClass)
 {
 	return NULL;
 }
@@ -471,7 +471,7 @@ void WindowImplBase::ActiveWindow()
 	}
 }
 
-void WindowImplBase::SetTaskbarTitle(const CUiString &title)
+void WindowImplBase::SetTaskbarTitle(LPCTSTR title)
 {
 	::SetWindowText(m_hWnd, title);
 }

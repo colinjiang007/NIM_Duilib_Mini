@@ -88,8 +88,10 @@ CUiSize Layout::SetFloatPos(Control* pControl, CUiRect rcContainer)
 	return CUiSize(childPos.GetWidth(), childPos.GetHeight());
 }
 
-bool Layout::SetAttribute(const CUiString& strName, const CUiString& strValue)
+bool Layout::SetAttribute(LPCTSTR szName, LPCTSTR szValue)
 {
+	CUiString strName(szName);
+	CUiString strValue(szValue);
 	bool hasAttribute = true;
 	if( strName == _T("padding") ) {
 		CUiRect rcPadding;
@@ -222,13 +224,15 @@ void Box::SetWindow(Window* pManager, Box* pParent, bool bInit)
 	Control::SetWindow(pManager, pParent, bInit);
 }
 
-void Box::SetAttribute(const CUiString& strName, const CUiString& strValue)
+void Box::SetAttribute(LPCTSTR szName, LPCTSTR szValue)
 {
+	CUiString strName(szName);
+	CUiString strValue(szValue);
 	if (m_pLayout->SetAttribute(strName, strValue))	{
 
 	}
 	else if( strName == _T("mousechild") ) SetMouseChildEnabled(strValue == _T("true"));
-	else Control::SetAttribute(strName, strValue);
+	else Control::SetAttribute(szName, szValue);
 }
 
 void Box::SetPos(CUiRect rc)
@@ -487,7 +491,7 @@ Control* Box::FindControl(FINDCONTROLPROC Proc, LPVOID pData, UINT uFlags, CUiPo
 	return pResult;
 }
 
-Control* Box::FindSubControl(const CUiString& pstrSubControlName)
+Control* Box::FindSubControl(LPCTSTR pstrSubControlName)
 {
 	Control* pSubControl = NULL;
 	pSubControl = static_cast<Control*>(GetWindow()->FindSubControlByName(this, pstrSubControlName));
@@ -781,37 +785,39 @@ ScrollableBox::ScrollableBox(const ScrollableBox& r):
 	m_pHorizontalScrollBar->SetOwner(this);
 }
 
-void ScrollableBox::SetAttribute(const CUiString& pstrName, const CUiString& pstrValue)
+void ScrollableBox::SetAttribute(LPCTSTR szName, LPCTSTR szValue)
 {
-	if( pstrName == _T("vscrollbar") ) {
-		EnableScrollBar(pstrValue == _T("true"), GetHorizontalScrollBar() != NULL);
+	CUiString strName(szName);
+	CUiString strValue(szValue);
+	if( strName == _T("vscrollbar") ) {
+		EnableScrollBar(strValue == _T("true"), GetHorizontalScrollBar() != NULL);
 	}
-	else if( pstrName == _T("vscrollbarstyle") ) {
+	else if( strName == _T("vscrollbarstyle") ) {
 		EnableScrollBar(true, GetHorizontalScrollBar() != NULL);
-		if( GetVerticalScrollBar() ) GetVerticalScrollBar()->ApplyAttributeList(pstrValue);
+		if( GetVerticalScrollBar() ) GetVerticalScrollBar()->ApplyAttributeList(strValue);
 	}
-	else if( pstrName == _T("hscrollbar") ) {
-		EnableScrollBar(GetVerticalScrollBar() != NULL, pstrValue == _T("true"));
+	else if( strName == _T("hscrollbar") ) {
+		EnableScrollBar(GetVerticalScrollBar() != NULL, strValue == _T("true"));
 	}
-	else if( pstrName == _T("hscrollbarstyle") ) {
+	else if( strName == _T("hscrollbarstyle") ) {
 		EnableScrollBar(GetVerticalScrollBar() != NULL, true);
-		if( GetHorizontalScrollBar() ) GetHorizontalScrollBar()->ApplyAttributeList(pstrValue);
+		if( GetHorizontalScrollBar() ) GetHorizontalScrollBar()->ApplyAttributeList(strValue);
 	}
-	else if( pstrName == _T("scrollbarpadding") ) {
+	else if( strName == _T("scrollbarpadding") ) {
 		CUiRect rcScrollbarPadding;
 		LPTSTR pstr = NULL;
-		rcScrollbarPadding.left = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
+		rcScrollbarPadding.left = _tcstol(strValue, &pstr, 10);  ASSERT(pstr);    
 		rcScrollbarPadding.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
 		rcScrollbarPadding.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
 		rcScrollbarPadding.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);    
 		SetScrollBarPadding(rcScrollbarPadding);
 	}
-	else if( pstrName == _T("vscrollunit") ) SetVerScrollUnitPixels(_ttoi(pstrValue));
-    else if (pstrName == _T("hscrollunit")) SetHorScrollUnitPixels(_ttoi(pstrValue));
-	else if( pstrName == _T("scrollbarfloat") ) SetScrollBarFloat(pstrValue == _T("true"));
-	else if( pstrName == _T("defaultdisplayscrollbar") ) SetDefaultDisplayScrollbar(pstrValue == _T("true"));
-	else if( pstrName == _T("holdend") ) SetHoldEnd(pstrValue == _T("true"));
-	else Box::SetAttribute(pstrName, pstrValue);
+	else if( strName == _T("vscrollunit") ) SetVerScrollUnitPixels(_ttoi(strValue));
+    else if (strName == _T("hscrollunit")) SetHorScrollUnitPixels(_ttoi(strValue));
+	else if( strName == _T("scrollbarfloat") ) SetScrollBarFloat(strValue == _T("true"));
+	else if( strName == _T("defaultdisplayscrollbar") ) SetDefaultDisplayScrollbar(strValue == _T("true"));
+	else if( strName == _T("holdend") ) SetHoldEnd(strValue == _T("true"));
+	else Box::SetAttribute(szName, szValue);
 }
 
 void ScrollableBox::SetPos(CUiRect rc)

@@ -18,7 +18,7 @@ public:
 	virtual void SetTextId(const CUiString& strTextId);
 	virtual bool HasHotState();
 	virtual CUiSize EstimateText(CUiSize szAvailable, bool& bReEstimateSize) override;
-	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
+	virtual void SetAttribute(LPCTSTR szName, LPCTSTR szValue) override;
 	virtual void PaintText(IRenderContext* pRender) override;
 
 	/**
@@ -253,8 +253,10 @@ CUiSize LabelTemplate<InheritType>::EstimateText(CUiSize szAvailable, bool& bReE
 }
 
 template<typename InheritType>
-void LabelTemplate<InheritType>::SetAttribute(const CUiString& strName, const CUiString& strValue)
+void LabelTemplate<InheritType>::SetAttribute(LPCTSTR szName, LPCTSTR szValue)
 {
+	CUiString strName(szName);
+	CUiString strValue(szValue);
 	if (strName == _T("align")) {
 		if (strValue.Find(_T("left")) != -1) {
 			m_uTextStyle &= ~(DT_CENTER | DT_RIGHT | DT_VCENTER | DT_SINGLELINE);
@@ -303,7 +305,7 @@ void LabelTemplate<InheritType>::SetAttribute(const CUiString& strName, const CU
 		rcTextPadding.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
 		SetTextPadding(rcTextPadding);
 	}
-	else __super::SetAttribute(strName, strValue);
+	else __super::SetAttribute(szName, szValue);
 }
 
 template<typename InheritType>

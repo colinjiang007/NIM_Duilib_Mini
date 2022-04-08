@@ -17,7 +17,7 @@ public:
 	virtual bool Remove(Control* pControl) override;
 	virtual bool RemoveAt(std::size_t iIndex) override;
 	virtual void RemoveAll() override;
-	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
+	virtual void SetAttribute(LPCTSTR szName, LPCTSTR szValue) override;
 
 	/**
 	 * @brief 获取当前选择项
@@ -44,7 +44,7 @@ public:
 	 * @param[in] pControlName 要选择的控件名称
 	 * @return 成功返回 true，否则返回 false
 	 */
-	bool SelectItem(const CUiString& pControlName);
+	bool SelectItem(LPCTSTR pControlName);
 
 	/**
 	 * @brief 设置是否显示动画效果

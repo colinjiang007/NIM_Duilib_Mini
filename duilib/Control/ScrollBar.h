@@ -24,7 +24,7 @@ public:
 	virtual bool MouseLeave(EventArgs& msg) override;
 	virtual void SetPos(CUiRect rc) override;
 	virtual void HandleMessage(EventArgs& event) override;
-	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
+	virtual void SetAttribute(LPCTSTR szName, LPCTSTR szValue) override;
 	virtual void Paint(IRenderContext* pRender, const CUiRect& rcPaint) override;
 	virtual void ClearImageCache() override;
 
@@ -125,7 +125,7 @@ public:
 	 * @param[in] pStrImage 图片位置
 	 * @return 无
 	 */
-	void SetButton1StateImage(ControlStateType stateType, const CUiString& pStrImage);
+	void SetButton1StateImage(ControlStateType stateType, LPCTSTR pStrImage);
 
 	/**
 	 * @brief 是否显示右或下按钮
@@ -153,7 +153,7 @@ public:
 	 * @param[in] pStrImage 图片位置
 	 * @return 无
 	 */
-	void SetButton2StateImage(ControlStateType stateType, const CUiString& pStrImage);
+	void SetButton2StateImage(ControlStateType stateType, LPCTSTR pStrImage);
 
 	/**
 	 * @brief 获取滑块指定状态下的图片
@@ -168,7 +168,7 @@ public:
 	 * @param[in] pStrImage 图片位置
 	 * @return 无
 	 */
-	void SetThumbStateImage(ControlStateType stateType, const CUiString& pStrImage);
+	void SetThumbStateImage(ControlStateType stateType, LPCTSTR pStrImage);
 
 	/**
 	 * @brief 获取指定状态下滑块中间标识图片
@@ -183,7 +183,7 @@ public:
 	 * @param[in] pStrImage 图片位置
 	 * @return 无
 	 */
-	void SetRailStateImage(ControlStateType stateType, const CUiString& pStrImage);
+	void SetRailStateImage(ControlStateType stateType, LPCTSTR pStrImage);
 
 	/**
 	 * @brief 获取指定状态下的背景图片
@@ -198,7 +198,7 @@ public:
 	 * @param[in] pStrImage 图片位置
 	 * @return 无
 	 */
-	void SetBkStateImage(ControlStateType stateType, const CUiString& pStrImage);
+	void SetBkStateImage(ControlStateType stateType, LPCTSTR pStrImage);
 
 	/**
 	 * @brief 是否自动隐藏滚动条

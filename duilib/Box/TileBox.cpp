@@ -138,8 +138,10 @@ CUiSize TileLayout::AjustSizeByChild(const std::vector<Control*>& items, CUiSize
 	return size;
 }
 
-bool TileLayout::SetAttribute(const CUiString& strName, const CUiString& strValue)
+bool TileLayout::SetAttribute(LPCTSTR szName, LPCTSTR szValue)
 {
+	CUiString strName(szName);
+	CUiString strValue(szValue);
 	bool hasAttribute = true;
 	if( strName == _T("itemsize") ) {
 		CUiSize szItem;
@@ -154,7 +156,7 @@ bool TileLayout::SetAttribute(const CUiString& strName, const CUiString& strValu
 	}
 	else 
 	{
-		hasAttribute = Layout::SetAttribute(strName, strValue);
+		hasAttribute = Layout::SetAttribute(szName, szValue);
 	}
 
 	return hasAttribute;

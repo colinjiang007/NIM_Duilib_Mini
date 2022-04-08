@@ -214,18 +214,20 @@ bool TabBox::SelectItem( Control* pControl )
 		return SelectItem(iIndex);
 }
 
-bool TabBox::SelectItem(const CUiString& pControlName)
+bool TabBox::SelectItem(LPCTSTR pControlName)
 {
 	Control* pControl = FindSubControl(pControlName);
 	ASSERT(pControl);
 	return SelectItem(pControl);
 }
 
-void TabBox::SetAttribute(const CUiString& strName, const CUiString& strValue)
+void TabBox::SetAttribute(LPCTSTR szName, LPCTSTR szValue)
 {
+	CUiString strName(szName);
+	CUiString strValue(szValue);
 	if (strName == _T("selectedid")) m_iCurSel = _ttoi(strValue);
 	else if( strName == _T("fadeswitch") ) SetFadeSwitch(strValue == _T("true"));
-	else Box::SetAttribute(strName, strValue);
+	else Box::SetAttribute(szName, szValue);
 }
 
 void TabBox::SetFadeSwitch(bool bFadeSwitch)

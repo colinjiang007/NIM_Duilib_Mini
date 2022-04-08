@@ -505,7 +505,7 @@ CUiString Window::GetWindowResourcePath()
 	return m_strWindowResourcePath;
 }
 
-void Window::SetWindowResourcePath(const CUiString& strPath)
+void Window::SetWindowResourcePath(LPCTSTR strPath)
 {
 	m_strWindowResourcePath = strPath;
 	if (m_strWindowResourcePath.IsEmpty()) return;
@@ -523,10 +523,10 @@ TFontInfo* Window::GetDefaultFontInfo()
 	return &m_defaultFontInfo;
 }
 
-void Window::AddClass(const CUiString& strClassName, const CUiString& strControlAttrList)
+void Window::AddClass(LPCTSTR strClassName, LPCTSTR strControlAttrList)
 {
-	ASSERT(!strClassName.IsEmpty());
-	ASSERT(!strControlAttrList.IsEmpty());
+	ASSERT(!StringHelper::IsEmpty(strClassName));
+	ASSERT(!StringHelper::IsEmpty(strControlAttrList));
 	m_defaultAttrHash[strClassName] = strControlAttrList;
 }
 
@@ -535,7 +535,7 @@ const std::map<CUiString, CUiString>* Window::GetClassMap()
 	return &m_defaultAttrHash;
 }
 
-CUiString Window::GetClassAttributes(const CUiString& strClassName) const
+CUiString Window::GetClassAttributes(LPCTSTR strClassName) const
 {
 	auto it = m_defaultAttrHash.find(strClassName);
 	if (it != m_defaultAttrHash.end())
@@ -546,7 +546,7 @@ CUiString Window::GetClassAttributes(const CUiString& strClassName) const
 	return _T("");
 }
 
-bool Window::RemoveClass(const CUiString& strClassName)
+bool Window::RemoveClass(LPCTSTR strClassName)
 {
 	auto it = m_defaultAttrHash.find(strClassName);
 	if (it != m_defaultAttrHash.end())
@@ -562,7 +562,7 @@ void Window::RemoveAllClass()
 	m_defaultAttrHash.clear();
 }
 
-bool Window::AddOptionGroup(const CUiString& strGroupName, Control* pControl)
+bool Window::AddOptionGroup(LPCTSTR strGroupName, Control* pControl)
 {
 	auto it = m_mOptionGroup.find(strGroupName);
 	if (it != m_mOptionGroup.end()) {
@@ -579,16 +579,16 @@ bool Window::AddOptionGroup(const CUiString& strGroupName, Control* pControl)
 	return true;
 }
 
-std::vector<Control*>* Window::GetOptionGroup(const CUiString& strGroupName)
+std::vector<Control*>* Window::GetOptionGroup(LPCTSTR strGroupName)
 {
 	auto it = m_mOptionGroup.find(strGroupName);
 	if (it != m_mOptionGroup.end()) return &(it->second);
 	return NULL;
 }
 
-void Window::RemoveOptionGroup(const CUiString& strGroupName, Control* pControl)
+void Window::RemoveOptionGroup(LPCTSTR strGroupName, Control* pControl)
 {
-	ASSERT(!strGroupName.IsEmpty());
+	ASSERT(!StringHelper::IsEmpty(strGroupName));
 	ASSERT(pControl);
 	auto it = m_mOptionGroup.find(strGroupName);
 	if (it != m_mOptionGroup.end()) {
@@ -689,7 +689,7 @@ void Window::SetHeightPercent(double heightPercent)
 	m_heightPercent = heightPercent;
 }
 
-void Window::SetTextId(const CUiString& strTextId)
+void Window::SetTextId(LPCTSTR strTextId)
 {
 	::SetWindowText(m_hWnd, MutiLanSupport::GetInstance()->GetStringViaID(strTextId));
 }
@@ -1665,7 +1665,7 @@ Control* Window::FindControl(POINT pt) const
 	return m_pRoot->FindControl(__FindControlFromPoint, &pt, UIFIND_VISIBLE | UIFIND_HITTEST | UIFIND_TOP_FIRST);
 }
 
-Control* Window::FindControl(const CUiString& strName) const
+Control* Window::FindControl(LPCTSTR strName) const
 {
 	ASSERT(m_pRoot);
 	Control* pFindedControl = NULL;
@@ -1684,11 +1684,11 @@ Control* Window::FindSubControlByPoint(Control* pParent, POINT pt) const
 	return pParent->FindControl(__FindControlFromPoint, &pt, UIFIND_VISIBLE | UIFIND_HITTEST | UIFIND_TOP_FIRST);
 }
 
-Control* Window::FindSubControlByName(Control* pParent, const CUiString& strName) const
+Control* Window::FindSubControlByName(Control* pParent, LPCTSTR strName) const
 {
 	if (pParent == NULL) pParent = GetRoot();
 	ASSERT(pParent);
-	return pParent->FindControl(__FindControlFromName, (LPVOID)strName.GetData(), UIFIND_ALL);
+	return pParent->FindControl(__FindControlFromName, (LPVOID)strName, UIFIND_ALL);
 }
 
 Control* Window::FindSubControlByClass(Control* pParent, const type_info& typeinfo, int iIndex)

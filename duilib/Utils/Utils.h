@@ -323,7 +323,7 @@ protected:
 /////////////////////////////////////////////////////////////////////////////////////
 //
 
-class CUiVariant : public VARIANT
+class UILIB_API CUiVariant : public VARIANT
 {
 public:
 	CUiVariant() 
@@ -365,7 +365,7 @@ public:
 	}
 };
 
-class PathUtil
+class UILIB_API PathUtil
 {
 public:
 	static CUiString GetCurrentModuleDir();

@@ -15,7 +15,7 @@ public:
 	/// 重写父类方法，提供个性化功能，请参考父类声明
 	virtual void Activate() override;
 	virtual Image* GetEstimateImage() override;
-	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
+	virtual void SetAttribute(LPCTSTR szName, LPCTSTR szValue) override;
 	virtual void PaintStatusColor(IRenderContext* pRender) override;
 	virtual void PaintStatusImage(IRenderContext* pRender) override;
 	virtual void PaintText(IRenderContext* pRender) override;
@@ -165,8 +165,10 @@ Image* CheckBoxTemplate<InheritType>::GetEstimateImage()
 }
 
 template<typename InheritType>
-void CheckBoxTemplate<InheritType>::SetAttribute(const CUiString& strName, const CUiString& strValue)
+void CheckBoxTemplate<InheritType>::SetAttribute(LPCTSTR szName, LPCTSTR szValue)
 {
+	CUiString strName(szName);
+	CUiString strValue(szValue);
 	if (strName == _T("selected")) Selected(strValue == _T("true"), true);
 	else if (strName == _T("selectednormalimage")) SetSelectedStateImage(kControlStateNormal, strValue);
 	else if (strName == _T("selectedhotimage")) SetSelectedStateImage(kControlStateHot, strValue);
@@ -181,7 +183,7 @@ void CheckBoxTemplate<InheritType>::SetAttribute(const CUiString& strName, const
 	else if (strName == _T("selectedforehotimage")) SetSelectedForeStateImage(kControlStateHot, strValue);
 	else if (strName == _T("selectedforepushedimage")) SetSelectedForeStateImage(kControlStatePushed, strValue);
 	else if (strName == _T("selectedforedisabledimage")) SetSelectedForeStateImage(kControlStateDisabled, strValue);
-	else __super::SetAttribute(strName, strValue);
+	else __super::SetAttribute(szName, szValue);
 }
 
 template<typename InheritType>

@@ -21,7 +21,7 @@ public:
 	virtual bool RemoveAt(std::size_t iIndex) override;
 	virtual void RemoveAll() override;
 	virtual void Activate() override;
-	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
+	virtual void SetAttribute(LPCTSTR szName, LPCTSTR szValue) override;
 	virtual void PaintText(IRenderContext* pRender) override;
 
 	/**
@@ -47,7 +47,7 @@ public:
 	 * @param[in] pstrList 转义后的 XML 格式属性列表
 	 * @return 无
 	 */
-    void SetDropBoxAttributeList(const CUiString& pstrList);
+    void SetDropBoxAttributeList(LPCTSTR pstrList);
 
 	/**
 	 * @brief 获取下拉框容器大小

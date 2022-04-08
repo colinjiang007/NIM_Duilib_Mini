@@ -9,7 +9,7 @@ MutiLanSupport* MutiLanSupport::GetInstance()
 	return &mutiLanSupport;
 }
 
-bool MutiLanSupport::LoadStringTable(const CUiString &strFilePath)
+bool MutiLanSupport::LoadStringTable(LPCTSTR strFilePath)
 {
 	ClearAll();
 
@@ -67,10 +67,10 @@ bool MutiLanSupport::LoadStringTable(const HGLOBAL& hGlobal)
 	return true;
 }
 
-CUiString MutiLanSupport::GetStringViaID(const CUiString& id)
+CUiString MutiLanSupport::GetStringViaID(LPCTSTR id)
 {
 	CUiString text;
-	if(id.IsEmpty())
+	if(StringHelper::IsEmpty(id))
 		return text;
 
 	auto it = m_stringTable.find(id);

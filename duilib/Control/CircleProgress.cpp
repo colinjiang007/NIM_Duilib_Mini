@@ -17,28 +17,30 @@ CircleProgress::CircleProgress() :
 
 }
 
-void CircleProgress::SetAttribute(const CUiString& srName, const CUiString& strValue)
+void CircleProgress::SetAttribute(LPCTSTR szName, LPCTSTR szValue)
 {
-	if (srName == _T("circular")) SetCircular(strValue == _T("true"));
-	else if (srName == _T("circlewidth")) SetCircleWidth(_ttoi(strValue));
-	else if (srName == _T("indicator")) SetIndicator(strValue);
-	else if (srName == _T("clockwise")) SetClockwiseRotation(strValue == _T("true"));
-	else if (srName == _T("bgcolor")) {
+	CUiString strName(szName);
+	CUiString strValue(szValue);
+	if (strName == _T("circular")) SetCircular(strValue == _T("true"));
+	else if (strName == _T("circlewidth")) SetCircleWidth(_ttoi(strValue));
+	else if (strName == _T("indicator")) SetIndicator(strValue);
+	else if (strName == _T("clockwise")) SetClockwiseRotation(strValue == _T("true"));
+	else if (strName == _T("bgcolor")) {
 		LPCTSTR pValue = strValue;
 		while (*pValue > _T('\0') && *pValue <= _T(' ')) pValue = ::CharNext(pValue);
 		SetBackgroudColor(pValue);
 	}
-	else if (srName == _T("fgcolor")) {
+	else if (strName == _T("fgcolor")) {
 		LPCTSTR pValue = strValue;
 		while (*pValue > _T('\0') && *pValue <= _T(' ')) pValue = ::CharNext(pValue);
 		SetForegroudColor(pValue);
 	}
-	else if (srName == _T("gradientcolor")) {
+	else if (strName == _T("gradientcolor")) {
 		LPCTSTR pValue = strValue;
 		while (*pValue > _T('\0') && *pValue <= _T(' ')) pValue = ::CharNext(pValue);
 		SetCircleGradientColor(pValue);
 	}
-	else Progress::SetAttribute(srName, strValue);
+	else Progress::SetAttribute(szName, szValue);
 }
 
 void CircleProgress::PaintStatusImage(IRenderContext* pRender)
@@ -152,21 +154,21 @@ void CircleProgress::SetCircleWidth(int nCircleWidth)
 }
 
 
-void CircleProgress::SetBackgroudColor(const CUiString& strColor)
+void CircleProgress::SetBackgroudColor(LPCTSTR strColor)
 {
 	m_dwBackgroundColor = GlobalManager::GetTextColor(strColor);
 	ASSERT(m_dwBackgroundColor != 0);
 	Invalidate();
 }
 
-void CircleProgress::SetForegroudColor(const CUiString& strColor)
+void CircleProgress::SetForegroudColor(LPCTSTR strColor)
 {
 	m_dwForegroundColor = GlobalManager::GetTextColor(strColor);
 	ASSERT(m_dwForegroundColor != 0);
 	Invalidate();
 }
 
-void CircleProgress::SetIndicator(const CUiString& sIndicatorImage)
+void CircleProgress::SetIndicator(LPCTSTR sIndicatorImage)
 {
 	if (m_sIndicatorImage != sIndicatorImage)
 	{
@@ -197,7 +199,7 @@ void CircleProgress::SetIndicator(const CUiString& sIndicatorImage)
 	}
 }
 
-void CircleProgress::SetCircleGradientColor(const CUiString& strColor)
+void CircleProgress::SetCircleGradientColor(LPCTSTR strColor)
 {
 	m_dwGradientColor = GlobalManager::GetTextColor(strColor);
 	ASSERT(m_dwGradientColor != 0);

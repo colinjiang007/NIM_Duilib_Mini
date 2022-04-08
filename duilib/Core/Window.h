@@ -267,7 +267,7 @@ public:
 	 * @param[in] strPath 要设置的路径
 	 * @return 无
 	 */
-	void SetWindowResourcePath(const CUiString& strPath);
+	void SetWindowResourcePath(LPCTSTR strPath);
 
 	/**
 	 * @brief 获取默认字体信息
@@ -281,7 +281,7 @@ public:
 	 * @param[in] strControlAttrList 通用样式的 XML 转义格式数据
 	 * @return 无
 	 */
-	void AddClass(const CUiString& strClassName, const CUiString& strControlAttrList);
+	void AddClass(LPCTSTR strClassName, LPCTSTR strControlAttrList);
 
 	/**
 	 * @brief 获取所有通用样式
@@ -294,14 +294,14 @@ public:
 	 * @param[in] strClassName 通用样式名称
 	 * @return 返回指定名称的通用样式内容，XML 转义格式数据
 	 */
-	CUiString GetClassAttributes(const CUiString& strClassName) const;
+	CUiString GetClassAttributes(LPCTSTR strClassName) const;
 
 	/**
 	 * @brief 删除一个通用样式
 	 * @param[in] strClassName 要删除的通用样式名称
 	 * @return 返回 true 为成功，false 为失败或样式不存在
 	 */
-	bool RemoveClass(const CUiString& strClassName);
+	bool RemoveClass(LPCTSTR strClassName);
 
 	/**
 	 * @brief 删除所有通用样式
@@ -315,14 +315,14 @@ public:
 	 * @param[in] pControl 控件指针
 	 * @return 返回 true 表示添加成功，false 可能组已经存在
 	 */
-	bool AddOptionGroup(const CUiString& strGroupName, Control* pControl);
+	bool AddOptionGroup(LPCTSTR strGroupName, Control* pControl);
 
 	/**
 	 * @brief 获取指定选项组中控件列表
 	 * @param[in] strGroupName 指定组名称
 	 * @return 返回该组下的所有控件列表
 	 */
-	std::vector<Control*>* GetOptionGroup(const CUiString& strGroupName);
+	std::vector<Control*>* GetOptionGroup(LPCTSTR strGroupName);
 
 	/**
 	 * @brief 删除一个选项组
@@ -330,7 +330,7 @@ public:
 	 * @param[in] pControl 控件名称
 	 * @return 无
 	 */
-	void RemoveOptionGroup(const CUiString& strGroupName, Control* pControl);
+	void RemoveOptionGroup(LPCTSTR strGroupName, Control* pControl);
 
 	/**
 	 * @brief 删除所有选项组
@@ -435,7 +435,7 @@ public:
 	 * @param[in] strTextId 语言 ID，该 ID 必须在语言文件中存在
 	 * @return 无
 	 */
-	void SetTextId(const CUiString& strTextId);
+	void SetTextId(LPCTSTR strTextId);
 
 	/// 阴影相关部分
 	/**
@@ -743,7 +743,7 @@ public:
 	 * @param[in] strName 控件名称
 	 * @return 返回控件指针
 	 */
-	Control* FindControl(const CUiString& strName) const;
+	Control* FindControl(LPCTSTR strName) const;
 
 	/**
 	 * @brief 根据坐标查找子控件
@@ -759,7 +759,7 @@ public:
 	 * @param[in] strName 要查找的名称
 	 * @return 返回控件指针
 	 */
-	Control* FindSubControlByName(Control* pParent, const CUiString& strName) const;
+	Control* FindSubControlByName(Control* pParent, LPCTSTR strName) const;
 
 	/**
 	 * @brief 根据类名查找子控件

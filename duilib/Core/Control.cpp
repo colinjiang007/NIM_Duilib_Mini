@@ -112,9 +112,9 @@ CUiString Control::GetBkColor() const
 	return m_strBkColor;
 }
 
-void Control::SetBkColor(const CUiString& strColor)
+void Control::SetBkColor(LPCTSTR strColor)
 {
-	ASSERT(strColor.IsEmpty() || GlobalManager::GetTextColor(strColor) != 0);
+	ASSERT(StringHelper::IsEmpty(strColor) || GlobalManager::GetTextColor(strColor) != 0);
 	if( m_strBkColor == strColor ) return;
 
 	m_strBkColor = strColor;
@@ -126,7 +126,7 @@ CUiString Control::GetStateColor(ControlStateType stateType)
 	return m_colorMap[stateType];
 }
 
-void Control::SetStateColor(ControlStateType stateType, const CUiString& strColor)
+void Control::SetStateColor(ControlStateType stateType, LPCTSTR strColor)
 {
 	ASSERT(GlobalManager::GetTextColor(strColor) != 0);
 	if( m_colorMap[stateType] == strColor ) return;
@@ -150,7 +150,7 @@ std::string Control::GetUTF8BkImage() const
 	return strOut;
 }
 
-void Control::SetBkImage(const CUiString& strImage)
+void Control::SetBkImage(LPCTSTR strImage)
 {
 	StopGifPlay();
 	m_bkImage.SetImageString(strImage);
@@ -175,7 +175,7 @@ CUiString Control::GetStateImage(ControlStateType stateType)
 	return m_imageMap.GetImagePath(kStateImageBk, stateType);
 }
 
-void Control::SetStateImage(ControlStateType stateType, const CUiString& strImage)
+void Control::SetStateImage(ControlStateType stateType, LPCTSTR strImage)
 {
 	if (stateType == kControlStateHot) {
 		m_animationManager.SetFadeHot(true);
@@ -194,7 +194,7 @@ CUiString Control::GetForeStateImage(ControlStateType stateType)
 	return m_imageMap.GetImagePath(kStateImageFore, stateType);
 }
 
-void Control::SetForeStateImage(ControlStateType stateType, const CUiString& strImage)
+void Control::SetForeStateImage(ControlStateType stateType, LPCTSTR strImage)
 {
 	if (stateType == kControlStateHot) {
 		m_animationManager.SetFadeHot(true);
@@ -253,7 +253,7 @@ CUiString Control::GetBorderColor() const
     return m_strBorderColor;
 }
 
-void Control::SetBorderColor(const CUiString& strBorderColor)
+void Control::SetBorderColor(LPCTSTR strBorderColor)
 {
     if( m_strBorderColor == strBorderColor ) return;
 
@@ -355,7 +355,7 @@ std::string Control::GetUTF8ToolTipText() const
 	return strOut;
 }
 
-void Control::SetToolTipText(const CUiString& strText)
+void Control::SetToolTipText(LPCTSTR strText)
 {
 	CUiString strTemp(strText);
 	strTemp.Replace(_T("<n>"), _T("\r\n"));
@@ -379,7 +379,7 @@ void Control::SetUTF8ToolTipText(const std::string& strText)
 	}
 }
 
-void Control::SetToolTipTextId(const CUiString& strTextId)
+void Control::SetToolTipTextId(LPCTSTR strTextId)
 {
 	if (m_sToolTipTextId == strTextId) return;
 	m_sToolTipTextId = strTextId;
@@ -427,7 +427,7 @@ std::string Control::GetUTF8DataID() const
 	return strOut;
 }
 
-void Control::SetDataID(const CUiString& strText)
+void Control::SetDataID(LPCTSTR strText)
 {
     m_sUserData = strText;
 }
@@ -938,12 +938,10 @@ bool Control::ButtonUp(EventArgs& msg)
 	return ret;
 }
 
-void Control::SetAttribute(const CUiString& strName, const CUiString& strValue)
+void Control::SetAttribute(LPCTSTR szName, LPCTSTR szValue)
 {
-	if (strName == _T(" width")) {
-		int ad = 2;
-		ad++;
-	}
+	CUiString strName(szName);
+	CUiString strValue(szValue);
 
 	if ( strName == _T("class") ) {
 		SetClass(strValue);
@@ -1141,7 +1139,7 @@ void Control::SetAttribute(const CUiString& strName, const CUiString& strValue)
     }
 }
 
-void Control::SetClass(const CUiString& strClass)
+void Control::SetClass(LPCTSTR strClass)
 {
 	std::vector<CUiString> splitList;
 	StringHelper::SplitCUiString(strClass, _T(" "),splitList);
@@ -1158,7 +1156,7 @@ void Control::SetClass(const CUiString& strClass)
 	}
 }
 
-void Control::ApplyAttributeList(const CUiString& strList)
+void Control::ApplyAttributeList(LPCTSTR strList)
 {
     CUiString sItem;
     CUiString sValue;
@@ -1192,15 +1190,16 @@ void Control::ApplyAttributeList(const CUiString& strList)
     return;
 }
 
-bool Control::OnApplyAttributeList(const CUiString& strReceiver, const CUiString& strList, EventArgs* eventArgs)
+bool Control::OnApplyAttributeList(LPCTSTR strReceiver, LPCTSTR strList, EventArgs* eventArgs)
 {
 	Control* pReceiverControl;
-	CUiString curDir = strReceiver.Left(2);
+	CUiString tmpReceiver(strReceiver);
+	CUiString curDir = tmpReceiver.Left(2);
 	if (curDir == _T(".\\") || curDir == _T("./")) {
-		pReceiverControl = ((Box*)this)->FindSubControl(strReceiver.Mid(2));
+		pReceiverControl = ((Box*)this)->FindSubControl(tmpReceiver.Mid(2));
 	}
 	else {
-		pReceiverControl = GetWindow()->FindControl(strReceiver);
+		pReceiverControl = GetWindow()->FindControl(tmpReceiver);
 	}
 
 	if (pReceiverControl) {
@@ -1230,7 +1229,7 @@ void Control::GetImage(Image& duiImage) const
 	}
 }
 
-bool Control::DrawImage(IRenderContext* pRender, Image& duiImage, const CUiString& strModify /*= _T("")*/, int nFade /*= DUI_NOSET_VALUE*/)
+bool Control::DrawImage(IRenderContext* pRender, Image& duiImage, LPCTSTR strModify /*= _T("")*/, int nFade /*= DUI_NOSET_VALUE*/)
 {
 	if (duiImage.imageAttribute.sImageName.IsEmpty()) {
 		return false;
@@ -1245,7 +1244,7 @@ bool Control::DrawImage(IRenderContext* pRender, Image& duiImage, const CUiStrin
 	}
 
 	ImageAttribute newImageAttribute = duiImage.imageAttribute;
-	if (!strModify.IsEmpty()) {
+	if (!StringHelper::IsEmpty(strModify)) {
 		ImageAttribute::ModifyAttribute(newImageAttribute, strModify);
 	}
 	CUiRect rcNewDest = m_rcItem;

@@ -8,7 +8,7 @@ class UILIB_API StringHelper
 {
 public:
 	static std::wstring ReparsePath(const std::wstring& strFilePath);
-	static CUiString ReparsePath(const CUiString& strFilePath);
+	static CUiString ReparsePath(LPCTSTR strFilePath);
 
 	// format a string
 	static std::wstring Printf(const wchar_t *format, ...);
@@ -37,6 +37,10 @@ public:
 	static void SplitCUiString(const CUiString& strSource, const CUiString& token, std::vector<CUiString>& ret, bool isTrim=true);
 	static bool SplitCUiStringKeyValue(const CUiString& strSource, const CUiString& token, CUiString& key, CUiString& value, bool isTrim = true);
 	
+	static bool IsEmpty(LPCTSTR szStr) {
+		return (szStr == NULL || szStr[0] == _T('\0'));
+	}
+
 	
 	// trimming, removing extra spaces
 	static std::string TrimLeft(const char *input);

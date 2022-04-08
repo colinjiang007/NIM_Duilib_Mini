@@ -24,7 +24,7 @@ public:
 	 * @param[in] language 使用语言，默认为 lang\\zh_CN
 	 * @return 无
 	 */
-	static void Startup(const CUiString& strResourcePath, const CreateControlCallback& callback, bool bAdaptDpi, const CUiString& theme = _T("themes\\default"), const CUiString& language = _T("lang\\zh_CN"));
+	static void Startup(LPCTSTR strResourcePath, const CreateControlCallback& callback, bool bAdaptDpi, LPCTSTR theme = _T("themes\\default"), LPCTSTR language = _T("lang\\zh_CN"));
 
 	/**
 	 * @brief 释放资源
@@ -49,21 +49,21 @@ public:
 	 * @param[in] strPath 要设置的路径
 	 * @return 无
 	 */
-	static void SetCurrentPath(const CUiString& strPath);
+	static void SetCurrentPath(LPCTSTR strPath);
 
 	/**
 	 * @brief 设置皮肤资源所在目录
 	 * @param[in] strPath 要设置的路径
 	 * @return 无
 	 */
-	static void SetResourcePath(const CUiString& strPath);
+	static void SetResourcePath(LPCTSTR strPath);
 
 	/**
 	 * @brief 重新加载皮肤资源
 	 * @param[in] resourcePath 资源路径
 	 * @return 无
 	 */
-	static void ReloadSkin(const CUiString& resourcePath);
+	static void ReloadSkin(LPCTSTR resourcePath);
 
 	/**
 	 * @brief 获取绘制接口类对象
@@ -110,14 +110,14 @@ public:
 	 * @param[in] strControlAttrList 属性列表，需要做 XML 转义
 	 * @return 无
 	 */
-	static void AddClass(const CUiString& strClassName, const CUiString& strControlAttrList);
+	static void AddClass(LPCTSTR strClassName, LPCTSTR strControlAttrList);
 
 	/**
 	 * @brief 获取一个全局 class 属性的值
 	 * @param[in] strClassName 全局 class 名称
 	 * @return 返回字符串形式的 class 属性值
 	 */
-	static CUiString GetClassAttributes(const CUiString& strClassName);
+	static CUiString GetClassAttributes(LPCTSTR strClassName);
 
 	/**
 	 * @brief 从全局属性中删除所有 class 属性
@@ -131,14 +131,14 @@ public:
 	 * @param[in] strValue 颜色具体数值（如 #FFFFFFFF）
 	 * @return 无
 	 */
-	static void AddTextColor(const CUiString& strName, const CUiString& strValue);
+	static void AddTextColor(LPCTSTR strName, LPCTSTR strValue);
 
 	/**
 	 * @brief 根据名称获取一个颜色的具体数值
 	 * @param[in] strName 要获取的颜色名称
 	 * @return 返回 DWORD 格式的颜色描述值
 	 */
-	static DWORD GetTextColor(const CUiString& strName);
+	static DWORD GetTextColor(LPCTSTR strName);
 
 	/**
 	 * @brief 删除所有全局颜色属性
@@ -151,7 +151,7 @@ public:
 	 * @param[in] bitmap 图片路径
 	 * @return 如果已经被缓存，则返回 ImageInfo 的智能指针对象
 	 */
-	static std::shared_ptr<ImageInfo> IsImageCached(const CUiString& bitmap);
+	static std::shared_ptr<ImageInfo> IsImageCached(LPCTSTR bitmap);
 
 	/**
 	 * @brief 添加一个图片到缓存中
@@ -165,7 +165,7 @@ public:
 	 * @param[in] imageFullPath 图片路径
 	 * @return 无
 	 */
-	static void RemoveFromImageCache(const CUiString& imageFullPath);
+	static void RemoveFromImageCache(LPCTSTR imageFullPath);
 
 	/**
 	 * @brief 图片被销毁的回调
@@ -179,7 +179,7 @@ public:
 	 * @param[in] bitmap 图片路径
 	 * @return 返回图片 ImageInfo 对象的智能指针
 	 */
-	static std::shared_ptr<ImageInfo> GetImage(const CUiString& bitmap);
+	static std::shared_ptr<ImageInfo> GetImage(LPCTSTR bitmap);
 
 	/**
 	 * @brief 从缓存中删除所有图片
@@ -204,21 +204,21 @@ public:
 	 * @param[in] bDefault 是否默认
 	 * @return 返回字体的 HFONT 句柄
 	 */
-	static HFONT AddFont(const CUiString& strFontId, const CUiString& strFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bDefault);
+	static HFONT AddFont(LPCTSTR strFontId, LPCTSTR strFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bDefault);
 
 	/**
 	 * @brief 根据索引返回一个字体信息
 	 * @param[in] strFontId 字体ID
 	 * @return 返回字体的 TFontInfo 信息
 	 */
-	static TFontInfo* GetTFontInfo(const CUiString& strFontId);
+	static TFontInfo* GetTFontInfo(LPCTSTR strFontId);
 
 	/**
 	 * @brief 根据字体ID返回一个字体对象
 	 * @param[in] strFontId 字体ID
 	 * @return 返回字体的 HFONT 句柄
 	 */
-	static HFONT GetFont(const CUiString& strFontId);
+	static HFONT GetFont(LPCTSTR strFontId);
 	/**
 	 * @brief 根据字体属性获取字体对象
 	 * @param[in] strFontName 字体名称
@@ -228,7 +228,7 @@ public:
 	 * @param[in] bItalic 是否倾斜
 	 * @return 返回字体的 HFONT 句柄
 	 */
-	static HFONT GetFont(const CUiString& strFontName, int nSize, bool bBold, bool bUnderline, bool bItalic);
+	static HFONT GetFont(LPCTSTR strFontName, int nSize, bool bBold, bool bUnderline, bool bItalic);
 
 	/**
 	 * @brief 获取字体信息
@@ -236,7 +236,7 @@ public:
 	 * @param[in] hDcPaint 设备句柄
 	 * @return 返回字体的 TFontInfo 信息
 	 */
-	static TFontInfo* GetFontInfo(const CUiString& strFontId, HDC hDcPaint);
+	static TFontInfo* GetFontInfo(LPCTSTR strFontId, HDC hDcPaint);
 
 	/**
 	 * @brief 获取字体信息
@@ -266,7 +266,7 @@ public:
 	 *     @retval true 存在
 	 *     @retval false 不存在
 	 */
-	static bool FindFont(const CUiString& strFontName, int nSize, bool bBold, bool bUnderline, bool bItalic);
+	static bool FindFont(LPCTSTR strFontName, int nSize, bool bBold, bool bUnderline, bool bItalic);
 
 	/**
 	 * @brief 根据字体索引删除字体
@@ -275,7 +275,7 @@ public:
 	 *     @retval true 删除成功
 	 *     @retval false 字体不存在或删除失败
 	 */
-	static bool RemoveFontAt(const CUiString& strFontId);
+	static bool RemoveFontAt(LPCTSTR strFontId);
 
 	/**
 	 * @brief 删除所有字体
@@ -294,7 +294,7 @@ public:
 	 * @param[in] dwColor 字体颜色字符串值（如 white）
 	 * @return 无
 	 */
-	static void SetDefaultDisabledTextColor(const CUiString& strColor);
+	static void SetDefaultDisabledTextColor(LPCTSTR strColor);
 
 	/**
 	 * @brief 获取默认字体颜色
@@ -307,7 +307,7 @@ public:
 	 * @param[in] 字体颜色的字符串值，对应 global.xml 中指定颜色值
 	 * @return 无
 	 */
-	static void SetDefaultTextColor(const CUiString& strColor);
+	static void SetDefaultTextColor(LPCTSTR strColor);
 
 	/**
 	 * @brief 获取默认链接字体颜色
@@ -387,7 +387,7 @@ public:
 	 * @param[in] strControlName 自定义控件名称
 	 * @return 返回一个自定义控件的对象指针
 	 */
-	static Control* CreateControl(const CUiString& strControlName);
+	static Control* CreateControl(LPCTSTR strControlName);
 
 	/**
 	 * @brief 判断当前是否使用了 zip 压缩包
@@ -410,21 +410,21 @@ public:
 	 * @param[in] password 压缩包密码
 	 * @return 返回 true 打开成功，返回 false 为打开失败
 	 */
-	static bool OpenResZip(const CUiString& path, const std::string& password);
+	static bool OpenResZip(LPCTSTR path, const std::string& password);
 
 	/**
 	 * @brief 获取压缩包中的内容到内存
 	 * @param[in] path 要获取的文件的路径
 	 * @return 返回文件的内存地址
 	 */
-	static HGLOBAL GetData(const CUiString& path);
+	static HGLOBAL GetData(LPCTSTR path);
 
 	/**
 	 * @brief 获取文件在压缩包中的位置
 	 * @param[in] path 要获取的文件路径
 	 * @return 返回在压缩包中的文件位置
 	 */
-	static CUiString GetZipFilePath(const CUiString& path);
+	static CUiString GetZipFilePath(LPCTSTR path);
 
 private:
 	/**

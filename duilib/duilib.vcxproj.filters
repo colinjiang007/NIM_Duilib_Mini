@@ -346,5 +346,8 @@
     <ClInclude Include="Control\CircleProgress.h">
       <Filter>Header Files\Control</Filter>
     </ClInclude>
+    <ClInclude Include="Utils\Callback.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

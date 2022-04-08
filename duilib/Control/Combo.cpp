@@ -192,8 +192,10 @@ void Combo::Activate()
     Invalidate();
 }
 
-void Combo::SetAttribute(const CUiString& strName, const CUiString& strValue)
+void Combo::SetAttribute(LPCTSTR szName, LPCTSTR szValue)
 {
+	CUiString strName(szName);
+	CUiString strValue(szValue);
 	if (strName == _T("dropbox")) SetDropBoxAttributeList(strValue);
 	else if (strName == _T("vscrollbar")) {}
 	else if (strName == _T("dropboxsize"))
@@ -205,7 +207,7 @@ void Combo::SetAttribute(const CUiString& strName, const CUiString& strValue)
 		SetDropBoxSize(szDropBoxSize);
 	}
 	else if (strName == _T("popuptop")) SetPopupTop(strValue == _T("true"));
-	else Box::SetAttribute(strName, strValue);
+	else Box::SetAttribute(szName, szValue);
 }
 
 void Combo::PaintText(IRenderContext* pRender)
@@ -254,7 +256,7 @@ CUiString Combo::GetDropBoxAttributeList()
     return m_sDropBoxAttributes;
 }
 
-void Combo::SetDropBoxAttributeList(const CUiString& pstrList)
+void Combo::SetDropBoxAttributeList(LPCTSTR pstrList)
 {
     m_sDropBoxAttributes = pstrList;
     m_pLayout->ApplyAttributeList(pstrList);

@@ -105,8 +105,10 @@ void Slider::HandleMessage(EventArgs& event)
 	Progress::HandleMessage(event);
 }
 
-void Slider::SetAttribute(const CUiString& strName, const CUiString& strValue)
+void Slider::SetAttribute(LPCTSTR szName, LPCTSTR szValue)
 {
+	CUiString strName(szName);
+	CUiString strValue(szValue);
 	if (strName == _T("step")) SetChangeStep(_ttoi(strValue));
 	else if (strName == _T("thumbnormalimage")) SetThumbStateImage(kControlStateNormal, strValue);
 	else if (strName == _T("thumbhotimage")) SetThumbStateImage(kControlStateHot, strValue);
@@ -128,7 +130,7 @@ void Slider::SetAttribute(const CUiString& strName, const CUiString& strValue)
 		rcPadding.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
 		SetProgressBarPadding(rcPadding);
 	}
-	else Progress::SetAttribute(strName, strValue);
+	else Progress::SetAttribute(szName, szValue);
 }
 
 void Slider::PaintStatusImage(IRenderContext* pRender)
@@ -209,7 +211,7 @@ CUiString Slider::GetThumbStateImage(ControlStateType stateType)
 	return m_thumbStateImage[stateType].imageAttribute.simageString;
 }
 
-void Slider::SetThumbStateImage(ControlStateType stateType, const CUiString& pStrImage)
+void Slider::SetThumbStateImage(ControlStateType stateType, LPCTSTR pStrImage)
 {
 	m_thumbStateImage[stateType].SetImageString(pStrImage);
 	Invalidate();

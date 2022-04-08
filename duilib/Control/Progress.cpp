@@ -18,20 +18,22 @@ Progress::Progress() :
 	SetFixedHeight(12);
 }
 
-void Progress::SetAttribute(const CUiString& srName, const CUiString& strValue)
+void Progress::SetAttribute(LPCTSTR szName, LPCTSTR szValue)
 {
-	if (srName == _T("hor")) SetHorizontal(strValue == _T("true"));
-	else if (srName == _T("min")) SetMinValue(_ttoi(strValue));
-	else if (srName == _T("max")) SetMaxValue(_ttoi(strValue));
-	else if (srName == _T("value")) SetValue(_ttoi(strValue));
-	else if (srName == _T("progressimage")) SetProgressImage(strValue);
-	else if (srName == _T("isstretchfore")) SetStretchForeImage(strValue == _T("true"));
-	else if (srName == _T("progresscolor")) {
+	CUiString strName(szName);
+	CUiString strValue(szValue);
+	if (strName == _T("hor")) SetHorizontal(strValue == _T("true"));
+	else if (strName == _T("min")) SetMinValue(_ttoi(strValue));
+	else if (strName == _T("max")) SetMaxValue(_ttoi(strValue));
+	else if (strName == _T("value")) SetValue(_ttoi(strValue));
+	else if (strName == _T("progressimage")) SetProgressImage(strValue);
+	else if (strName == _T("isstretchfore")) SetStretchForeImage(strValue == _T("true"));
+	else if (strName == _T("progresscolor")) {
 		LPCTSTR pValue = strValue;
 		while (*pValue > _T('\0') && *pValue <= _T(' ')) pValue = ::CharNext(pValue);
 		SetProgressColor(pValue);
 	}
-	else Label::SetAttribute(srName, strValue);
+	else Label::SetAttribute(szName, szValue);
 }
 
 void Progress::PaintStatusImage(IRenderContext* pRender)
@@ -137,7 +139,7 @@ CUiString Progress::GetProgressImage() const
 	return m_progressImage.imageAttribute.simageString;
 }
 
-void Progress::SetProgressImage(const CUiString& strImage)
+void Progress::SetProgressImage(LPCTSTR strImage)
 {
 	m_progressImage.SetImageString(strImage);
 	Invalidate();
@@ -148,7 +150,7 @@ CUiString Progress::GetProgressColor() const
 	return m_sProgressColor;
 }
 
-void Progress::SetProgressColor(const CUiString& strProgressColor)
+void Progress::SetProgressColor(LPCTSTR strProgressColor)
 {
 	ASSERT(GlobalManager::GetTextColor(strProgressColor) != 0);
 	if( m_sProgressColor == strProgressColor ) return;

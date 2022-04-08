@@ -25,7 +25,7 @@ public:
 	 * @param[in] strName 要获取的祖先容器名称
 	 * @return 返回祖先容器指针
 	 */
-	Box* GetAncestor(const CUiString& strName);
+	Box* GetAncestor(LPCTSTR strName);
 
 	/**
 	 * @brief 获取控件名称，对应 xml 中 name 属性
@@ -38,7 +38,7 @@ public:
 	 * @param[in] strName 要设置的名称
 	 * @return 无
 	 */
-	void SetName(const CUiString& strName);
+	void SetName(LPCTSTR strName);
 
 	/**
 	 * @brief 获取关联的窗口指针

@@ -51,8 +51,8 @@ public:
 	ImageAttribute();
 
 	void Init();
-	void SetImageString(const CUiString& strImageString);
-	static void ModifyAttribute(ImageAttribute& imageAttribute, const CUiString& strImageString);
+	void SetImageString(LPCTSTR strImageString);
+	static void ModifyAttribute(ImageAttribute& imageAttribute, LPCTSTR strImageString);
 
 	CUiString simageString;
 	CUiString sImageName;
@@ -74,7 +74,7 @@ public:
 	bool IsPlaying() { return m_bPlaying; }
 	void SetPlaying(bool bPlaying) { m_bPlaying = bPlaying; }
 
-	void SetImageString(const CUiString& strImageString);
+	void SetImageString(LPCTSTR strImageString);
 	void ClearCache();
 
 	bool IncrementCurrentFrame();

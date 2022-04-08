@@ -125,7 +125,7 @@ public:
 	 * @param[in] index 要设置的字体索引（对应 global.xml 中字体的顺序）
 	 * @return 无
 	 */
-	void SetFont(const CUiString& strFontId);
+	void SetFont(LPCTSTR strFontId);
 	void SetFont(HFONT font);
 	/**
 	 * @brief 根据字体名称设置字体
@@ -136,7 +136,7 @@ public:
 	 * @param[in] bItalic 是否斜体显示
 	 * @return 无
 	 */
-    void SetFont(const CUiString& pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic);
+    void SetFont(LPCTSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic);
 
 	/**
 	 * @brief 获取窗口样式
@@ -162,7 +162,7 @@ public:
 	 * @param[in] dwTextColor 要设置的文本颜色，该颜色必须在 global.xml 中存在
 	 * @return 无
 	 */
-	virtual void SetTextColor(const CUiString& dwTextColor);
+	virtual void SetTextColor(LPCTSTR dwTextColor);
 	void SetTextColor(DWORD color);
 
 	/**
@@ -204,14 +204,14 @@ public:
 	 * @param[in] strText 要设置的文本内容
 	 * @return 无
 	 */
-    void SetText(const CUiString& strText);
+    void SetText(LPCTSTR strText);
 
 	/**
 	 * @brief 设置控件的文本对应 ID
 	 * @param[in] strTextId 要设置的 ID，该 ID 必须在加载的语言文件中存在
 	 * @return 无
 	 */
-	void SetTextId(const CUiString& strTextId);
+	void SetTextId(LPCTSTR strTextId);
 
 
 
@@ -264,7 +264,7 @@ public:
 	 * @param[in] bCanUndo 是否可以撤销，true 为可以，否则为 false
 	 * @return 无
 	 */
-    void ReplaceSel(const CUiString& lpszNewText, bool bCanUndo);
+    void ReplaceSel(LPCTSTR lpszNewText, bool bCanUndo);
 
 	/**
 	 * @brief 替换所选内容
@@ -383,7 +383,7 @@ public:
 	 * @param[in] bCanUndo 是否可以撤销，true 为可以，否则为 false，默认为 false
 	 * @return 返回追加后的文字位置
 	 */
-    int AppendText(const CUiString& strText, bool bCanUndo = false);
+    int AppendText(LPCTSTR strText, bool bCanUndo = false);
 
 	/**
 	 * @brief 获取字符格式
@@ -690,7 +690,7 @@ public:
 
 	virtual void Paint(IRenderContext* pRender, const CUiRect& rcPaint) override;
 	virtual void PaintChild(IRenderContext* pRender, const CUiRect& rcPaint) override;
-	virtual void SetAttribute(const CUiString& pstrName, const CUiString& pstrValue) override;
+	virtual void SetAttribute(LPCTSTR szName, LPCTSTR szValue) override;
 
 	/**
 	 * @brief 创建光标
@@ -712,7 +712,7 @@ public:
 	 * @param[in] dwColor 要设置的颜色值，该值必须在 global.xml 中存在
 	 * @return 无
 	 */
-	void SetCaretColor(const CUiString& dwColor);
+	void SetCaretColor(LPCTSTR dwColor);
 
 	/**
 	 * @brief 获取光标颜色
@@ -768,7 +768,7 @@ public:
 	 * @param[in] strText 要设置的提示文字
 	 * @return 无
 	 */
-	void SetPromptText(const CUiString& strText);
+	void SetPromptText(LPCTSTR strText);
 
 
 
@@ -777,7 +777,7 @@ public:
 	 * @param[in] strText 要设置的提示文字 ID，该 ID 必须在加载的语言文件中存在
 	 * @return 无
 	 */
-	void SetPromptTextId(const CUiString& strTextId);
+	void SetPromptTextId(LPCTSTR strTextId);
 
 
 
@@ -799,7 +799,7 @@ public:
 	 * @param[in] strImage 要设置的图片位置
 	 * @return 无
 	 */
-	void SetFocusedImage(const CUiString& strImage);
+	void SetFocusedImage(LPCTSTR strImage);
 
 	/**
 	 * @brief 绘制指定状态下的图片
@@ -834,7 +834,7 @@ public:
 	 * @param[in] color 颜色值，该值必须在 global.xml 中存在
 	 * @return 无
 	 */
-	void AddColorText(const CUiString &str, const CUiString &color);
+	void AddColorText(LPCTSTR str, LPCTSTR color);
 
 	/**
 	 * @brief 添加一个带有文字颜色的超链接
@@ -843,7 +843,7 @@ public:
 	 * @param[in] linkInfo 链接地址
 	 * @return 无
 	 */
-	void AddLinkColorText(const CUiString &str, const CUiString &color, const CUiString &linkInfo = _T(""));
+	void AddLinkColorText(LPCTSTR str, LPCTSTR color, LPCTSTR linkInfo = _T(""));
 
 	/**
 	 * @brief 添加一个指定字体带有文字颜色的超链接
@@ -853,7 +853,7 @@ public:
 	 * @param[in] font 字体索引
 	 * @return 无
 	 */
-	void AddLinkColorTextEx(const CUiString& str, const CUiString &color, const CUiString &linkInfo = _T(""), const CUiString& strFontId = _T(""));
+	void AddLinkColorTextEx(LPCTSTR str, LPCTSTR color, LPCTSTR linkInfo = _T(""), LPCTSTR strFontId = _T(""));
 
 	/**
 	 * @brief 添加一个范围用于 hittest 判断是否是链接信息
@@ -861,7 +861,7 @@ public:
 	 * @param[in] linkInfo 自定义 link 属性
 	 * @return 无
 	 */
-	void AddLinkInfo(const CHARRANGE cr, const CUiString &linkInfo);
+	void AddLinkInfo(const CHARRANGE cr, LPCTSTR linkInfo);
 
 	/**
 	 * @brief 根据point来hittest自定义link的数据
@@ -997,13 +997,13 @@ protected:
 //判断是否是字节： 可打印字符（0x20-0x7e）
 bool IsAsciiChar(const wchar_t ch);
 //获取字符串的字节数
-int  GetAsciiCharNumber(const CUiString &str);
+int  GetAsciiCharNumber(LPCTSTR str);
 //删除字符串中超过limit字节个数之后的字符
 void LimitAsciiNumber(CUiString &src, int limit);
 //获取粘贴板字符串
 void GetClipboardText(CUiString &out);
 //设置粘贴板字符串
-void SetClipBoardText(const CUiString &str);
+void SetClipBoardText(LPCTSTR str);
 
 } // namespace ui
 

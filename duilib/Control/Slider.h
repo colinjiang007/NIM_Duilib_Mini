@@ -14,7 +14,7 @@ public:
 	/// 重写父类方法，提供个性化功能，请参考父类声明
 	virtual CUiRect GetProgressPos() override;
 	virtual void HandleMessage(EventArgs& event) override;
-	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
+	virtual void SetAttribute(LPCTSTR szName, LPCTSTR szValue) override;
 	virtual void PaintStatusImage(IRenderContext* pRender) override;
 	virtual void ClearImageCache() override;
 
@@ -57,7 +57,7 @@ public:
 	 * @param[in] pStrImage 要设置的图片位置
 	 * @return 无
 	 */
-	void SetThumbStateImage(ControlStateType stateType, const CUiString& pStrImage);
+	void SetThumbStateImage(ControlStateType stateType, LPCTSTR pStrImage);
 
 	/**
 	 * @brief 获取进度条内边距

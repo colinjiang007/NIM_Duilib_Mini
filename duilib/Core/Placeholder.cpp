@@ -50,7 +50,7 @@ PlaceHolder::~PlaceHolder()
 	
 }
 
-ui::Box* PlaceHolder::GetAncestor(const CUiString& strName)
+ui::Box* PlaceHolder::GetAncestor(LPCTSTR strName)
 {
 	Box* pAncestor = this->GetParent();
 	while (pAncestor && pAncestor->GetName() != strName)
@@ -73,7 +73,7 @@ std::string PlaceHolder::GetUTF8Name() const
 	return strOut;
 }
 
-void PlaceHolder::SetName(const CUiString& strName)
+void PlaceHolder::SetName(LPCTSTR strName)
 {
 	m_sName = strName;
 }

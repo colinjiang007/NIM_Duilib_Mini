@@ -14,13 +14,15 @@ ListBox::ListBox(Layout* pLayout) :
 
 }
 
-void ListBox::SetAttribute(const CUiString& strName, const CUiString& strValue)
+void ListBox::SetAttribute(LPCTSTR szName, LPCTSTR szValue)
 {
+	CUiString strName(szName);
+	CUiString strValue(szValue);
 	if( strName == _T("scrollselect") ) {
 		SetScrollSelect(strValue == _T("true"));
 	}
 	else {
-		ScrollableBox::SetAttribute(strName, strValue);
+		ScrollableBox::SetAttribute(szName, szValue);
 	}
 }
 
@@ -175,7 +177,7 @@ bool ListBox::ButtonDown(EventArgs& msg)
 	return ret;
 }
 
-bool ListBox::ScrollItemToTop(const CUiString& strItemName)
+bool ListBox::ScrollItemToTop(LPCTSTR strItemName)
 {
 	for (auto it = m_items.begin(); it != m_items.end(); it++) {
 		if ((*it)->GetName() == strItemName) {

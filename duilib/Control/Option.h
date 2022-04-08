@@ -15,7 +15,7 @@ public:
 		
 	/// 重写父类方法，提供个性化功能，请参考父类声明
 	virtual void SetWindow(Window* pManager, Box* pParent, bool bInit = true) override;
-	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
+	virtual void SetAttribute(LPCTSTR szName, LPCTSTR szValue) override;
 	virtual void Selected(bool bSelected, bool bTriggerEvent = false) override;
 	virtual void Activate() override;
 
@@ -59,10 +59,12 @@ void OptionTemplate<InheritType>::SetWindow(Window* pManager, Box* pParent, bool
 }
 
 template<typename InheritType>
-void OptionTemplate<InheritType>::SetAttribute(const CUiString& strName, const CUiString& strValue)
+void OptionTemplate<InheritType>::SetAttribute(LPCTSTR szName, LPCTSTR szValue)
 {
+	CUiString strName(szName);
+	CUiString strValue(szValue);
 	if (strName == _T("group")) SetGroup(strValue);
-	else __super::SetAttribute(strName, strValue);
+	else __super::SetAttribute(szName, szValue);
 }
 
 template<typename InheritType>

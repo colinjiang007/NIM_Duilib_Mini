@@ -16,14 +16,14 @@ public:
 	 * @param[in] id 指定字符串 ID
 	 * @return 返回 ID 对应的语言字符串
 	 */
-	CUiString GetStringViaID(const CUiString& id);
+	CUiString GetStringViaID(LPCTSTR id);
 
 	/**
 	 * @brief 加载所有语言映射表
 	 * @param[in] strFilePath 语言文件路径
 	 * @return 返回 true 表示成功，返回 false 表示失败
 	 */
-	bool LoadStringTable(const CUiString& strFilePath);
+	bool LoadStringTable(LPCTSTR strFilePath);
 
 	/**
 	 * @brief 从内存中加载所有语言映射表

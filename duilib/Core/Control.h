@@ -38,7 +38,7 @@ public:
 	 * @param[in] strColor 要设置的背景颜色值，该值必须在 global.xml 中存在
 	 * @return 无
 	 */
-	void SetBkColor(const CUiString& strColor);
+	void SetBkColor(LPCTSTR strColor);
 
 	/**
 	 * @brief 获取某个状态下的字体颜色
@@ -53,7 +53,7 @@ public:
 	 * @param[in] strColor 要设置的颜色值，该值必须在 global.xml 中存在
 	 * @return 无
 	 */
-	void SetStateColor(ControlStateType stateType, const CUiString& strColor);
+	void SetStateColor(ControlStateType stateType, LPCTSTR strColor);
 
 	/**
 	 * @brief 获取背景图片位置
@@ -67,7 +67,7 @@ public:
 	 * @param[in] strImage 要设置的图片路径
 	 * @return 无
 	 */
-    void SetBkImage(const CUiString& strImage);
+    void SetBkImage(LPCTSTR strImage);
 
 	
 
@@ -84,7 +84,7 @@ public:
 	 * @param[in] strImage 要设置的图片路径
 	 * @return 无
 	 */
-	void SetStateImage(ControlStateType stateType, const CUiString& strImage);
+	void SetStateImage(ControlStateType stateType, LPCTSTR strImage);
 
 	/**
 	 * @brief 获取指定状态下的前景图片
@@ -99,7 +99,7 @@ public:
 	 * @param[in] strImage 要设置的前景图片路径
 	 * @return 无
 	 */
-	void SetForeStateImage(ControlStateType stateType, const CUiString& strImage);
+	void SetForeStateImage(ControlStateType stateType, LPCTSTR strImage);
 
 	/**
 	 * @brief 获取控件状态
@@ -145,7 +145,7 @@ public:
 	 * @param[in] strBorderColor 设置边框的颜色字符串值，该值必须在 global.xml 中存在
 	 * @return 无
 	 */
-	void SetBorderColor(const CUiString& strBorderColor);
+	void SetBorderColor(LPCTSTR strBorderColor);
 
 	/**
 	 * @brief 设置边框的大小
@@ -246,7 +246,7 @@ public:
 	 * @param[in] strText 要设置的文本
 	 * @return 无
 	 */
-	virtual void SetToolTipText(const CUiString& strText);
+	virtual void SetToolTipText(LPCTSTR strText);
 
 	
 	/**
@@ -254,7 +254,7 @@ public:
 	 * @param[in] strTextId 在语言文件中对应的提示文字 ID
 	 * @return 无
 	 */
-	virtual void SetToolTipTextId(const CUiString& strTextId);
+	virtual void SetToolTipTextId(LPCTSTR strTextId);
 
 	/**
 	 * @brief 设置鼠标悬浮到控件上提示的文本单行最大宽度
@@ -296,7 +296,7 @@ public:
 	 * @param[in] strText 要绑定的字符串数据
 	 * @return 无
 	 */
-    virtual void SetDataID(const CUiString& strText);
+    virtual void SetDataID(LPCTSTR strText);
 
 	
 	/**
@@ -538,32 +538,32 @@ public:
 	// 属性设置
 	/**
 	 * @brief 设置控件指定属性
-	 * @param[in] strName 要设置的属性名称（如 width）
-	 * @param[in] strValue 要设置的属性值（如 100）
+	 * @param[in] szName 要设置的属性名称（如 width）
+	 * @param[in] szValue 要设置的属性值（如 100）
 	 * @return 无
 	 */
-    virtual void SetAttribute(const CUiString& strName, const CUiString& strValue);
+	virtual void SetAttribute(LPCTSTR szName, LPCTSTR szValue);
 
 	/**
 	 * @brief 设置控件的 class 全局属性
 	 * @param[in] strClass 要设置的 class 名称，该名称必须在 global.xml 中存在
 	 * @return 无
 	 */
-	void SetClass(const CUiString& strClass);
+	void SetClass(LPCTSTR strClass);
 
 	/**
 	 * @brief 应用一套属性列表
 	 * @param[in] strList 属性列表的字符串表示，如 `width="100" height="30"`
 	 * @return 无
 	 */
-    void ApplyAttributeList(const CUiString& strList);
+    void ApplyAttributeList(LPCTSTR strList);
 
 	/**
 	 * @brief 待补充
 	 * @param[in] 待补充
 	 * @return 待补充
 	 */
-	bool OnApplyAttributeList(const CUiString& strReceiver, const CUiString& strList, EventArgs* eventArgs);
+	bool OnApplyAttributeList(LPCTSTR strReceiver, LPCTSTR strList, EventArgs* eventArgs);
 
 	/// 绘制操作
 	/**
@@ -581,7 +581,7 @@ public:
 	 * @param[in] nFade 控件的透明度，如果启用动画效果该值在绘制时是不断变化的
 	 * @return 成功返回 true，失败返回 false
 	 */
-	bool DrawImage(IRenderContext* pRender, Image& duiImage, const CUiString& strModify = _T(""), int nFade = DUI_NOSET_VALUE);
+	bool DrawImage(IRenderContext* pRender, Image& duiImage, LPCTSTR strModify = _T(""), int nFade = DUI_NOSET_VALUE);
 
 	/**
 	* @brief 获取绘制上下文对象

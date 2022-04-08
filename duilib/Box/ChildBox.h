@@ -13,14 +13,14 @@ public:
 
 	/// 重写父类方法，提供个性化功能，请参考父类声明
 	virtual void Init() override;
-	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
+	virtual void SetAttribute(LPCTSTR szName, LPCTSTR szValue) override;
 
 	/**
 	 * @brief 设置 ChildBox 关联的 XML 文件
 	 * @param[in] strXML XML 文件路径
 	 * @return 无
 	 */
-	void SetChildLayoutXML(const CUiString& strXML);
+	void SetChildLayoutXML(LPCTSTR strXML);
 
 	/**
 	 * @brief 获取 ChildBox 关联的 XML 文件

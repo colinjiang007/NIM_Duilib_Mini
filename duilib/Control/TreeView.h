@@ -149,7 +149,7 @@ public:
 	TreeView(void);
 
 	/// 重写父类方法，提供个性化功能，请参考父类声明
-	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
+	virtual void SetAttribute(LPCTSTR szName, LPCTSTR szValue) override;
 
 	/**
 	 * @brief 获取根节点

@@ -12,7 +12,7 @@ public:
 	Progress();
 
 	/// 重写父类方法，提供个性化功能，请参考父类声明
-	virtual void SetAttribute(const CUiString& strName, const CUiString& strValue) override;
+	virtual void SetAttribute(LPCTSTR szName, LPCTSTR szValue) override;
 	virtual void PaintStatusImage(IRenderContext* pRender) override;
 	virtual void ClearImageCache() override;
 
@@ -92,7 +92,7 @@ public:
 	 * @param[in] strImage 图片地址
 	 * @return 无
 	 */
-	void SetProgressImage(const CUiString& strImage);
+	void SetProgressImage(LPCTSTR strImage);
 
 	/**
 	 * @brief 获取进度条背景颜色
@@ -105,7 +105,7 @@ public:
 	 * @param[in] 要设置的背景颜色字符串，该字符串必须在 global.xml 中存在
 	 * @return 无
 	 */
-	void SetProgressColor(const CUiString& strProgressColor);
+	void SetProgressColor(LPCTSTR strProgressColor);
 
 	/**
 	 * @brief 获取进度条位置

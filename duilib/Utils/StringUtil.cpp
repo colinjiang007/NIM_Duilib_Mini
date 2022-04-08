@@ -253,7 +253,7 @@ std::wstring StringHelper::ReparsePath(const std::wstring& strFilePath)
 	return tmp;
 }
 
-CUiString StringHelper::ReparsePath(const CUiString& strFilePath)
+CUiString StringHelper::ReparsePath(LPCTSTR strFilePath)
 {
 	CUiString tmp(strFilePath);
 	tmp.Replace(_T("/"), _T("\\"));

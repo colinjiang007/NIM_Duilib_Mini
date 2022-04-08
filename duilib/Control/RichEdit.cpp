@@ -1280,7 +1280,7 @@ CUiString RichEdit::GetFont() const
     return m_sFontId;
 }
 
-void RichEdit::SetFont(const CUiString& strFontId)
+void RichEdit::SetFont(LPCTSTR strFontId)
 {
     m_sFontId = strFontId;
     if( m_pTwh ) {
@@ -1288,12 +1288,12 @@ void RichEdit::SetFont(const CUiString& strFontId)
     }
 }
 
-void RichEdit::SetFont(const CUiString& pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic)
+void RichEdit::SetFont(LPCTSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic)
 {
     if( m_pTwh ) {
         LOGFONT lf = { 0 };
         ::GetObject(::GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
-        _tcscpy(lf.lfFaceName, pStrFontName.GetData());
+        _tcscpy(lf.lfFaceName, pStrFontName);
         lf.lfCharSet = DEFAULT_CHARSET;
         lf.lfHeight = -nSize;
         if( bBold ) lf.lfWeight += FW_BOLD;
@@ -1328,7 +1328,7 @@ ui::VerAlignType RichEdit::GetTextVerAlignType()
 	return m_textVerAlignType;
 }
 
-void RichEdit::SetTextColor(const CUiString& dwTextColor)
+void RichEdit::SetTextColor(LPCTSTR dwTextColor)
 {
 	if(m_sCurrentColor == dwTextColor)
 		return;
@@ -1411,7 +1411,7 @@ std::string RichEdit::GetUTF8Text() const
 	return strOut;
 }
 
-void RichEdit::SetText(const CUiString& strText)
+void RichEdit::SetText(LPCTSTR strText)
 {
 	m_sText = strText;
 	if( !m_bInited )
@@ -1423,7 +1423,7 @@ void RichEdit::SetText(const CUiString& strText)
 	m_linkInfo.clear();
 }
 
-void RichEdit::SetTextId(const CUiString& strTextId)
+void RichEdit::SetTextId(LPCTSTR strTextId)
 {
 	MutiLanSupport* mutilan = MutiLanSupport::GetInstance();
 	if (mutilan)
@@ -1483,10 +1483,10 @@ int RichEdit::SetSel(long nStartChar, long nEndChar)
     return (int)lResult;
 }
 
-void RichEdit::ReplaceSel(const CUiString& lpszNewText, bool bCanUndo)
+void RichEdit::ReplaceSel(LPCTSTR lpszNewText, bool bCanUndo)
 {
 #ifdef _UNICODE		
-    TxSendMessage(EM_REPLACESEL, (WPARAM) bCanUndo, (LPARAM)lpszNewText.GetData(), 0); 
+    TxSendMessage(EM_REPLACESEL, (WPARAM) bCanUndo, (LPARAM)lpszNewText, 0); 
 #else
 	std::wstring strOut;
 	StringHelper::CUiStringToUnicode(lpszNewText, strOut);
@@ -1616,7 +1616,7 @@ int RichEdit::InsertText(long nInsertAfterChar, LPCTSTR lpstrText, bool bCanUndo
     return nRet;
 }
 
-int RichEdit::AppendText(const CUiString& strText, bool bCanUndo)
+int RichEdit::AppendText(LPCTSTR strText, bool bCanUndo)
 {
     int nRet = SetSel(-1, -1);
     ReplaceSel(strText, bCanUndo);
@@ -2633,8 +2633,10 @@ void RichEdit::PaintChild(IRenderContext* pRender, const CUiRect& rcPaint)
     }
 }
 
-void RichEdit::SetAttribute(const CUiString& strName, const CUiString& strValue)
+void RichEdit::SetAttribute(LPCTSTR szName, LPCTSTR szValue)
 {
+	CUiString strName(szName);
+	CUiString strValue(szValue);
 	if (strName == _T("vscrollbar")) {
 		if (strValue == _T("true")) {
 			m_lTwhStyle |= ES_DISABLENOSCROLL | WS_VSCROLL;
@@ -2760,7 +2762,7 @@ void RichEdit::SetAttribute(const CUiString& strName, const CUiString& strValue)
 	else if (strName == _T("wantreturnmsg")) SetNeedReturnMsg(strValue == _T("true"));
 	else if (strName == _T("returnmsgwantctrl")) SetReturnMsgWantCtrl(strValue == _T("true"));
 	else if (strName == _T("rich")) SetRich(strValue == _T("true"));
-	else Box::SetAttribute(strName, strValue);
+	else Box::SetAttribute(szName, szValue);
 }
 
 BOOL RichEdit::CreateCaret(INT xWidth, INT yHeight)
@@ -2787,7 +2789,7 @@ BOOL RichEdit::ShowCaret(BOOL fShow)
 	return true;
 }
 
-void RichEdit::SetCaretColor(const CUiString& dwColor)
+void RichEdit::SetCaretColor(LPCTSTR dwColor)
 {
 	m_sCaretColor = dwColor;
 }
@@ -2859,7 +2861,7 @@ std::string RichEdit::GetUTF8PromptText() const
 	return strOut;
 }
 
-void RichEdit::SetPromptText(const CUiString& strText)
+void RichEdit::SetPromptText(LPCTSTR strText)
 {
 	if (m_sPromptText == strText) return;
 	m_sPromptText = strText;
@@ -2874,7 +2876,7 @@ void RichEdit::SetUTF8PromptText(const std::string& strText)
 	SetPromptText(strOut);
 }
 
-void RichEdit::SetPromptTextId(const CUiString& strTextId)
+void RichEdit::SetPromptTextId(LPCTSTR strTextId)
 {
 	if (m_sPromptTextId == strTextId) return;
 	m_sPromptTextId = strTextId;
@@ -2915,7 +2917,7 @@ CUiString RichEdit::GetFocusedImage()
 	return m_sFocusedImage.imageAttribute.simageString;
 }
 
-void RichEdit::SetFocusedImage( const CUiString& strImage )
+void RichEdit::SetFocusedImage( LPCTSTR strImage )
 {
 	m_sFocusedImage.SetImageString(strImage);
 	Invalidate();
@@ -2951,9 +2953,9 @@ void RichEdit::SetNoCaretReadonly()
 	m_bNoCaretReadonly = true;
 }
 
-void RichEdit::AddColorText(const CUiString &str, const CUiString &color)
+void RichEdit::AddColorText(LPCTSTR str, LPCTSTR color)
 {
-	if( !m_bRich || str.IsEmpty() || color.IsEmpty() ) {
+	if (!m_bRich || StringHelper::IsEmpty(str) || StringHelper::IsEmpty(color)) {
 		ASSERT(FALSE);
 		return;
 	}
@@ -2968,7 +2970,7 @@ void RichEdit::AddColorText(const CUiString &str, const CUiString &color)
 
 	this->ReplaceSel(str, FALSE);
 	int len = GetTextLength();
-	this->SetSel(len - (int)str.GetLength(), len);
+	this->SetSel(len - (int)_tcslen(str), len);
 	this->SetSelectionCharFormat(cf);
 
 	this->SetSelNone();
@@ -2976,9 +2978,9 @@ void RichEdit::AddColorText(const CUiString &str, const CUiString &color)
 	SetSelectionCharFormat(cf);
 }
 
-void RichEdit::AddLinkColorText(const CUiString &str, const CUiString &color, const CUiString &linkInfo)
+void RichEdit::AddLinkColorText(LPCTSTR str, LPCTSTR color, LPCTSTR linkInfo)
 {
-	if( !m_bRich || str.IsEmpty() || color.IsEmpty() ) {
+	if (!m_bRich || StringHelper::IsEmpty(str) || StringHelper::IsEmpty(color)) {
 		ASSERT(FALSE);
 		return;
 	}
@@ -2992,7 +2994,7 @@ void RichEdit::AddLinkColorText(const CUiString &str, const CUiString &color, co
 
 	this->ReplaceSel(str, FALSE);
 	int len = GetTextLength();
-	this->SetSel(len - (int)str.GetLength(), len);
+	this->SetSel(len - (int)_tcslen(str), len);
 	this->SetSelectionCharFormat(cf);
 	LinkInfo info;
 	info.info = linkInfo;
@@ -3003,9 +3005,9 @@ void RichEdit::AddLinkColorText(const CUiString &str, const CUiString &color, co
 	GetDefaultCharFormat(cf);
 	SetSelectionCharFormat(cf);
 }
-void  RichEdit::AddLinkColorTextEx(const CUiString& str, const CUiString &color, const CUiString &linkInfo, const CUiString& strFontId)
+void  RichEdit::AddLinkColorTextEx(LPCTSTR str, LPCTSTR color, LPCTSTR linkInfo, LPCTSTR strFontId)
 {
-	if (!m_bRich || str.IsEmpty() || color.IsEmpty()) {
+	if (!m_bRich || StringHelper::IsEmpty(str) || StringHelper::IsEmpty(color)) {
 		ASSERT(FALSE);
 		return;
 	}
@@ -3041,7 +3043,7 @@ void  RichEdit::AddLinkColorTextEx(const CUiString& str, const CUiString &color,
 	TxSendMessage(EM_SETTEXTEX, (WPARAM)&st, (LPARAM)(LPCTSTR)slinke, NULL);
 	return;
 }
-void RichEdit::AddLinkInfo(const CHARRANGE cr, const CUiString &linkInfo)
+void RichEdit::AddLinkInfo(const CHARRANGE cr, LPCTSTR linkInfo)
 {
 	LinkInfo info;
 	info.info = linkInfo;
@@ -3082,9 +3084,9 @@ bool IsAsciiChar(const wchar_t ch)
 	return (ch <= 0x7e && ch >= 0x20);
 }
 
-int GetAsciiCharNumber(const CUiString &str)
+int GetAsciiCharNumber(LPCTSTR str)
 {
-	int len = (int)str.GetLength(), sum = 0;
+	int len = (int)_tcslen(str), sum = 0;
 	for( int i = 0; i < len; i++ )
 	{
 		if( IsAsciiChar(str[i]) )
@@ -3144,7 +3146,7 @@ void GetClipboardText( CUiString &out )
 	}
 }
 
-void SetClipBoardText(const CUiString &str)
+void SetClipBoardText(LPCTSTR str)
 {
 	if (!::OpenClipboard(NULL))
 		return;

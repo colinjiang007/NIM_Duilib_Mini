@@ -59,7 +59,7 @@ public:
 	 * @param[in] pstrClass 控件名称
 	 * @return 返回一个自定义控件指针，一般情况下根据 pstrClass 参数创建自定义的控件
 	 */
-	virtual Control* CreateControl(const CUiString& pstrClass);
+	virtual Control* CreateControl(LPCTSTR pstrClass);
 
 	/**
 	 * @brief 接收所有消息
@@ -302,7 +302,7 @@ public:
 	* @param[in] title 窗口标题
 	* @return void 无返回值
 	*/
-	virtual void SetTaskbarTitle(const CUiString &title);
+	virtual void SetTaskbarTitle(LPCTSTR title);
 
 	/**
 	* @brief 置顶窗口

@@ -193,7 +193,7 @@ void ImageAttribute::Init()
 	nPlayCount = -1;
 }
 
-void ImageAttribute::SetImageString(const CUiString& strImageString)
+void ImageAttribute::SetImageString(LPCTSTR strImageString)
 {
 	Init();
 	simageString = strImageString;
@@ -201,7 +201,7 @@ void ImageAttribute::SetImageString(const CUiString& strImageString)
 	ModifyAttribute(*this, strImageString);
 }
 
-void ImageAttribute::ModifyAttribute(ImageAttribute& imageAttribute, const CUiString& strImageString)
+void ImageAttribute::ModifyAttribute(ImageAttribute& imageAttribute, LPCTSTR strImageString)
 {
 	CUiString sItem;
 	CUiString sValue;
@@ -287,7 +287,7 @@ Image::Image() :
 
 }
 
-void Image::SetImageString(const CUiString& strImageString)
+void Image::SetImageString(LPCTSTR strImageString)
 {
 	ClearCache();
 	imageAttribute.SetImageString(strImageString);

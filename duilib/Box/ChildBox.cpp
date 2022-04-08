@@ -24,15 +24,17 @@ void ChildBox::Init()
 	}
 }
 
-void ChildBox::SetAttribute( const CUiString& strName, const CUiString& strValue )
+void ChildBox::SetAttribute( LPCTSTR szName, LPCTSTR szValue )
 {
+	CUiString strName(szName);
+	CUiString strValue(szValue);
 	if( strName == _T("xmlfile") )
 		SetChildLayoutXML(strValue);
 	else
-		Box::SetAttribute(strName,strValue);
+		Box::SetAttribute(szName,szValue);
 }
 
-void ChildBox::SetChildLayoutXML(const CUiString& strXML )
+void ChildBox::SetChildLayoutXML(LPCTSTR strXML )
 {
 	m_strXMLFile = strXML;
 }

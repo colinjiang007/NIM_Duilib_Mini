@@ -457,8 +457,10 @@ void ScrollBar::HandleMessage(EventArgs& event)
 	if (m_pOwner != NULL) m_pOwner->HandleMessageTemplate(event);
 }
 
-void ScrollBar::SetAttribute(const CUiString& strName, const CUiString& strValue)
+void ScrollBar::SetAttribute(LPCTSTR szName, LPCTSTR szValue)
 {
+	CUiString strName(szName);
+	CUiString strValue(szValue);
 	if (strName == _T("button1normalimage")) SetButton1StateImage(kControlStateNormal, strValue);
 	else if (strName == _T("button1hotimage")) SetButton1StateImage(kControlStateHot, strValue);
 	else if (strName == _T("button1pushedimage")) SetButton1StateImage(kControlStatePushed, strValue);
@@ -487,7 +489,7 @@ void ScrollBar::SetAttribute(const CUiString& strName, const CUiString& strValue
 	else if (strName == _T("showbutton1")) SetShowButton1(strValue == _T("true"));
 	else if (strName == _T("showbutton2")) SetShowButton2(strValue == _T("true"));
 	else if (strName == _T("autohidescroll")) SetAutoHideScroll(strValue == _T("true"));
-	else Control::SetAttribute(strName, strValue);
+	else Control::SetAttribute(szName, szValue);
 }
 
 void ScrollBar::Paint(IRenderContext* pRender, const CUiRect& rcPaint)
@@ -614,7 +616,7 @@ CUiString ScrollBar::GetButton1StateImage(ControlStateType stateType)
 	return m_button1StateImage[stateType].imageAttribute.simageString;
 }
 
-void ScrollBar::SetButton1StateImage(ControlStateType stateType, const CUiString& pStrImage)
+void ScrollBar::SetButton1StateImage(ControlStateType stateType, LPCTSTR pStrImage)
 {
 	m_button1StateImage[stateType].SetImageString(pStrImage);
 	Invalidate();
@@ -636,7 +638,7 @@ CUiString ScrollBar::GetButton2StateImage(ControlStateType stateType)
 	return m_button2StateImage[stateType].imageAttribute.simageString;
 }
 
-void ScrollBar::SetButton2StateImage(ControlStateType stateType, const CUiString& pStrImage)
+void ScrollBar::SetButton2StateImage(ControlStateType stateType, LPCTSTR pStrImage)
 {
 	m_button2StateImage[stateType].SetImageString(pStrImage);
 	Invalidate();
@@ -647,7 +649,7 @@ CUiString ScrollBar::GetThumbStateImage(ControlStateType stateType)
 	return m_thumbStateImage[stateType].imageAttribute.simageString;
 }
 
-void ScrollBar::SetThumbStateImage(ControlStateType stateType, const CUiString& pStrImage)
+void ScrollBar::SetThumbStateImage(ControlStateType stateType, LPCTSTR pStrImage)
 {
 	m_thumbStateImage[stateType].SetImageString(pStrImage);
 	Invalidate();
@@ -658,7 +660,7 @@ CUiString ScrollBar::GetRailStateImage(ControlStateType stateType)
 	return m_railStateImage[stateType].imageAttribute.simageString;
 }
 
-void ScrollBar::SetRailStateImage(ControlStateType stateType, const CUiString& pStrImage)
+void ScrollBar::SetRailStateImage(ControlStateType stateType, LPCTSTR pStrImage)
 {
 	m_railStateImage[stateType].SetImageString(pStrImage);
 	Invalidate();
@@ -669,7 +671,7 @@ CUiString ScrollBar::GetBkStateImage(ControlStateType stateType)
 	return m_bkStateImage[stateType].imageAttribute.simageString;
 }
 
-void ScrollBar::SetBkStateImage(ControlStateType stateType, const CUiString& pStrImage)
+void ScrollBar::SetBkStateImage(ControlStateType stateType, LPCTSTR pStrImage)
 {
 	m_bkStateImage[stateType].SetImageString(pStrImage);
 	Invalidate();
