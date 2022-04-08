@@ -12,8 +12,8 @@ public:
 	HLayout();
 
 	/// 重写父类方法，提供个性化功能，请参考父类声明
-	virtual CUiSize ArrangeChild(const std::vector<Control*>& items, CUiRect rc) override;
-	virtual CUiSize AjustSizeByChild(const std::vector<Control*>& items, CUiSize szAvailable) override;
+	virtual CUiSize ArrangeChild(const std::vector<Control*>& items, const CUiRect& rc) override;
+	virtual CUiSize AjustSizeByChild(const std::vector<Control*>& items, const CUiSize& szAvailable) override;
 };
 
 class UILIB_API HBox : public Box

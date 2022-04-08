@@ -44,7 +44,7 @@ public:
 	VirtualTileLayout();
 	virtual ui::CUiSize ArrangeChild(const std::vector<ui::Control*>& items, ui::CUiRect rc) override;
 	virtual ui::CUiSize AjustSizeByChild(const std::vector<ui::Control*>& items, ui::CUiSize szAvailable) override;
-	virtual bool SetAttribute(const CUiString& strName, const CUiString& strValue) override;
+	virtual bool SetAttribute(LPCTSTR szName, LPCTSTR szValue) override;
 	virtual int GetElementsHeight(int nCount);
 	virtual void LazyArrangeChild();
 	virtual int AjustMaxItem();

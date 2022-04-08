@@ -9,7 +9,7 @@ VLayout::VLayout()
 
 }
 
-CUiSize VLayout::ArrangeChild(const std::vector<Control*>& items, CUiRect rc)
+CUiSize VLayout::ArrangeChild(const std::vector<Control*>& items, const CUiRect& rc)
 {
 	// Determine the minimum size
 	CUiSize szAvailable(rc.right - rc.left, rc.bottom - rc.top);
@@ -106,7 +106,7 @@ CUiSize VLayout::ArrangeChild(const std::vector<Control*>& items, CUiRect rc)
 	return size;
 }
 
-CUiSize VLayout::AjustSizeByChild(const std::vector<Control*>& items, CUiSize szAvailable)
+CUiSize VLayout::AjustSizeByChild(const std::vector<Control*>& items, const CUiSize& szAvailable)
 {
 	CUiSize totalSize;
 	CUiSize itemSize;

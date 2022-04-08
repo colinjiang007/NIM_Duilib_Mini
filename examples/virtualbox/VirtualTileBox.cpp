@@ -63,8 +63,11 @@ ui::CUiSize VirtualTileLayout::AjustSizeByChild(const std::vector<ui::Control*>&
 }
 
 
-bool VirtualTileLayout::SetAttribute(const CUiString& strName, const CUiString& strValue)
+bool VirtualTileLayout::SetAttribute(LPCTSTR szName, LPCTSTR szValue)
 {
+	CUiString strName(szName);
+	CUiString strValue(szValue);
+
 	if (strName == _T("column"))
 	{
 		int iValue = _ttoi(strValue);
@@ -79,7 +82,7 @@ bool VirtualTileLayout::SetAttribute(const CUiString& strName, const CUiString& 
 		return true;
 	}
 	else {
-		return __super::SetAttribute(strName, strValue);
+		return __super::SetAttribute(szName, szValue);
 	}
 }
 

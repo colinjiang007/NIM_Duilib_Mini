@@ -44,7 +44,7 @@ public:
     void SetClientRect(CUiRect *prc);
     CUiRect* GetClientRect() { return &rcClient; }
     BOOL GetWordWrap(void) { return fWordWrap; }
-    void SetWordWrap(BOOL fWordWrap);
+    void SetWordWrap(BOOL bWordWrap);
     BOOL GetReadOnly();
     void SetReadOnly(BOOL fReadOnly);
 	BOOL IsPassword();
@@ -57,7 +57,7 @@ public:
     BOOL IsCaptured();
 
     BOOL GetAllowBeep();
-    void SetAllowBeep(BOOL fAllowBeep);
+    void SetAllowBeep(BOOL bAllowBeep);
     WORD GetDefaultAlign();
     void SetDefaultAlign(WORD wNewAlign);
     BOOL GetRichTextFlag();
@@ -803,9 +803,9 @@ HRESULT	CTxtWinHost::TxGetSelectionBarWidth (LONG *plSelBarWidth)
     return S_OK;
 }
 
-void CTxtWinHost::SetWordWrap(BOOL fWordWrap)
+void CTxtWinHost::SetWordWrap(BOOL bWordWrap)
 {
-    fWordWrap = fWordWrap;
+    fWordWrap = bWordWrap;
     pserv->OnTxPropertyBitsChange(TXTBIT_WORDWRAP, fWordWrap ? TXTBIT_WORDWRAP : 0);
 }
 
@@ -912,9 +912,9 @@ BOOL CTxtWinHost::GetAllowBeep()
     return fAllowBeep;
 }
 
-void CTxtWinHost::SetAllowBeep(BOOL fAllowBeep)
+void CTxtWinHost::SetAllowBeep(BOOL bAllowBeep)
 {
-    fAllowBeep = fAllowBeep;
+    fAllowBeep = bAllowBeep;
 
     pserv->OnTxPropertyBitsChange(TXTBIT_ALLOWBEEP, 
         fAllowBeep ? TXTBIT_ALLOWBEEP : 0);

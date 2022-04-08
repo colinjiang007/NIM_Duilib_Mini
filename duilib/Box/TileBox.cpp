@@ -9,7 +9,7 @@ TileLayout::TileLayout() : m_nColumns(1), m_szItem(0, 0)
 
 }
 
-CUiSize TileLayout::ArrangeChild(const std::vector<Control*>& items, CUiRect rc)
+CUiSize TileLayout::ArrangeChild(const std::vector<Control*>& items, const CUiRect& rc)
 {
 	// Position the elements
 	if( m_szItem.cx > 0 ) m_nColumns = (rc.right - rc.left) / m_szItem.cx;
@@ -106,7 +106,7 @@ CUiSize TileLayout::ArrangeChild(const std::vector<Control*>& items, CUiRect rc)
 	return size;
 }
 
-CUiSize TileLayout::AjustSizeByChild(const std::vector<Control*>& items, CUiSize szAvailable)
+CUiSize TileLayout::AjustSizeByChild(const std::vector<Control*>& items, const CUiSize& szAvailable)
 {
 	CUiSize size = m_pOwner->Control::EstimateSize(szAvailable);
 	size.cy = 0;

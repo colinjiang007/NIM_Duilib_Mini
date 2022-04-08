@@ -26,7 +26,7 @@ public:
 	 * @param[in] rcContainer 要设置的位置信息
 	 * @return 返回控件最终的位置信息
 	 */
-	static CUiSize SetFloatPos(Control* pControl, CUiRect rcContainer);
+	static CUiSize SetFloatPos(Control* pControl, const CUiRect& rcContainer);
 
 	/**
 	 * @brief 设置布局属性
@@ -42,7 +42,7 @@ public:
 	 * @param[in] rc 当前容器位置信息
 	 * @return 返回排列后最终盒子的宽度和高度信息
 	 */
-	virtual CUiSize ArrangeChild(const std::vector<Control*>& items, CUiRect rc);
+	virtual CUiSize ArrangeChild(const std::vector<Control*>& items, const CUiRect& rc);
 
 	/**
 	 * @brief 根据内部子控件大小调整容器自身大小
@@ -50,7 +50,7 @@ public:
 	 * @param[in] szAvailable 子控件允许的最大宽度
 	 * @return 返回排列后最终盒子的宽度和高度信息
 	 */
-	virtual CUiSize AjustSizeByChild(const std::vector<Control*>& items, CUiSize szAvailable);
+	virtual CUiSize AjustSizeByChild(const std::vector<Control*>& items, const CUiSize& szAvailable);
 
 	/**
 	 * @brief 获取内边距

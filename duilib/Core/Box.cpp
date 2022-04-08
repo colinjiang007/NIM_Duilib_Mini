@@ -15,7 +15,7 @@ void Layout::SetOwner(Box* pOwner)
 	m_pOwner = pOwner;
 }
 
-CUiSize Layout::SetFloatPos(Control* pControl, CUiRect rcContainer)
+CUiSize Layout::SetFloatPos(Control* pControl, const CUiRect& rcContainer)
 {
 	if (!pControl->IsVisible()) return CUiSize();
 
@@ -112,7 +112,7 @@ bool Layout::SetAttribute(LPCTSTR szName, LPCTSTR szValue)
 	return hasAttribute;
 }
 
-CUiSize Layout::ArrangeChild(const std::vector<Control*>& items, CUiRect rc)
+CUiSize Layout::ArrangeChild(const std::vector<Control*>& items, const CUiRect& rc)
 {
 	CUiSize size;
 	for (auto it = items.begin(); it != items.end(); it++) 
@@ -127,7 +127,7 @@ CUiSize Layout::ArrangeChild(const std::vector<Control*>& items, CUiRect rc)
 	return size;
 }
 
-CUiSize Layout::AjustSizeByChild(const std::vector<Control*>& items, CUiSize szAvailable)
+CUiSize Layout::AjustSizeByChild(const std::vector<Control*>& items, const CUiSize& szAvailable)
 {
 	CUiSize maxSize(-9999, -9999);
 	CUiSize itemSize;
@@ -281,17 +281,17 @@ void Box::HandleMessageTemplate(EventArgs& msg)
 		}
 
 		if (bRet) {
-			auto callback = OnXmlEvent.find(msg.Type);
-			if (callback != OnXmlEvent.end()) {
-				bRet = callback->second(&msg);
+			auto callback2 = OnXmlEvent.find(msg.Type);
+			if (callback2 != OnXmlEvent.end()) {
+				bRet = callback2->second(&msg);
 			}
 			if (weakflag.expired()) {
 				return;
 			}
 
-			callback = OnXmlEvent.find(kEventAll);
-			if (callback != OnXmlEvent.end()) {
-				bRet = callback->second(&msg);
+			callback2 = OnXmlEvent.find(kEventAll);
+			if (callback2 != OnXmlEvent.end()) {
+				bRet = callback2->second(&msg);
 			}
 			if (weakflag.expired()) {
 				return;
@@ -316,17 +316,17 @@ void Box::HandleMessageTemplate(EventArgs& msg)
 	}
 
 	if (bRet) {
-		auto callback = OnXmlBubbledEvent.find(msg.Type);
-		if (callback != OnXmlBubbledEvent.end()) {
-			bRet = callback->second(&msg);
+		auto callback2 = OnXmlBubbledEvent.find(msg.Type);
+		if (callback2 != OnXmlBubbledEvent.end()) {
+			bRet = callback2->second(&msg);
 		}
 		if (weakflag.expired()) {
 			return;
 		}
 
-		callback = OnXmlBubbledEvent.find(kEventAll);
-		if (callback != OnXmlBubbledEvent.end()) {
-			bRet = callback->second(&msg);
+		callback2 = OnXmlBubbledEvent.find(kEventAll);
+		if (callback2 != OnXmlBubbledEvent.end()) {
+			bRet = callback2->second(&msg);
 		}
 		if (weakflag.expired()) {
 			return;

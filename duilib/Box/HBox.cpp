@@ -9,7 +9,7 @@ HLayout::HLayout()
 
 }
 
-CUiSize HLayout::ArrangeChild(const std::vector<Control*>& items, CUiRect rc)
+CUiSize HLayout::ArrangeChild(const std::vector<Control*>& items, const CUiRect& rc)
 {
 	// Determine the width of elements that are sizeable
 	CUiSize szAvailable(rc.right - rc.left, rc.bottom - rc.top);
@@ -105,7 +105,7 @@ CUiSize HLayout::ArrangeChild(const std::vector<Control*>& items, CUiRect rc)
 	return size;
 }
 
-CUiSize HLayout::AjustSizeByChild(const std::vector<Control*>& items, CUiSize szAvailable)
+CUiSize HLayout::AjustSizeByChild(const std::vector<Control*>& items, const CUiSize& szAvailable)
 {
 	CUiSize totalSize;
 	CUiSize itemSize;

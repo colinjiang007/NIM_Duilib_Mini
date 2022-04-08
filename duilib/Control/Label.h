@@ -339,17 +339,17 @@ void LabelTemplate<InheritType>::PaintText(IRenderContext* pRender)
 	if (this->m_animationManager.GetAnimationPlayer(kAnimationHot)) {
 		if ((stateType == kControlStateNormal || stateType == kControlStateHot)
 			&& !GetStateTextColor(kControlStateHot).IsEmpty()) {
-			CUiString clrColor = GetStateTextColor(kControlStateNormal);
-			if (!clrColor.IsEmpty()) {
-				DWORD dwClrColor = GlobalManager::GetTextColor(clrColor);
-				pRender->DrawText(rc, GetText(), dwClrColor, m_sFontId, m_uTextStyle, 255, m_bLineLimit);
+			CUiString clrColor2 = GetStateTextColor(kControlStateNormal);
+			if (!clrColor2.IsEmpty()) {
+				DWORD dwClrColor2 = GlobalManager::GetTextColor(clrColor2);
+				pRender->DrawText(rc, GetText(), dwClrColor2, m_sFontId, m_uTextStyle, 255, m_bLineLimit);
 			}
 
 			if (this->m_nHotAlpha > 0) {
-				CUiString clrColor = GetStateTextColor(kControlStateHot);
-				if (!clrColor.IsEmpty()) {
-					DWORD dwClrColor = GlobalManager::GetTextColor(clrColor);
-					pRender->DrawText(rc, GetText(), dwClrColor, m_sFontId, m_uTextStyle, (BYTE)this->m_nHotAlpha, m_bLineLimit);
+				CUiString clrColor3 = GetStateTextColor(kControlStateHot);
+				if (!clrColor3.IsEmpty()) {
+					DWORD dwClrColor2 = GlobalManager::GetTextColor(clrColor3);
+					pRender->DrawText(rc, GetText(), dwClrColor2, m_sFontId, m_uTextStyle, (BYTE)this->m_nHotAlpha, m_bLineLimit);
 				}
 			}
 

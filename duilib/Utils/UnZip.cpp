@@ -3505,8 +3505,8 @@ int unzReadCurrentFile  (unzFile file, voidp buf, unsigned len, bool *reached_eo
       pfile_in_zip_read_info->stream.avail_in = (uInt)uReadThis;
       //
       if (pfile_in_zip_read_info->encrypted)
-      { char *buf = (char*)pfile_in_zip_read_info->stream.next_in;
-        for (unsigned int i=0; i<uReadThis; i++) buf[i]=zdecode(pfile_in_zip_read_info->keys,buf[i]);
+      { char *bufe = (char*)pfile_in_zip_read_info->stream.next_in;
+        for (unsigned int i=0; i<uReadThis; i++) bufe[i]=zdecode(pfile_in_zip_read_info->keys,bufe[i]);
       }
     }
 
