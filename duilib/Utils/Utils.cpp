@@ -142,6 +142,30 @@ namespace ui
 		return *this;
 	}
 
+#if _MSC_VER >= 1600
+	const CUiString& CUiString::operator=(CUiString&& src)
+	{
+		//empty this
+		if (m_pstr != m_szBuffer) free(m_pstr);
+		m_pstr = m_szBuffer;
+		m_szBuffer[0] = _T('\0');
+
+		//copy src
+		if (src.m_pstr == src.m_szBuffer)
+		{
+			_tcscpy(this->m_szBuffer, src.m_szBuffer);
+		}
+		else {
+			this->m_pstr = src.m_pstr;
+			src.m_pstr = src.m_szBuffer;
+		}
+		//empty src
+		src.m_szBuffer[0] = _T('\0');
+		return *this;
+	}
+#endif
+
+
 	const CUiString& CUiString::operator=(LPCTSTR lpStr)
 	{
 		if (lpStr)
@@ -628,4 +652,5 @@ namespace ui
 		}
 		return SimplifyFilePath(sInstancePath);
 	}
+
 }// namespace ui

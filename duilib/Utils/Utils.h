@@ -261,6 +261,9 @@ public:
 
 	TCHAR operator[] (int nIndex) const;
 	const CUiString& operator=(const CUiString& src);
+#if _MSC_VER >= 1600
+	const CUiString& operator=(CUiString&& src);
+#endif
 	const CUiString& operator=(const TCHAR ch);
 	const CUiString& operator=(LPCTSTR pstr);
 #ifdef _UNICODE
