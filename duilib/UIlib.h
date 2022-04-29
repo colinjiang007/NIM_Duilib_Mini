@@ -134,3 +134,5 @@
 #include "Control/RichEdit.h"
 #include "Control/VirtualListBox.h"
 
+#include "Control/Edit.h"
+
