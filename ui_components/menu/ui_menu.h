@@ -23,7 +23,7 @@ class CMenuElementUI;
 class CMenuWnd : public ui::WindowImplBase
 {
 public:
-	virtual Control* CreateControl(const CUiString& pstrClass) override;
+	virtual Control* CreateControl(LPCTSTR pstrClass) override;
 
 	enum PopupPosType
 	{

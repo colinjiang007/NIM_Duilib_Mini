@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "Edit.h"
+#include "NativeWindow.h"
+#include "windowsx.h"
 
 namespace ui
 {
-	class EditWnd : public Window
+	class EditWnd : public NativeWindow
 	{
 	public:
 		EditWnd();
@@ -11,8 +13,8 @@ namespace ui
 		void Init(EditUI* pOwner);
 		RECT CalPos();
 
-		CUiString GetWindowClassName() const;
-		CUiString GetSuperClassName() const;
+		LPCTSTR GetWindowClassName() const;
+		LPCTSTR GetSuperClassName() const;
 		void OnFinalMessage(HWND hWnd);
 
 		LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -45,14 +47,9 @@ namespace ui
         else if(uTextStyle & DT_CENTER) uStyle |= ES_CENTER;
         else if(uTextStyle & DT_RIGHT) uStyle |= ES_RIGHT;
 		if( m_pOwner->IsPasswordMode() ) uStyle |= ES_PASSWORD;
-		Create(m_pOwner->GetWindow()->GetHWND(), NULL, uStyle, 0, true,rcPos);
+		Create(m_pOwner->GetWindow()->GetHWND(), NULL, uStyle, 0, rcPos);
 
-		HFONT hFont=NULL;
-		int iFontIndex=m_pOwner->GetFont();
-		if (iFontIndex!=-1)
-			hFont=m_pOwner->GetManager()->GetFont(iFontIndex);
-		if (hFont==NULL)
-			hFont=m_pOwner->GetManager()->GetDefaultFontInfo()->hFont;
+		HFONT hFont = GlobalManager::GetFont(m_pOwner->GetFont());
 
 		SetWindowFont(m_hWnd, hFont, TRUE);
 		Edit_LimitText(m_hWnd, m_pOwner->GetMaxChar());
@@ -81,26 +78,26 @@ namespace ui
 
 	RECT EditWnd::CalPos()
 	{
-		CDuiRect rcPos = m_pOwner->GetPos();
+		CUiRect rcPos = m_pOwner->GetPos();
 		RECT rcInset = m_pOwner->GetTextPadding();
 		rcPos.left += rcInset.left;
 		rcPos.top += rcInset.top;
 		rcPos.right -= rcInset.right;
 		rcPos.bottom -= rcInset.bottom;
-		LONG lEditHeight = m_pOwner->GetManager()->GetFontInfo(m_pOwner->GetFont())->tm.tmHeight;
+		LONG lEditHeight = GlobalManager::GetTFontInfo(m_pOwner->GetFont())->tm.tmHeight;
 		if( lEditHeight < rcPos.GetHeight() ) {
 			rcPos.top += (rcPos.GetHeight() - lEditHeight) / 2;
 			rcPos.bottom = rcPos.top + lEditHeight;
 		}
 
-		CControlUI* pParent = m_pOwner;
+		Control* pParent = m_pOwner;
 		RECT rcParent;
 		while( pParent = pParent->GetParent() ) {
 			if( !pParent->IsVisible() ) {
 				rcPos.left = rcPos.top = rcPos.right = rcPos.bottom = 0;
 				break;
 			}
-			rcParent = pParent->GetClientPos();
+			rcParent = pParent->GetPos();
 			if( !::IntersectRect(&rcPos, &rcPos, &rcParent) ) {
 				rcPos.left = rcPos.top = rcPos.right = rcPos.bottom = 0;
 				break;
@@ -247,7 +244,7 @@ namespace ui
 		m_bPasswordMode(false), m_cPasswordChar(_T('*')), m_bAutoSelAll(false), m_uButtonState(0), 
 		m_dwEditbkColor(0xFFFFFFFF), m_iWindowStyls(0)
 	{
-		SetTextPadding(CDuiRect(4, 3, 4, 3));
+		SetTextPadding(CUiRect(4, 3, 4, 3));
 		SetBkColor(0xFFFFFFFF);
 	}
 

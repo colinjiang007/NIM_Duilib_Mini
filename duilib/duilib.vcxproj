@@ -361,6 +361,7 @@
     <ClCompile Include="Utils\UnZip.cpp" />
     <ClCompile Include="Utils\Utils.cpp" />
     <ClCompile Include="Utils\WinImplBase.cpp" />
+    <ClCompile Include="NativeWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation\AnimationManager.h" />
@@ -417,6 +418,7 @@
     <ClInclude Include="Control\ScrollBar.h" />
     <ClInclude Include="Control\Slider.h" />
     <ClInclude Include="Control\TreeView.h" />
+    <ClInclude Include="NativeWindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

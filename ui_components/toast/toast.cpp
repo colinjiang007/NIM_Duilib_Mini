@@ -94,7 +94,7 @@ LRESULT Toast::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 void Toast::InitWindow()
 {
-	m_pRoot->AttachBubbledEvent(ui::kEventClick, nbase::Bind(&Toast::OnClicked, this, std::placeholders::_1));
+	m_pRoot->AttachBubbledEvent(ui::kEventClick, ui::Bind(&Toast::OnClicked, this, std::placeholders::_1));
 
 	content_ = static_cast<RichEdit*>(FindControl(_T("content")));
 	close_button_ = static_cast<Button*>(FindControl(_T("close_btn")));

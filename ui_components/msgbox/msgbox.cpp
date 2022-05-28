@@ -97,7 +97,7 @@ void MsgBox::Close(UINT nRet)
 
 void MsgBox::InitWindow()
 {
-	m_pRoot->AttachBubbledEvent(ui::kEventClick, nbase::Bind(&MsgBox::OnClicked, this, std::placeholders::_1));
+	m_pRoot->AttachBubbledEvent(ui::kEventClick, ui::Bind(&MsgBox::OnClicked, this, std::placeholders::_1));
 
 	title_ = (Label*)FindControl(_T("title"));
 	content_ = (RichEdit*)FindControl(_T("content"));

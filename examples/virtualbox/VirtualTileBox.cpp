@@ -35,7 +35,7 @@ VirtualTileLayout::VirtualTileLayout()
 	m_nColumns = -1;
 }
 
-ui::CUiSize VirtualTileLayout::ArrangeChild(const std::vector<ui::Control*>& items, ui::CUiRect rc)
+ui::CUiSize VirtualTileLayout::ArrangeChild(const std::vector<ui::Control*>& items,const ui::CUiRect& rc)
 {
 	ui::CUiSize sz(rc.GetWidth(), rc.GetHeight());
 
@@ -49,7 +49,7 @@ ui::CUiSize VirtualTileLayout::ArrangeChild(const std::vector<ui::Control*>& ite
 	return sz;
 }
 
-ui::CUiSize VirtualTileLayout::AjustSizeByChild(const std::vector<ui::Control*>& items, ui::CUiSize szAvailable)
+ui::CUiSize VirtualTileLayout::AjustSizeByChild(const std::vector<ui::Control*>& items, const ui::CUiSize& szAvailable)
 {
 	VirtualTileBox *pList = dynamic_cast<VirtualTileBox*>(m_pOwner);
 	ASSERT(pList);

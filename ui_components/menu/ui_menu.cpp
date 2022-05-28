@@ -6,7 +6,7 @@ namespace uic {
 /////////////////////////////////////////////////////////////////////////////////////
 //
 
-Control* CMenuWnd::CreateControl(const CUiString& pstrClass)
+Control* CMenuWnd::CreateControl(LPCTSTR pstrClass)
 {
 	if (pstrClass == kMenuElementUIInterfaceName)
 	{
@@ -131,7 +131,7 @@ CMenuElementUI::~CMenuElementUI()
 
 bool CMenuElementUI::ButtonUp(EventArgs& msg)
 {
-	std::weak_ptr<nbase::WeakFlag> weakFlag = m_pWindow->GetWeakFlag();
+	std::weak_ptr<ui::WeakFlag> weakFlag = m_pWindow->GetWeakFlag();
 	bool ret = __super::ButtonUp(msg);
 	if (ret && !weakFlag.expired()) {
 		m_pWindow->Close();
